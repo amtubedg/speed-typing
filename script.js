@@ -1,7 +1,7 @@
-// Исходный текст — убедитесь, что в нём есть пробелы
+// Исходный текст – убедитесь, что в нём есть пробелы
 const sampleText = "This is a sample text for typing practice. It contains several words and spaces.";
 
-let currentIndex = 0;       // общий индекс для всех символов (буквы и пробелы)
+let currentIndex = 0;       // Общий индекс для всех символов (буквы и пробелы)
 let timerStarted = false;
 let remainingTime = 30;
 let timerInterval = null;
@@ -60,7 +60,7 @@ function startTimer() {
       clearInterval(timerInterval);
       hiddenInput.removeEventListener('keydown', handleKeyDown);
       hiddenInput.removeEventListener('input', handleInput);
-      alert('Время вышло!');
+      alert('Time is up!');
     }
   }, 1000);
 }
@@ -85,7 +85,7 @@ function processKey(key) {
 }
 
 function handleKeyDown(e) {
-  // Обработка Backspace
+  // Обработка Backspace через keydown (для desktop)
   if (e.key === "Backspace") {
     if (currentIndex > 0) {
       currentIndex--;
@@ -103,6 +103,7 @@ function handleKeyDown(e) {
     return;
   }
   
+  // Запуск таймера при первом вводе
   if (!timerStarted) {
     timerStarted = true;
     startTimer();
@@ -113,6 +114,19 @@ function handleKeyDown(e) {
 }
 
 function handleInput(e) {
+  // Обработка Backspace на мобильном: если inputType = "deleteContentBackward"
+  if (e.inputType === "deleteContentBackward") {
+    if (currentIndex > 0) {
+      currentIndex--;
+      const allLetters = textContainer.querySelectorAll('.letter');
+      allLetters[currentIndex].classList.remove('correct', 'incorrect');
+      allLetters[currentIndex].classList.add('pending');
+    }
+    updateActiveCursor();
+    hiddenInput.value = "";
+    return;
+  }
+  
   const text = hiddenInput.value;
   if (!text) return;
   for (let char of text) {
@@ -125,16 +139,9 @@ function focusHiddenInput() {
   hiddenInput.focus();
 }
 
-// Инициализация текста
 initText();
-
-// При нажатии на контейнер текста, а также при касании, фокусируем скрытый input
-textContainer.addEventListener('click', focusHiddenInput);
-textContainer.addEventListener('touchstart', focusHiddenInput);
-
-// Дополнительно: фокус на document, если нажато вне
-document.addEventListener('click', focusHiddenInput);
-
-// Обработчики ввода
 hiddenInput.addEventListener('keydown', handleKeyDown);
 hiddenInput.addEventListener('input', handleInput);
+document.addEventListener('click', focusHiddenInput);
+document.addEventListener('touchstart', focusHiddenInput);
+focusHiddenInput();

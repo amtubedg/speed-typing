@@ -7,7 +7,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start; /* Элементы располагаются у верхнего края */
-    padding: 20px 10px;          /* Используем единый padding */
+    padding: 20px 10px;
     min-height: 100vh;
     box-sizing: border-box;
   }
@@ -16,7 +16,7 @@ body {
   #timer {
     /* Адаптивный размер шрифта: не меньше 2rem, оптимум 6vw, не больше 4rem */
     font-size: clamp(2rem, 6vw, 4rem);
-    margin: 10px 0 20px; /* Немного отступов: сверху – 10px, снизу – 20px */
+    margin: 10px 0 20px;
   }
   
   /* Контейнер для текста */
@@ -48,6 +48,24 @@ body {
   /* Начальное состояние – буква ещё не набрана */
   #text span.pending {
     opacity: 0.3;
+  }
+  
+  /* Мигающий курсор для активного символа */
+  #text span.active::after {
+    content: "";
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background-color: #fff;
+    margin-left: 4px;
+    animation: blink 1s steps(1) infinite;
+  }
+  
+  /* Анимация мигания */
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
   }
   
   /* Скрытый input для мобильных устройств */

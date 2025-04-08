@@ -6,12 +6,17 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; /* элементы располагаются у верхнего края */
+    padding-top: 40px;  /* отступ сверху – значение можно подкорректировать */
     min-height: 100vh;
     margin: 0;
-    padding: 10px;
+    padding: 80px;
     box-sizing: border-box;
+    background-color: #222;
+    color: #ccc;
+    font-family: "Courier New", Courier, monospace;
   }
+  
   
   /* Таймер и контейнер с текстом с использованием clamp() */
   #timer {

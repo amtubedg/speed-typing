@@ -1,4 +1,4 @@
-/* Общие стили для body */
+/* Базовые стили */
 body {
     background-color: #222;
     color: #ccc;
@@ -6,69 +6,85 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Элементы располагаются у верхнего края */
-    padding: 20px 10px;
+    justify-content: flex-start;
+    padding: 20px;
+    margin: 0;
     min-height: 100vh;
     box-sizing: border-box;
   }
   
-  /* Таймер */
   #timer {
-    /* Адаптивный размер шрифта: не меньше 2rem, оптимум 6vw, не больше 4rem */
     font-size: clamp(2rem, 6vw, 4rem);
-    margin: 10px 0 20px;
+    margin-bottom: 20px;
+    user-select: none;
   }
   
   /* Контейнер для текста */
   #text {
-    /* Адаптивный размер шрифта для текста */
     font-size: clamp(1.8rem, 4vw, 4rem);
-    letter-spacing: 2px;
     text-align: center;
+    line-height: 1.2;
+    white-space: normal;
+    max-width: 90%;
+    margin: 0 auto;
+    user-select: none;
   }
   
-  /* Стили для каждого символа */
-  #text span {
+  /* Контейнер для слова */
+  .wordContainer {
+    display: inline-block;
+    white-space: normal;
+    margin-right: 0.5rem;
+  }
+  
+  /* Каждый символ (буква или пробел) */
+  .letter {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
     opacity: 0.3;
     transition: opacity 0.2s, color 0.2s;
   }
   
-  /* Состояние «правильной» буквы */
-  #text span.correct {
+  /* Для пробела можно при необходимости задать фиксированную ширину */
+  .letter.space {
+    /* width: 0.6em; */
+  }
+  
+  /* Состояния символов */
+  .letter.correct {
     opacity: 1;
     color: #fff;
   }
-  
-  /* Состояние «неправильной» буквы */
-  #text span.incorrect {
+  .letter.incorrect {
     opacity: 1;
     color: red;
   }
-  
-  /* Начальное состояние – буква ещё не набрана */
-  #text span.pending {
+  .letter.pending {
     opacity: 0.3;
   }
   
-  /* Мигающий курсор для активного символа */
-  #text span.active::after {
+  /* Мигающий курсор на активном символе */
+  .letter.active::before {
     content: "";
-    display: inline-block;
-    width: 2px;
-    height: 1em;
-    background-color: #fff;
-    margin-left: 4px;
+    position: absolute;
+    left: -4px;
+    top: 2%;
+    width: 3px;
+    height: 100%;
+    background-color: #FFD700;
+    border-radius: 0;
     animation: blink 1s steps(1) infinite;
+    z-index: 2;
   }
   
-  /* Анимация мигания */
   @keyframes blink {
-    0% { opacity: 1; }
-    50% { opacity: 0; }
+    0%   { opacity: 1; }
+    50%  { opacity: 0; }
     100% { opacity: 1; }
   }
   
-  /* Скрытый input для мобильных устройств */
+  /* Скрытый input для ввода */
   #hiddenInput {
     position: absolute;
     top: -100px;

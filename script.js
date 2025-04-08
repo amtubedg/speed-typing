@@ -1,7 +1,7 @@
-// Тестовый текст – измените по своему усмотрению
-const sampleText = "Быстрая коричневая лиса перепрыгнула через ленивую собаку.";
+// Исходный текст — убедитесь, что в нём есть пробелы
+const sampleText = "This is a sample text for typing practice. It contains several words and spaces.";
 
-let currentIndex = 0;
+let currentIndex = 0;       // общий индекс для всех символов (буквы и пробелы)
 let timerStarted = false;
 let remainingTime = 30;
 let timerInterval = null;
@@ -10,31 +10,48 @@ const textContainer = document.getElementById('text');
 const timerDisplay = document.getElementById('timer');
 const hiddenInput = document.getElementById('hiddenInput');
 
-// Функция инициализации: разбиваем текст на символы и оборачиваем в <span>
 function initText() {
   textContainer.innerHTML = "";
   currentIndex = 0;
-  sampleText.split('').forEach(char => {
-    const span = document.createElement('span');
-    span.textContent = char;
-    span.classList.add('pending');
-    textContainer.appendChild(span);
+  
+  // Разбиваем строку на слова по пробелу
+  const words = sampleText.split(" ");
+  
+  words.forEach((word, wordIndex) => {
+    const wordSpan = document.createElement('span');
+    wordSpan.classList.add('wordContainer');
+    
+    // Разбиваем слово на буквы
+    for (let i = 0; i < word.length; i++) {
+      const letterSpan = document.createElement('span');
+      letterSpan.textContent = word[i];
+      letterSpan.classList.add('letter', 'pending');
+      wordSpan.appendChild(letterSpan);
+    }
+    
+    textContainer.appendChild(wordSpan);
+    
+    // Если слово не последнее, добавляем пробел как отдельный элемент
+    if (wordIndex < words.length - 1) {
+      const spaceSpan = document.createElement('span');
+      spaceSpan.textContent = " ";
+      spaceSpan.classList.add('letter', 'pending', 'space');
+      textContainer.appendChild(spaceSpan);
+    }
   });
+  
   updateActiveCursor();
 }
 
-// Функция для обновления активного курсора на текущем символе
 function updateActiveCursor() {
-  // Удаляем класс active у всех спанов
-  const spans = textContainer.querySelectorAll('span');
-  spans.forEach(span => span.classList.remove('active'));
-  // Добавляем класс active текущему символу, если он существует
-  if (currentIndex < spans.length) {
-    spans[currentIndex].classList.add('active');
+  const allLetters = textContainer.querySelectorAll('.letter');
+  allLetters.forEach(letter => letter.classList.remove('active'));
+  
+  if (currentIndex < allLetters.length) {
+    allLetters[currentIndex].classList.add('active');
   }
 }
 
-// Функция для запуска таймера (30 секунд)
 function startTimer() {
   timerInterval = setInterval(() => {
     remainingTime--;
@@ -42,67 +59,82 @@ function startTimer() {
     if (remainingTime <= 0) {
       clearInterval(timerInterval);
       hiddenInput.removeEventListener('keydown', handleKeyDown);
+      hiddenInput.removeEventListener('input', handleInput);
       alert('Время вышло!');
     }
   }, 1000);
 }
 
-// Обработка нажатий клавиш в input
-function handleKeyDown(e) {
-  // Если нажата клавиша Backspace, возвращаем предыдущий символ в состояние pending
-  if (e.key === "Backspace") {
-    if (currentIndex > 0) {
-      currentIndex--;
-      const spans = textContainer.querySelectorAll('span');
-      const currentSpan = spans[currentIndex];
-      currentSpan.classList.remove('correct', 'incorrect');
-      currentSpan.classList.add('pending');
-    }
-    updateActiveCursor();
-    return;
-  }
+function processKey(key) {
+  const allLetters = textContainer.querySelectorAll('.letter');
+  if (currentIndex >= allLetters.length) return;
   
-  // Игнорируем клавиши, не являющиеся одиночными символами (Shift, Ctrl, Alt и пр.)
-  if (e.key.length !== 1) return;
+  const currentLetterSpan = allLetters[currentIndex];
+  const expectedChar = currentLetterSpan.textContent;
   
-  // При первом вводе запускаем таймер
-  if (!timerStarted) {
-    timerStarted = true;
-    startTimer();
-  }
-  
-  const spans = textContainer.querySelectorAll('span');
-  // Если все символы уже введены – прекращаем обработку
-  if (currentIndex >= spans.length) return;
-  
-  const currentSpan = spans[currentIndex];
-  const expectedChar = currentSpan.textContent;
-  
-  // Сравнение введённого символа с ожидаемым
-  if (e.key === expectedChar) {
-    currentSpan.classList.remove('pending');
-    currentSpan.classList.add('correct');
+  if (key === expectedChar) {
+    currentLetterSpan.classList.remove('pending');
+    currentLetterSpan.classList.add('correct');
   } else {
-    currentSpan.classList.remove('pending');
-    currentSpan.classList.add('incorrect');
+    currentLetterSpan.classList.remove('pending');
+    currentLetterSpan.classList.add('incorrect');
   }
   
   currentIndex++;
   updateActiveCursor();
 }
 
-// Функция для установки фокуса на скрытый input (открытие клавиатуры)
+function handleKeyDown(e) {
+  // Обработка Backspace
+  if (e.key === "Backspace") {
+    if (currentIndex > 0) {
+      currentIndex--;
+      const allLetters = textContainer.querySelectorAll('.letter');
+      allLetters[currentIndex].classList.remove('correct', 'incorrect');
+      allLetters[currentIndex].classList.add('pending');
+    }
+    updateActiveCursor();
+    hiddenInput.value = "";
+    return;
+  }
+  
+  if (e.key.length !== 1) {
+    hiddenInput.value = "";
+    return;
+  }
+  
+  if (!timerStarted) {
+    timerStarted = true;
+    startTimer();
+  }
+  
+  processKey(e.key);
+  hiddenInput.value = "";
+}
+
+function handleInput(e) {
+  const text = hiddenInput.value;
+  if (!text) return;
+  for (let char of text) {
+    processKey(char);
+  }
+  hiddenInput.value = "";
+}
+
 function focusHiddenInput() {
   hiddenInput.focus();
 }
 
+// Инициализация текста
 initText();
 
-// Слушаем нажатия клавиш через скрытый input
-hiddenInput.addEventListener('keydown', handleKeyDown);
+// При нажатии на контейнер текста, а также при касании, фокусируем скрытый input
+textContainer.addEventListener('click', focusHiddenInput);
+textContainer.addEventListener('touchstart', focusHiddenInput);
 
-// При клике по документу устанавливаем фокус на скрытый input (важно для мобильных)
+// Дополнительно: фокус на document, если нажато вне
 document.addEventListener('click', focusHiddenInput);
 
-// Пытаемся установить фокус сразу после загрузки (на некоторых устройствах автодоступ может не сработать)
-focusHiddenInput();
+// Обработчики ввода
+hiddenInput.addEventListener('keydown', handleKeyDown);
+hiddenInput.addEventListener('input', handleInput);

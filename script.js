@@ -1,4 +1,4 @@
-const sampleText = "This is a sample text for typing. Type it exactly with spaces.";
+const sampleText = "Axpereees tes esa inch enq anum, mortoca spasvum !!";
 
 let currentIndex = 0;
 let timerStarted = false;
@@ -37,8 +37,6 @@ function initText() {
   });
 
   updateCursor();
-  // Установим значение в поле, чтобы Backspace работал стабильно
-  hiddenInput.value = " ";
 }
 
 function updateCursor() {
@@ -94,35 +92,26 @@ function handleBackspace() {
   updateCursor();
 }
 
-function handleKeyDown(e) {
-  if (e.key === "Backspace") {
-    handleBackspace();
-  } else if (e.key.length === 1) {
-    processKey(e.key);
-  }
-  // Вставляем фейковый символ, чтобы мобилка ловила Backspace
-  hiddenInput.value = " ";
-}
+function handleInputEvent(e) {
+  const text = hiddenInput.innerText;
 
-function handleInput(e) {
+  // Если нажали backspace
   if (e.inputType === "deleteContentBackward") {
     handleBackspace();
-  } else if (e.data) {
-    processKey(e.data);
+  } else if (text.length > 0) {
+    processKey(text);
   }
-  // Вставляем фейковый символ заново
-  hiddenInput.value = " ";
+
+  hiddenInput.innerText = ""; // очистка
 }
 
 function focusInput() {
   hiddenInput.focus();
 }
 
-// === INIT ===
 initText();
-
-hiddenInput.addEventListener("keydown", handleKeyDown);
-hiddenInput.addEventListener("input", handleInput);
+hiddenInput.addEventListener("beforeinput", handleInputEvent);
+hiddenInput.addEventListener("input", handleInputEvent);
 
 textContainer.addEventListener("click", focusInput);
 textContainer.addEventListener("touchstart", focusInput);

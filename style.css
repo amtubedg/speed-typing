@@ -1,0 +1,64 @@
+/* Общие стили */
+body {
+    background-color: #222;
+    color: #ccc;
+    font-family: "Courier New", Courier, monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  /* Таймер и контейнер с текстом */
+  #timer {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  #text {
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  #text span {
+    opacity: 0.3;
+    transition: opacity 0.2s, color 0.2s;
+  }
+  
+  /* Состояния символов */
+  #text span.correct {
+    opacity: 1;
+    color: #fff;
+  }
+  #text span.incorrect {
+    opacity: 1;
+    color: red;
+  }
+  #text span.pending {
+    opacity: 0.3;
+  }
+  
+  /* Адаптивность для планшетов (при необходимости можно увеличить ещё) */
+  @media (max-width: 768px) {
+    #timer {
+      font-size: 2.5rem;
+    }
+    #text {
+      font-size: 2.5rem;
+    }
+  }
+  
+  /* Адаптивность для мобильных устройств (увеличиваем до 4rem, можно и выше) */
+  @media (max-width: 480px) {
+    #timer {
+      font-size: 4rem;
+    }
+    #text {
+      font-size: 4rem;  /* При желании 5rem и более */
+      letter-spacing: 3px; /* Можно чуть увеличить интервал, если нужно */
+    }
+  }
+  

@@ -96,11 +96,11 @@ function handleInputEvent(e) {
   const text = hiddenInput.innerText;
 
   // Если нажали backspace
-  if (e.inputType === "deleteContentBackward") {
+if (e.inputType === "deleteContentBackward" || e.data === null) {
     handleBackspace();
-  } else if (text.length > 0) {
-    processKey(text);
-  }
+} else if (e.data) {
+    processKey(e.data);
+}
 
   hiddenInput.innerText = ""; // очистка
 }

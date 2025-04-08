@@ -37,6 +37,8 @@ function initText() {
   });
 
   updateCursor();
+  // Установим значение в поле, чтобы Backspace работал стабильно
+  hiddenInput.value = " ";
 }
 
 function updateCursor() {
@@ -98,7 +100,8 @@ function handleKeyDown(e) {
   } else if (e.key.length === 1) {
     processKey(e.key);
   }
-  hiddenInput.value = "";
+  // Вставляем фейковый символ, чтобы мобилка ловила Backspace
+  hiddenInput.value = " ";
 }
 
 function handleInput(e) {
@@ -107,13 +110,15 @@ function handleInput(e) {
   } else if (e.data) {
     processKey(e.data);
   }
-  hiddenInput.value = "";
+  // Вставляем фейковый символ заново
+  hiddenInput.value = " ";
 }
 
 function focusInput() {
   hiddenInput.focus();
 }
 
+// === INIT ===
 initText();
 
 hiddenInput.addEventListener("keydown", handleKeyDown);

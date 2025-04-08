@@ -47,8 +47,9 @@ function updateCursor() {
   }
 }
 function focusInput() {
-  hiddenInput.focus();
-  document.body.classList.add('noscroll');
+  setTimeout(() => {
+    hiddenInput.focus({ preventScroll: true }); // ⚠️ важно!
+  }, 0);
 }
 
 function blurInput() {

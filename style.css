@@ -73,18 +73,22 @@ body {
     100% { opacity: 1; }
   }
   
-  #hiddenInput {
+  #inputWrapper {
     position: fixed;
-    bottom: 0;
+    top: 0;
     left: 0;
-    width: 100%;
-    min-height: 30px;
-    font-size: 18px;
-    opacity: 0.001;
-    color: transparent;
-    background: transparent;
-    outline: none;
-    z-index: 1;
-    caret-color: transparent;
+    z-index: 100;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
   }
   
+  #hiddenInput {
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    color: transparent;
+    background: transparent;
+    caret-color: transparent;
+    white-space: nowrap;
+  }

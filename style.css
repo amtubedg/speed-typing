@@ -10,9 +10,10 @@ body {
     padding-top: 40px;  /* отступ сверху – значение можно подкорректировать */
     min-height: 100vh;
     margin: 0;
-    padding: 80px;
+    padding: 10px;
     box-sizing: border-box;
     background-color: #222;
+    margin-top: 150px; /* или любое нужное значение */
     color: #ccc;
     font-family: "Courier New", Courier, monospace;
   }

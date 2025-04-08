@@ -1,4 +1,4 @@
-const sampleText = "This is a sample text to type. Test it on phone and PC.";
+const sampleText = "This is a test text. Type it on phone and PC.";
 
 let currentIndex = 0;
 let timerStarted = false;
@@ -14,33 +14,34 @@ function initText() {
   currentIndex = 0;
 
   const words = sampleText.split(" ");
-  words.forEach((word, index) => {
+  words.forEach((word, i) => {
     const wordSpan = document.createElement("span");
     wordSpan.classList.add("wordContainer");
 
     for (let letter of word) {
       const span = document.createElement("span");
-      span.textContent = letter;
       span.classList.add("letter", "pending");
+      span.textContent = letter;
       wordSpan.appendChild(span);
     }
 
     textContainer.appendChild(wordSpan);
 
-    if (index < words.length - 1) {
+    if (i < words.length - 1) {
       const space = document.createElement("span");
-      space.textContent = " ";
       space.classList.add("letter", "pending", "space");
+      space.textContent = " ";
       textContainer.appendChild(space);
     }
   });
 
   updateCursor();
+  hiddenInput.innerText = "";
 }
 
 function updateCursor() {
+  document.querySelectorAll(".letter").forEach(el => el.classList.remove("active"));
   const letters = document.querySelectorAll(".letter");
-  letters.forEach(letter => letter.classList.remove("active"));
   if (currentIndex < letters.length) {
     letters[currentIndex].classList.add("active");
   }
@@ -57,7 +58,7 @@ function startTimer() {
   }, 1000);
 }
 
-function processKey(char) {
+function handleKey(char) {
   const letters = document.querySelectorAll(".letter");
   if (currentIndex >= letters.length) return;
 
@@ -83,31 +84,27 @@ function handleBackspace() {
   if (currentIndex === 0) return;
   currentIndex--;
   const letters = document.querySelectorAll(".letter");
-  const current = letters[currentIndex];
-  current.classList.remove("correct", "incorrect");
-  current.classList.add("pending");
+  letters[currentIndex].classList.remove("correct", "incorrect");
+  letters[currentIndex].classList.add("pending");
   updateCursor();
 }
 
-function handleKeyDown(e) {
-  const key = e.key;
-
-  if (key === "Backspace") {
+hiddenInput.addEventListener("beforeinput", (e) => {
+  if (e.inputType === "deleteContentBackward") {
     handleBackspace();
-  } else if (key.length === 1) {
-    processKey(key);
+  } else if (e.data) {
+    handleKey(e.data);
   }
 
-  hiddenInput.value = "";
-}
+  hiddenInput.innerText = ""; // очищаем поле
+});
 
 function focusInput() {
   hiddenInput.focus();
 }
 
-// === INIT ===
 initText();
-hiddenInput.addEventListener("keydown", handleKeyDown);
+
 textContainer.addEventListener("click", focusInput);
 textContainer.addEventListener("touchstart", focusInput);
 document.addEventListener("click", focusInput);

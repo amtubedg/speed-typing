@@ -13,7 +13,7 @@ body {
     padding: 10px;
     box-sizing: border-box;
     background-color: #222;
-    margin-top: 150px; /* или любое нужное значение */
+    margin-top: 10px; /* или любое нужное значение */
     color: #ccc;
     font-family: "Courier New", Courier, monospace;
   }

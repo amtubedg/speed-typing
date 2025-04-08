@@ -2,7 +2,7 @@ const sampleText = "Axpeeeres la gri tenam karum es gres";
 
 let currentIndex = 0;
 let timerStarted = false;
-let remainingTime = 5;
+let remainingTime = 30;
 let timerInterval = null;
 let incorrectCount = 0;
 
@@ -63,7 +63,7 @@ function startTimer() {
     timerDisplay.textContent = remainingTime;
     if (remainingTime <= 0) {
       clearInterval(timerInterval);
-      alert("Time is up!");
+      alert("Incorrect letters: " + incorrectCount);
     }
   }, 1000);
 }
@@ -75,16 +75,18 @@ function handleKey(char) {
   if (!timerStarted) {
     timerStarted = true;
     startTimer();
+    document.body.classList.add("typing-started"); // ✅ добавляем класс
   }
+  
 
   const current = letters[currentIndex];
   if (char === current.textContent) {
     current.classList.remove("pending", "incorrect");
-    incorrectCount++;
     current.classList.add("correct");
   } else {
     current.classList.remove("pending", "correct");
     current.classList.add("incorrect");
+    incorrectCount++;
   }
 
   currentIndex++;

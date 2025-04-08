@@ -2,8 +2,7 @@ body {
     margin: 0;
     background: #323437;
     color: #fff;
-    font-family: "Courier New",monospace;
-    
+    font-family: "Courier New", monospace;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -41,7 +40,7 @@ body {
     display: inline-block;
     opacity: 0.3;
     transition: all 0.2s;
-    position: relative;
+    
   }
   
   .letter.correct {
@@ -58,25 +57,15 @@ body {
     opacity: 0.3;
   }
   
-  
   .letter.active::before {
     content: "";
     position: absolute;
-    left: -1px;
-    top: 10%;
-    width: 4px;
-    height: 1em;
-    background-color: #FFD700;
-    border-radius: 2px;
-
-    z-index: 2;
-  
-    /* ✅ только до ввода мигает */
+    left: -3px;
+    top: 2px;
+    width: 3px;
+    height: 100%;
+    background: yellow;
     animation: blink 1s steps(1) infinite;
-  }
-  body.typing-started .letter.active::before {
-    animation: none;         /* ❌ отключаем анимацию */
-    opacity: 1;              /* ✅ всегда виден */
   }
   
   @keyframes blink {

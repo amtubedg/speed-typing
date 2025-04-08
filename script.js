@@ -1,4 +1,4 @@
-const sampleText = "Axpeeeres la gri tenam karum es gres";
+const sampleText = "Axpeeeres la gri tenam karum es gres. Verjum el asuma te qani sxal arir. Կարաս հայերեն էլ փորձես է, или на русском";
 
 let currentIndex = 0;
 let timerStarted = false;
@@ -31,7 +31,7 @@ function initText() {
     if (i < words.length - 1) {
       const space = document.createElement("span");
       space.classList.add("letter", "pending", "space");
-      space.textContent = " ";
+      space.textContent = "";
       textContainer.appendChild(space);
     }
   });
@@ -63,7 +63,7 @@ function startTimer() {
     timerDisplay.textContent = remainingTime;
     if (remainingTime <= 0) {
       clearInterval(timerInterval);
-      alert("Incorrect letters: " + incorrectCount);
+      alert("Ba axper jan");
     }
   }, 1000);
 }
@@ -86,7 +86,7 @@ function handleKey(char) {
   } else {
     current.classList.remove("pending", "correct");
     current.classList.add("incorrect");
-    incorrectCount++;
+    // incorrectCount++;
   }
 
   currentIndex++;

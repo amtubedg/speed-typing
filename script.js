@@ -1,9 +1,10 @@
-const sampleText = "This is a test text.  it on phone and PC.";
+const sampleText = "Axpeeeres la gri tenam karum es gres";
 
 let currentIndex = 0;
 let timerStarted = false;
-let remainingTime = 30;
+let remainingTime = 5;
 let timerInterval = null;
+let incorrectCount = 0;
 
 const textContainer = document.getElementById("text");
 const timerDisplay = document.getElementById("timer");
@@ -56,6 +57,7 @@ function blurInput() {
   document.body.classList.remove('noscroll');
 }
 function startTimer() {
+  
   timerInterval = setInterval(() => {
     remainingTime--;
     timerDisplay.textContent = remainingTime;
@@ -78,6 +80,7 @@ function handleKey(char) {
   const current = letters[currentIndex];
   if (char === current.textContent) {
     current.classList.remove("pending", "incorrect");
+    incorrectCount++;
     current.classList.add("correct");
   } else {
     current.classList.remove("pending", "correct");

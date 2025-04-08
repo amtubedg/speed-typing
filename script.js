@@ -1,4 +1,4 @@
-const sampleText = "This is a test text. Type it on phone and PC.";
+const sampleText = "This is a test text.  it on phone and PC.";
 
 let currentIndex = 0;
 let timerStarted = false;
@@ -46,7 +46,14 @@ function updateCursor() {
     letters[currentIndex].classList.add("active");
   }
 }
+function focusInput() {
+  hiddenInput.focus();
+  document.body.classList.add('noscroll');
+}
 
+function blurInput() {
+  document.body.classList.remove('noscroll');
+}
 function startTimer() {
   timerInterval = setInterval(() => {
     remainingTime--;
@@ -108,4 +115,6 @@ initText();
 textContainer.addEventListener("click", focusInput);
 textContainer.addEventListener("touchstart", focusInput);
 document.addEventListener("click", focusInput);
+
+hiddenInput.addEventListener("blur", blurInput);
 focusInput();

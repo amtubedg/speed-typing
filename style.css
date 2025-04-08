@@ -1,81 +1,67 @@
-/* Базовые стили */
 body {
-    background-color: #222;
-    color: #ccc;
-    font-family: "Courier New", Courier, monospace;
+    margin: 0;
+    background-color: #111;
+    color: #fff;
+    font-family: "Courier New", monospace; /* Один фиксированный шрифт */
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
     padding: 20px;
-    margin: 0;
-    min-height: 100vh;
+    height: 100vh;
     box-sizing: border-box;
   }
   
   #timer {
-    font-size: clamp(2rem, 6vw, 4rem);
+    font-size: clamp(2rem, 5vw, 4rem);
     margin-bottom: 20px;
-    user-select: none;
   }
   
-  /* Контейнер для текста */
   #text {
-    font-size: clamp(1.8rem, 4vw, 4rem);
+    font-size: clamp(1.5rem, 4vw, 3rem);
     text-align: center;
-    line-height: 1.2;
+    line-height: 1.5;
     white-space: normal;
     max-width: 90%;
-    margin: 0 auto;
     user-select: none;
+    word-break: break-word;
   }
   
-  /* Контейнер для слова */
   .wordContainer {
     display: inline-block;
-    white-space: normal;
-    margin-right: 0.5rem;
+    margin-right: 0.3em;
   }
   
-  /* Каждый символ (буква или пробел) */
   .letter {
     display: inline-block;
-    position: relative;
-    vertical-align: middle;
     opacity: 0.3;
-    transition: opacity 0.2s, color 0.2s;
+    transition: all 0.2s;
+    font-family: inherit;
+    font-size: inherit;
   }
   
-  /* Для пробела можно при необходимости задать фиксированную ширину */
-  .letter.space {
-    /* width: 0.6em; */
-  }
-  
-  /* Состояния символов */
   .letter.correct {
     opacity: 1;
-    color: #fff;
+    color: white;
   }
+  
   .letter.incorrect {
     opacity: 1;
     color: red;
   }
+  
   .letter.pending {
     opacity: 0.3;
   }
   
-  /* Мигающий курсор на активном символе */
   .letter.active::before {
     content: "";
     position: absolute;
-    left: -4px;
-    top: 2%;
+    left: -3px;
+    top: 2px;
     width: 3px;
     height: 100%;
-    background-color: #FFD700;
-    border-radius: 0;
+    background: yellow;
     animation: blink 1s steps(1) infinite;
-    z-index: 2;
   }
   
   @keyframes blink {
@@ -84,15 +70,10 @@ body {
     100% { opacity: 1; }
   }
   
-  /* Скрытый input для ввода */
   #hiddenInput {
     position: absolute;
-    top: -100px;
-    left: -100px;
     opacity: 0;
-    width: 0;
-    height: 0;
-    border: none;
-    outline: none;
+    pointer-events: none;
+    z-index: -1;
   }
   

@@ -1,7 +1,6 @@
-// Исходный текст – убедитесь, что в нём есть пробелы
-const sampleText = "This is a sample text for typing practice. It contains several words and spaces.";
+const sampleText = "This is a sample text for typing. Type it exactly with spaces.";
 
-let currentIndex = 0;       // Общий индекс для всех символов (буквы и пробелы)
+let currentIndex = 0;
 let timerStarted = false;
 let remainingTime = 30;
 let timerInterval = null;
@@ -13,42 +12,39 @@ const hiddenInput = document.getElementById('hiddenInput');
 function initText() {
   textContainer.innerHTML = "";
   currentIndex = 0;
-  
-  // Разбиваем строку на слова по пробелу
+
   const words = sampleText.split(" ");
-  
-  words.forEach((word, wordIndex) => {
+
+  words.forEach((word, index) => {
     const wordSpan = document.createElement('span');
     wordSpan.classList.add('wordContainer');
-    
-    // Разбиваем слово на буквы
-    for (let i = 0; i < word.length; i++) {
-      const letterSpan = document.createElement('span');
-      letterSpan.textContent = word[i];
-      letterSpan.classList.add('letter', 'pending');
-      wordSpan.appendChild(letterSpan);
+
+    for (let letter of word) {
+      const span = document.createElement('span');
+      span.textContent = letter;
+      span.classList.add('letter', 'pending');
+      wordSpan.appendChild(span);
     }
-    
+
     textContainer.appendChild(wordSpan);
-    
-    // Если слово не последнее, добавляем пробел как отдельный элемент
-    if (wordIndex < words.length - 1) {
-      const spaceSpan = document.createElement('span');
-      spaceSpan.textContent = " ";
-      spaceSpan.classList.add('letter', 'pending', 'space');
-      textContainer.appendChild(spaceSpan);
+
+    if (index < words.length - 1) {
+      const space = document.createElement('span');
+      space.textContent = " ";
+      space.classList.add('letter', 'pending', 'space');
+      textContainer.appendChild(space);
     }
   });
-  
-  updateActiveCursor();
+
+  updateCursor();
 }
 
-function updateActiveCursor() {
-  const allLetters = textContainer.querySelectorAll('.letter');
-  allLetters.forEach(letter => letter.classList.remove('active'));
-  
-  if (currentIndex < allLetters.length) {
-    allLetters[currentIndex].classList.add('active');
+function updateCursor() {
+  const letters = document.querySelectorAll('.letter');
+  letters.forEach(letter => letter.classList.remove('active'));
+
+  if (currentIndex < letters.length) {
+    letters[currentIndex].classList.add('active');
   }
 }
 
@@ -58,90 +54,71 @@ function startTimer() {
     timerDisplay.textContent = remainingTime;
     if (remainingTime <= 0) {
       clearInterval(timerInterval);
-      hiddenInput.removeEventListener('keydown', handleKeyDown);
-      hiddenInput.removeEventListener('input', handleInput);
-      alert('Time is up!');
+      alert("Time is up!");
     }
   }, 1000);
 }
 
-function processKey(key) {
-  const allLetters = textContainer.querySelectorAll('.letter');
-  if (currentIndex >= allLetters.length) return;
-  
-  const currentLetterSpan = allLetters[currentIndex];
-  const expectedChar = currentLetterSpan.textContent;
-  
-  if (key === expectedChar) {
-    currentLetterSpan.classList.remove('pending');
-    currentLetterSpan.classList.add('correct');
-  } else {
-    currentLetterSpan.classList.remove('pending');
-    currentLetterSpan.classList.add('incorrect');
-  }
-  
-  currentIndex++;
-  updateActiveCursor();
-}
+function processKey(char) {
+  const letters = document.querySelectorAll('.letter');
+  if (currentIndex >= letters.length) return;
 
-function handleKeyDown(e) {
-  // Обработка Backspace через keydown (для desktop)
-  if (e.key === "Backspace") {
-    if (currentIndex > 0) {
-      currentIndex--;
-      const allLetters = textContainer.querySelectorAll('.letter');
-      allLetters[currentIndex].classList.remove('correct', 'incorrect');
-      allLetters[currentIndex].classList.add('pending');
-    }
-    updateActiveCursor();
-    hiddenInput.value = "";
-    return;
-  }
-  
-  if (e.key.length !== 1) {
-    hiddenInput.value = "";
-    return;
-  }
-  
-  // Запуск таймера при первом вводе
   if (!timerStarted) {
     timerStarted = true;
     startTimer();
   }
-  
-  processKey(e.key);
+
+  const current = letters[currentIndex];
+  if (char === current.textContent) {
+    current.classList.remove('pending', 'incorrect');
+    current.classList.add('correct');
+  } else {
+    current.classList.remove('pending', 'correct');
+    current.classList.add('incorrect');
+  }
+
+  currentIndex++;
+  updateCursor();
+}
+
+function handleBackspace() {
+  if (currentIndex === 0) return;
+
+  currentIndex--;
+  const letters = document.querySelectorAll('.letter');
+  const current = letters[currentIndex];
+  current.classList.remove('correct', 'incorrect');
+  current.classList.add('pending');
+  updateCursor();
+}
+
+function handleKeyDown(e) {
+  if (e.key === "Backspace") {
+    handleBackspace();
+  } else if (e.key.length === 1) {
+    processKey(e.key);
+  }
   hiddenInput.value = "";
 }
 
 function handleInput(e) {
-  // Обработка Backspace на мобильном: если inputType = "deleteContentBackward"
   if (e.inputType === "deleteContentBackward") {
-    if (currentIndex > 0) {
-      currentIndex--;
-      const allLetters = textContainer.querySelectorAll('.letter');
-      allLetters[currentIndex].classList.remove('correct', 'incorrect');
-      allLetters[currentIndex].classList.add('pending');
-    }
-    updateActiveCursor();
-    hiddenInput.value = "";
-    return;
-  }
-  
-  const text = hiddenInput.value;
-  if (!text) return;
-  for (let char of text) {
-    processKey(char);
+    handleBackspace();
+  } else if (e.data) {
+    processKey(e.data);
   }
   hiddenInput.value = "";
 }
 
-function focusHiddenInput() {
+function focusInput() {
   hiddenInput.focus();
 }
 
 initText();
-hiddenInput.addEventListener('keydown', handleKeyDown);
-hiddenInput.addEventListener('input', handleInput);
-document.addEventListener('click', focusHiddenInput);
-document.addEventListener('touchstart', focusHiddenInput);
-focusHiddenInput();
+
+hiddenInput.addEventListener("keydown", handleKeyDown);
+hiddenInput.addEventListener("input", handleInput);
+
+textContainer.addEventListener("click", focusInput);
+textContainer.addEventListener("touchstart", focusInput);
+document.addEventListener("click", focusInput);

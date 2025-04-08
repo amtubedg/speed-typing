@@ -13,16 +13,20 @@ body {
     box-sizing: border-box;
   }
   
-  /* Таймер и контейнер с текстом */
+  /* Таймер и контейнер с текстом с использованием clamp() */
   #timer {
-    font-size: 2rem;
+    /* Шрифт будет не меньше 2rem, оптимально 6vw, но не больше 4rem */
+    font-size: clamp(2rem, 6vw, 4rem);
     margin-bottom: 20px;
   }
+  
   #text {
-    font-size: 1.8rem;
+    /* Шрифт будет не меньше 1.8rem, оптимально 4vw, но не больше 4rem */
+    font-size: clamp(1.8rem, 4vw, 4rem);
     letter-spacing: 2px;
     text-align: center;
   }
+  
   #text span {
     opacity: 0.3;
     transition: opacity 0.2s, color 0.2s;
@@ -33,32 +37,13 @@ body {
     opacity: 1;
     color: #fff;
   }
+  
   #text span.incorrect {
     opacity: 1;
     color: red;
   }
+  
   #text span.pending {
     opacity: 0.3;
-  }
-  
-  /* Адаптивность для планшетов (при необходимости можно увеличить ещё) */
-  @media (max-width: 768px) {
-    #timer {
-      font-size: 2.5rem;
-    }
-    #text {
-      font-size: 2.5rem;
-    }
-  }
-  
-  /* Адаптивность для мобильных устройств (увеличиваем до 4rem, можно и выше) */
-  @media (max-width: 480px) {
-    #timer {
-      font-size: 4rem;
-    }
-    #text {
-      font-size: 4rem;  /* При желании 5rem и более */
-      letter-spacing: 3px; /* Можно чуть увеличить интервал, если нужно */
-    }
   }
   

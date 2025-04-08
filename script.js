@@ -1,4 +1,4 @@
-// Тестовый текст – измените по своему желанию
+// Тестовый текст – измените по своему усмотрению
 const sampleText = "Быстрая коричневая лиса перепрыгнула через ленивую собаку.";
 
 let currentIndex = 0;
@@ -9,7 +9,7 @@ let timerInterval = null;
 const textContainer = document.getElementById('text');
 const timerDisplay = document.getElementById('timer');
 
-// Инициализация текста: разбиваем текст на символы и оборачиваем каждый символ в <span>
+// Функция инициализации: разбиваем текст на символы и оборачиваем каждый символ в <span>
 function initText() {
   textContainer.innerHTML = "";
   currentIndex = 0;
@@ -36,7 +36,7 @@ function startTimer() {
 
 // Обработка нажатий клавиш
 function handleKeyDown(e) {
-  // Обработка клавиши Backspace – возвращаем предыдущий символ в состояние pending
+  // Если нажата клавиша Backspace, возвращаем предыдущий символ в состояние pending
   if (e.key === "Backspace") {
     if (currentIndex > 0) {
       currentIndex--;
@@ -48,7 +48,7 @@ function handleKeyDown(e) {
     return;
   }
   
-  // Игнорируем клавиши, не являющиеся одиночными символами (Shift, Ctrl, и т.п.)
+  // Игнорируем клавиши, не являющиеся одиночными символами (Shift, Ctrl, Alt и пр.)
   if (e.key.length !== 1) return;
   
   // При первом вводе запускаем таймер

@@ -72,10 +72,12 @@ body {
   
   #hiddenInput {
     position: absolute;
-    width: 1px;
-    height: 1px;
     opacity: 0;
-    overflow: hidden;
-    white-space: nowrap;
+    pointer-events: none;
+    z-index: -1;
+    width: 0;
+    height: 0;
+    border: none;
   }
+  
   

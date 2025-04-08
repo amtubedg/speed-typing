@@ -1,4 +1,4 @@
-const sampleText = "Axpereees tes esa inch enq anum, mortoca spasvum !!";
+const sampleText = "Axpereees vonc es, tes vonc enq paytacnum sax !!";
 
 let currentIndex = 0;
 let timerStarted = false;
@@ -59,7 +59,7 @@ function startTimer() {
   }, 1000);
 }
 
-function processKey(char) {
+function processKey(key) {
   const letters = document.querySelectorAll('.letter');
   if (currentIndex >= letters.length) return;
 
@@ -69,7 +69,7 @@ function processKey(char) {
   }
 
   const current = letters[currentIndex];
-  if (char === current.textContent) {
+  if (key === current.textContent) {
     current.classList.remove('pending', 'incorrect');
     current.classList.add('correct');
   } else {
@@ -92,17 +92,16 @@ function handleBackspace() {
   updateCursor();
 }
 
-function handleInputEvent(e) {
-  const text = hiddenInput.innerText;
+function handleKeyDown(e) {
+  e.preventDefault(); // чтобы не набивало значение в input
 
-  // Если нажали backspace
-if (e.inputType === "deleteContentBackward" || e.data === null) {
+  if (e.key === "Backspace") {
     handleBackspace();
-} else if (e.data) {
-    processKey(e.data);
-}
+  } else if (e.key.length === 1) {
+    processKey(e.key);
+  }
 
-  hiddenInput.innerText = ""; // очистка
+  hiddenInput.value = ""; // очистим поле
 }
 
 function focusInput() {
@@ -110,8 +109,7 @@ function focusInput() {
 }
 
 initText();
-hiddenInput.addEventListener("beforeinput", handleInputEvent);
-hiddenInput.addEventListener("input", handleInputEvent);
+hiddenInput.addEventListener("keydown", handleKeyDown);
 
 textContainer.addEventListener("click", focusInput);
 textContainer.addEventListener("touchstart", focusInput);

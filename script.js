@@ -1,4 +1,5 @@
-const sampleText = "This is a sample text for typing.";
+const sampleText = "Jana maya This is a sample text for typing.";
+
 let currentIndex = 0;
 let timerStarted = false;
 let remainingTime = 30;
@@ -13,32 +14,36 @@ function initText() {
   currentIndex = 0;
 
   const words = sampleText.split(" ");
-  words.forEach((word, i) => {
+  words.forEach((word, index) => {
     const wordSpan = document.createElement("span");
     wordSpan.classList.add("wordContainer");
+
     for (let letter of word) {
       const span = document.createElement("span");
-      span.classList.add("letter", "pending");
       span.textContent = letter;
+      span.classList.add("letter", "pending");
       wordSpan.appendChild(span);
     }
+
     textContainer.appendChild(wordSpan);
-    if (i < words.length - 1) {
+
+    if (index < words.length - 1) {
       const space = document.createElement("span");
-      space.classList.add("letter", "pending", "space");
       space.textContent = " ";
+      space.classList.add("letter", "pending", "space");
       textContainer.appendChild(space);
     }
   });
 
   updateCursor();
+  hiddenInput.value = "";
 }
 
 function updateCursor() {
-  document.querySelectorAll(".letter").forEach(el => el.classList.remove("active"));
-  const all = document.querySelectorAll(".letter");
-  if (currentIndex < all.length) {
-    all[currentIndex].classList.add("active");
+  const letters = document.querySelectorAll(".letter");
+  letters.forEach(l => l.classList.remove("active"));
+  if (currentIndex < letters.length) {
+    letters[currentIndex].classList.add("active");
   }
 }
 
@@ -53,7 +58,7 @@ function startTimer() {
   }, 1000);
 }
 
-function handleKey(char) {
+function handleKey(key) {
   const letters = document.querySelectorAll(".letter");
   if (currentIndex >= letters.length) return;
 
@@ -63,7 +68,7 @@ function handleKey(char) {
   }
 
   const current = letters[currentIndex];
-  if (char === current.textContent) {
+  if (key === current.textContent) {
     current.classList.remove("pending", "incorrect");
     current.classList.add("correct");
   } else {
@@ -79,19 +84,23 @@ function handleBackspace() {
   if (currentIndex === 0) return;
   currentIndex--;
   const letters = document.querySelectorAll(".letter");
-  letters[currentIndex].classList.remove("correct", "incorrect");
-  letters[currentIndex].classList.add("pending");
+  const current = letters[currentIndex];
+  current.classList.remove("correct", "incorrect");
+  current.classList.add("pending");
   updateCursor();
 }
 
-function handleInput(e) {
-  const value = hiddenInput.value;
-  if (e.inputType === "deleteContentBackward") {
+function handleKeyDown(e) {
+  const key = e.key;
+
+  if (key === "Backspace") {
     handleBackspace();
-  } else if (value.length > 0) {
-    handleKey(value);
+  } else if (key.length === 1) {
+    handleKey(key);
   }
-  hiddenInput.value = ""; // очистить поле
+
+  // всегда очищаем поле
+  hiddenInput.value = "";
 }
 
 function focusInput() {
@@ -100,9 +109,7 @@ function focusInput() {
 
 initText();
 
-hiddenInput.addEventListener("input", handleInput);
+hiddenInput.addEventListener("keydown", handleKeyDown);
+document.addEventListener("click", focusInput);
 textContainer.addEventListener("click", focusInput);
 textContainer.addEventListener("touchstart", focusInput);
-document.addEventListener("click", focusInput);
-
-focusInput();

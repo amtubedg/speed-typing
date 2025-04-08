@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>Адаптивный тренажёр набора текста</title>
-  <!-- Устанавливаем масштабирование для мобильных устройств -->
+  <!-- Обеспечивает корректное масштабирование на мобильных устройствах -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="timer">30</div>
   <div id="text"></div>
+  
+  <!-- Скрытый input для открытия клавиатуры на мобильном устройстве -->
+  <input type="text" id="hiddenInput" autocomplete="off">
   
   <script src="script.js"></script>
 </body>

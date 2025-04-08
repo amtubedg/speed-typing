@@ -1,4 +1,4 @@
-/* Общие стили */
+/* Общие стили для body */
 body {
     background-color: #222;
     color: #ccc;
@@ -6,50 +6,59 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* элементы располагаются у верхнего края */
-    padding-top: 40px;  /* отступ сверху – значение можно подкорректировать */
+    justify-content: flex-start; /* Элементы располагаются у верхнего края */
+    padding: 20px 10px;          /* Используем единый padding */
     min-height: 100vh;
-    margin: 0;
-    padding: 10px;
     box-sizing: border-box;
-    background-color: #222;
-    margin-top: 10px; /* или любое нужное значение */
-    color: #ccc;
-    font-family: "Courier New", Courier, monospace;
   }
   
-  
-  /* Таймер и контейнер с текстом с использованием clamp() */
+  /* Таймер */
   #timer {
-    /* Шрифт будет не меньше 2rem, оптимально 6vw, но не больше 4rem */
+    /* Адаптивный размер шрифта: не меньше 2rem, оптимум 6vw, не больше 4rem */
     font-size: clamp(2rem, 6vw, 4rem);
-    margin-bottom: 20px;
+    margin: 10px 0 20px; /* Немного отступов: сверху – 10px, снизу – 20px */
   }
   
+  /* Контейнер для текста */
   #text {
-    /* Шрифт будет не меньше 1.8rem, оптимально 4vw, но не больше 4rem */
+    /* Адаптивный размер шрифта для текста */
     font-size: clamp(1.8rem, 4vw, 4rem);
     letter-spacing: 2px;
     text-align: center;
   }
   
+  /* Стили для каждого символа */
   #text span {
     opacity: 0.3;
     transition: opacity 0.2s, color 0.2s;
   }
   
-  /* Состояния символов */
+  /* Состояние «правильной» буквы */
   #text span.correct {
     opacity: 1;
     color: #fff;
   }
   
+  /* Состояние «неправильной» буквы */
   #text span.incorrect {
     opacity: 1;
     color: red;
   }
   
+  /* Начальное состояние – буква ещё не набрана */
   #text span.pending {
     opacity: 0.3;
+  }
+  
+  /* Скрытый input для мобильных устройств */
+  #hiddenInput {
+    position: absolute;
+    top: -100px;
+    left: -100px;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    border: none;
+    outline: none;
   }
   

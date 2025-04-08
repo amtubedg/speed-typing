@@ -8,8 +8,9 @@ let timerInterval = null;
 
 const textContainer = document.getElementById('text');
 const timerDisplay = document.getElementById('timer');
+const hiddenInput = document.getElementById('hiddenInput');
 
-// Функция инициализации: разбиваем текст на символы и оборачиваем каждый символ в <span>
+// Инициализация текста: разбиваем строку на символы и оборачиваем каждый символ в <span>
 function initText() {
   textContainer.innerHTML = "";
   currentIndex = 0;
@@ -21,20 +22,20 @@ function initText() {
   });
 }
 
-// Функция для запуска таймера (30 секунд)
+// Функция запуска таймера (30 секунд)
 function startTimer() {
   timerInterval = setInterval(() => {
     remainingTime--;
     timerDisplay.textContent = remainingTime;
     if (remainingTime <= 0) {
       clearInterval(timerInterval);
-      document.removeEventListener('keydown', handleKeyDown);
+      hiddenInput.removeEventListener('keydown', handleKeyDown);
       alert('Время вышло!');
     }
   }, 1000);
 }
 
-// Обработка нажатий клавиш
+// Обработка нажатий клавиш в input
 function handleKeyDown(e) {
   // Если нажата клавиша Backspace, возвращаем предыдущий символ в состояние pending
   if (e.key === "Backspace") {
@@ -48,23 +49,23 @@ function handleKeyDown(e) {
     return;
   }
   
-  // Игнорируем клавиши, не являющиеся одиночными символами (Shift, Ctrl, Alt и пр.)
+  // Игнорируем клавиши, не являющиеся одиночными символами (например, Shift, Ctrl, Alt)
   if (e.key.length !== 1) return;
   
-  // При первом вводе запускаем таймер
+  // Запуск таймера при первом вводе
   if (!timerStarted) {
     timerStarted = true;
     startTimer();
   }
   
   const spans = textContainer.querySelectorAll('span');
-  // Если все символы уже введены – прекращаем дальнейшую обработку
+  // Если все символы уже введены – прекращаем обработку
   if (currentIndex >= spans.length) return;
   
   const currentSpan = spans[currentIndex];
   const expectedChar = currentSpan.textContent;
   
-  // Сравнение введённого символа с ожидаемым
+  // Сравнение символа: если введён символ соответствует ожидаемому, отмечаем как correct, иначе – как incorrect
   if (e.key === expectedChar) {
     currentSpan.classList.remove('pending');
     currentSpan.classList.add('correct');
@@ -76,5 +77,19 @@ function handleKeyDown(e) {
   currentIndex++;
 }
 
+// Функция для установки фокуса на скрытый input (открытие клавиатуры)
+function focusHiddenInput() {
+  hiddenInput.focus();
+}
+
 initText();
-document.addEventListener('keydown', handleKeyDown);
+
+// Слушаем нажатия клавиш через скрытый input
+hiddenInput.addEventListener('keydown', handleKeyDown);
+
+// При клике по документу переводим фокус на скрытый input (важно для мобильных)
+// Это гарантирует, что клавиатура появится после касания экрана
+document.addEventListener('click', focusHiddenInput);
+
+// Устанавливаем фокус сразу после загрузки (если браузер позволяет автоподъём клавиатуры)
+focusHiddenInput();

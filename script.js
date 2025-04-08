@@ -1,13 +1,13 @@
-const sampleText = "Axpereees vonc es, tes vonc enq paytacnum sax !!";
+const sampleText = "This is a sample text for typing. Type it exactly with spaces.";
 
 let currentIndex = 0;
 let timerStarted = false;
 let remainingTime = 30;
 let timerInterval = null;
 
-const textContainer = document.getElementById('text');
-const timerDisplay = document.getElementById('timer');
-const hiddenInput = document.getElementById('hiddenInput');
+const textContainer = document.getElementById("text");
+const timerDisplay = document.getElementById("timer");
+const hiddenInput = document.getElementById("hiddenInput");
 
 function initText() {
   textContainer.innerHTML = "";
@@ -16,22 +16,22 @@ function initText() {
   const words = sampleText.split(" ");
 
   words.forEach((word, index) => {
-    const wordSpan = document.createElement('span');
-    wordSpan.classList.add('wordContainer');
+    const wordSpan = document.createElement("span");
+    wordSpan.classList.add("wordContainer");
 
     for (let letter of word) {
-      const span = document.createElement('span');
+      const span = document.createElement("span");
       span.textContent = letter;
-      span.classList.add('letter', 'pending');
+      span.classList.add("letter", "pending");
       wordSpan.appendChild(span);
     }
 
     textContainer.appendChild(wordSpan);
 
     if (index < words.length - 1) {
-      const space = document.createElement('span');
+      const space = document.createElement("span");
       space.textContent = " ";
-      space.classList.add('letter', 'pending', 'space');
+      space.classList.add("letter", "pending", "space");
       textContainer.appendChild(space);
     }
   });
@@ -40,11 +40,11 @@ function initText() {
 }
 
 function updateCursor() {
-  const letters = document.querySelectorAll('.letter');
-  letters.forEach(letter => letter.classList.remove('active'));
+  const letters = document.querySelectorAll(".letter");
+  letters.forEach(letter => letter.classList.remove("active"));
 
   if (currentIndex < letters.length) {
-    letters[currentIndex].classList.add('active');
+    letters[currentIndex].classList.add("active");
   }
 }
 
@@ -59,8 +59,8 @@ function startTimer() {
   }, 1000);
 }
 
-function processKey(key) {
-  const letters = document.querySelectorAll('.letter');
+function processKey(char) {
+  const letters = document.querySelectorAll(".letter");
   if (currentIndex >= letters.length) return;
 
   if (!timerStarted) {
@@ -69,12 +69,12 @@ function processKey(key) {
   }
 
   const current = letters[currentIndex];
-  if (key === current.textContent) {
-    current.classList.remove('pending', 'incorrect');
-    current.classList.add('correct');
+  if (char === current.textContent) {
+    current.classList.remove("pending", "incorrect");
+    current.classList.add("correct");
   } else {
-    current.classList.remove('pending', 'correct');
-    current.classList.add('incorrect');
+    current.classList.remove("pending", "correct");
+    current.classList.add("incorrect");
   }
 
   currentIndex++;
@@ -85,23 +85,24 @@ function handleBackspace() {
   if (currentIndex === 0) return;
 
   currentIndex--;
-  const letters = document.querySelectorAll('.letter');
+  const letters = document.querySelectorAll(".letter");
   const current = letters[currentIndex];
-  current.classList.remove('correct', 'incorrect');
-  current.classList.add('pending');
+  current.classList.remove("correct", "incorrect");
+  current.classList.add("pending");
   updateCursor();
 }
 
-function handleKeyDown(e) {
-  e.preventDefault(); // чтобы не набивало значение в input
+function handleInputEvent(e) {
+  const text = hiddenInput.innerText.trim();
 
-  if (e.key === "Backspace") {
+  if (e.inputType === "deleteContentBackward") {
     handleBackspace();
-  } else if (e.key.length === 1) {
-    processKey(e.key);
+  } else if (text.length > 0) {
+    const char = text.charAt(0);
+    processKey(char);
   }
 
-  hiddenInput.value = ""; // очистим поле
+  hiddenInput.innerText = ""; // очищаем поле после ввода
 }
 
 function focusInput() {
@@ -109,8 +110,8 @@ function focusInput() {
 }
 
 initText();
-hiddenInput.addEventListener("keydown", handleKeyDown);
 
+hiddenInput.addEventListener("beforeinput", handleInputEvent);
 textContainer.addEventListener("click", focusInput);
 textContainer.addEventListener("touchstart", focusInput);
 document.addEventListener("click", focusInput);

@@ -1,21 +1,18 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Тренажёр печати — пример как у Monkeytype</title>
-  <!-- Обеспечивает корректное масштабирование на мобильных устройствах -->
+  <title>Typing Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="timer">30</div>
-  
   <div id="text"></div>
-  
-  <!-- Скрытый input для ввода (важно для открытия клавиатуры на мобильном) -->
-  <input type="text" id="hiddenInput" autocomplete="off" autocapitalize="off" spellcheck="false">
 
-  
+  <!-- ✅ contenteditable div вместо input -->
+  <div id="hiddenInput" contenteditable="true"></div>
+
   <script src="script.js"></script>
 </body>
 </html>

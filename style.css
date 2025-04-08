@@ -2,7 +2,7 @@ body {
     margin: 0;
     background-color: #111;
     color: #fff;
-    font-family: "Courier New", monospace; /* Один фиксированный шрифт */
+    font-family: "Courier New", monospace;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -65,19 +65,21 @@ body {
   }
   
   @keyframes blink {
-    0%   { opacity: 1; }
-    50%  { opacity: 0; }
+    0% { opacity: 1; }
+    50% { opacity: 0; }
     100% { opacity: 1; }
   }
   
+  /* ✅ Contenteditable hiddenInput */
   #hiddenInput {
     position: absolute;
+    top: 0;
+    left: 0;
     opacity: 0;
-    pointer-events: none;
+    height: 1px;
+    width: 1px;
     z-index: -1;
-    width: 0;
-    height: 0;
-    border: none;
+    white-space: nowrap;
+    overflow: hidden;
   }
-  
   

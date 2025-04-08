@@ -1,4 +1,4 @@
-const sampleText = "Jana maya This is a sample text for typing.";
+const sampleText = "This is a sample text to type. Test it on phone and PC.";
 
 let currentIndex = 0;
 let timerStarted = false;
@@ -36,12 +36,11 @@ function initText() {
   });
 
   updateCursor();
-  hiddenInput.value = "";
 }
 
 function updateCursor() {
   const letters = document.querySelectorAll(".letter");
-  letters.forEach(l => l.classList.remove("active"));
+  letters.forEach(letter => letter.classList.remove("active"));
   if (currentIndex < letters.length) {
     letters[currentIndex].classList.add("active");
   }
@@ -58,7 +57,7 @@ function startTimer() {
   }, 1000);
 }
 
-function handleKey(key) {
+function processKey(char) {
   const letters = document.querySelectorAll(".letter");
   if (currentIndex >= letters.length) return;
 
@@ -68,7 +67,7 @@ function handleKey(key) {
   }
 
   const current = letters[currentIndex];
-  if (key === current.textContent) {
+  if (char === current.textContent) {
     current.classList.remove("pending", "incorrect");
     current.classList.add("correct");
   } else {
@@ -96,10 +95,9 @@ function handleKeyDown(e) {
   if (key === "Backspace") {
     handleBackspace();
   } else if (key.length === 1) {
-    handleKey(key);
+    processKey(key);
   }
 
-  // всегда очищаем поле
   hiddenInput.value = "";
 }
 
@@ -107,9 +105,10 @@ function focusInput() {
   hiddenInput.focus();
 }
 
+// === INIT ===
 initText();
-
 hiddenInput.addEventListener("keydown", handleKeyDown);
-document.addEventListener("click", focusInput);
 textContainer.addEventListener("click", focusInput);
 textContainer.addEventListener("touchstart", focusInput);
+document.addEventListener("click", focusInput);
+focusInput();

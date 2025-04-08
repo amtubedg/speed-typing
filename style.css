@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    background-color: #111;
+    background: #111;
     color: #fff;
     font-family: "Courier New", monospace;
     display: flex;
@@ -35,8 +35,6 @@ body {
     display: inline-block;
     opacity: 0.3;
     transition: all 0.2s;
-    font-family: inherit;
-    font-size: inherit;
   }
   
   .letter.correct {
@@ -70,15 +68,14 @@ body {
     100% { opacity: 1; }
   }
   
-  /* ✅ Contenteditable hiddenInput */
   #hiddenInput {
     position: fixed;
     top: 0;
     left: 0;
-    opacity: 0.01;        /* чуть видимый, чтобы работал на мобайле */
     width: 1px;
     height: 1px;
-    z-index: -1;
+    opacity: 0.01;
+    z-index: 10;
     caret-color: transparent;
     border: none;
     background: transparent;

@@ -1,5 +1,5 @@
 const sampleText = "Axpeeeres la gri tenam karum es gres. Verjum el asuma te qani sxal arir. Կարաս հայերեն էլ փորձես է, или на русском";
-const placeholder = "\u200B"; // zero-width space
+const placeholder = "\u200B";  // zero-width space
 
 let currentIndex = 0;
 let timerStarted = false;
@@ -27,12 +27,13 @@ function setCaretToEnd(el) {
   sel.addRange(range);
 }
 
-// Инициализация скрытого input-а placeholder
+// Инициализация скрытого input-а с placeholder
 function initInput() {
   hiddenInput.innerText = placeholder;
   setCaretToEnd(hiddenInput);
 }
 
+// Генерация текста
 function initText() {
   textContainer.innerHTML = "";
   currentIndex = 0;
@@ -64,6 +65,7 @@ function initText() {
   initInput();
 }
 
+// Обновление курсора (помечает текущий активный символ)
 function updateCursor() {
   document.querySelectorAll(".letter").forEach(el => el.classList.remove("active"));
   const letters = document.querySelectorAll(".letter");
@@ -72,6 +74,7 @@ function updateCursor() {
   }
 }
 
+// Фокусировка input-а
 function focusInput() {
   setTimeout(() => {
     hiddenInput.focus({ preventScroll: true });
@@ -83,17 +86,19 @@ function blurInput() {
   document.body.classList.remove('noscroll');
 }
 
+// Запуск таймера
 function startTimer() {
   timerInterval = setInterval(() => {
     remainingTime--;
     timerDisplay.textContent = remainingTime;
     if (remainingTime <= 0) {
       clearInterval(timerInterval);
-      alert("Ba axper jan");
+      alert("Incorrect letters: " + incorrectCount);
     }
   }, 1000);
 }
 
+// Обработка ввода символа
 function handleKey(char) {
   const letters = document.querySelectorAll(".letter");
   if (currentIndex >= letters.length) return;
@@ -111,13 +116,14 @@ function handleKey(char) {
   } else {
     current.classList.remove("pending", "correct");
     current.classList.add("incorrect");
-    // incorrectCount++;
+    incorrectCount++;   // Увеличиваем счётчик неправильных букв
   }
 
   currentIndex++;
   updateCursor();
 }
 
+// Обработка Backspace
 function handleBackspace() {
   if (currentIndex === 0) return;
   currentIndex--;
@@ -127,7 +133,7 @@ function handleBackspace() {
   updateCursor();
 }
 
-// Обработчик события beforeinput для contenteditable
+// Обработчик beforeinput для contenteditable
 hiddenInput.addEventListener("beforeinput", (e) => {
   if (e.inputType === "deleteContentBackward") {
     handleBackspace();
@@ -138,7 +144,7 @@ hiddenInput.addEventListener("beforeinput", (e) => {
   setCaretToEnd(hiddenInput);
 });
 
-// Резервный обработчик keydown для случаев, когда beforeinput не срабатывает
+// Резервный обработчик keydown
 hiddenInput.addEventListener("keydown", (e) => {
   if (e.key === "Backspace") {
     e.preventDefault();
@@ -151,7 +157,18 @@ hiddenInput.addEventListener("keydown", (e) => {
   setCaretToEnd(hiddenInput);
 });
 
-//////////////////// Режимы переключения //////////////////////
+// Функция для переключения режима (перезагрузка игры и т.д.)
+function resetGame() {
+  timerStarted = false;
+  clearInterval(timerInterval);
+  currentIndex = 0;
+  incorrectCount = 0; // сброс неправильных букв
+  document.body.classList.remove("typing-started");
+  initText();
+  focusInput();
+}
+
+// Режимы переключения (оставляем как было)
 function renderModeOptions() {
   const container = document.getElementById("modeOptions");
   container.innerHTML = "";
@@ -172,7 +189,7 @@ function renderModeOptions() {
   options.forEach((val, index) => {
     const btn = document.createElement("button");
     btn.textContent = val;
-    btn.classList.toggle("active", index === 1); // выбираем второй по умолчанию
+    btn.classList.toggle("active", index === 1);
     btn.onclick = () => {
       document.querySelectorAll("#modeOptions button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
@@ -183,7 +200,7 @@ function renderModeOptions() {
         timerDisplay.textContent = val;
       } else if (gameMode === "words") {
         wordCount = val;
-        // Реализуйте логику для режима слов, если необходимо
+        // Можно реализовать логику режима слов
       }
     };
     container.appendChild(btn);
@@ -197,15 +214,6 @@ function switchGameMode(mode) {
   });
   renderModeOptions();
   resetGame();
-}
-
-function resetGame() {
-  timerStarted = false;
-  clearInterval(timerInterval);
-  currentIndex = 0;
-  document.body.classList.remove("typing-started");
-  initText();
-  focusInput();
 }
 
 document.querySelectorAll("#gameModes button").forEach(btn => {

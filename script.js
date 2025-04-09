@@ -1,4 +1,5 @@
 const sampleText = "Axpeeeres la gri tenam karum es gres. Verjum el asuma te qani sxal arir. Կարաս հայերեն էլ փորձես է, или на русском";
+const placeholder = "\u200B"; // zero-width space – гарантирует, что поле не станет полностью пустым
 
 let currentIndex = 0;
 let timerStarted = false;
@@ -16,6 +17,12 @@ const textContainer = document.getElementById("text");
 const timerDisplay = document.getElementById("timer");
 const hiddenInput = document.getElementById("hiddenInput");
 
+// Инициализируем скрытый input с placeholder
+function initInput() {
+  hiddenInput.innerText = placeholder;
+}
+
+// Основная функция генерации текста
 function initText() {
   textContainer.innerHTML = "";
   currentIndex = 0;
@@ -37,15 +44,17 @@ function initText() {
     if (i < words.length - 1) {
       const space = document.createElement("span");
       space.classList.add("letter", "pending", "space");
-      space.textContent = " "; // обычный пробел
+      // Используем обычный пробел — он будет отображаться благодаря min-width
+      space.textContent = " ";
       textContainer.appendChild(space);
     }
   });
 
   updateCursor();
-  hiddenInput.innerText = "";
+  initInput();
 }
 
+// Обновление курсора — активный символ получает класс active
 function updateCursor() {
   document.querySelectorAll(".letter").forEach(el => el.classList.remove("active"));
   const letters = document.querySelectorAll(".letter");
@@ -75,6 +84,7 @@ function startTimer() {
   }, 1000);
 }
 
+// Обработка ввода одного символа
 function handleKey(char) {
   const letters = document.querySelectorAll(".letter");
   if (currentIndex >= letters.length) return;
@@ -99,6 +109,7 @@ function handleKey(char) {
   updateCursor();
 }
 
+// Обработка Backspace
 function handleBackspace() {
   if (currentIndex === 0) return;
   currentIndex--;
@@ -108,23 +119,30 @@ function handleBackspace() {
   updateCursor();
 }
 
+// Обработчик события beforeinput для contenteditable
 hiddenInput.addEventListener("beforeinput", (e) => {
   if (e.inputType === "deleteContentBackward") {
     handleBackspace();
   } else if (e.data) {
     handleKey(e.data);
   }
-  hiddenInput.innerText = ""; // очищаем поле
+  // Обязательно сбрасываем содержимое к placeholder
+  hiddenInput.innerText = placeholder;
 });
 
-function focusInputHandler() {
-  hiddenInput.focus();
-}
-
-document.querySelectorAll("#gameModes button").forEach(btn => {
-  btn.onclick = () => switchGameMode(btn.dataset.mode);
+// Резервный обработчик события keydown (на случай, если beforeinput не сработает)
+hiddenInput.addEventListener("keydown", (e) => {
+  if (e.key === "Backspace") {
+    e.preventDefault();
+    handleBackspace();
+  } else if (e.key.length === 1) {
+    e.preventDefault();
+    handleKey(e.key);
+  }
+  hiddenInput.innerText = placeholder;
 });
 
+//////////////// Режимы переключения (оставляем как было) //////////////////
 function renderModeOptions() {
   const container = document.getElementById("modeOptions");
   container.innerHTML = "";
@@ -135,7 +153,6 @@ function renderModeOptions() {
   } else if (gameMode === "words") {
     options = wordOptions;
   } else if (gameMode === "quote") {
-    // Если есть цитаты, можно их вставить, например:
     options = [
       "\"To be, or not to be?\"",
       "'Hello, world!'",
@@ -157,7 +174,7 @@ function renderModeOptions() {
         timerDisplay.textContent = val;
       } else if (gameMode === "words") {
         wordCount = val;
-        // здесь можно добавить логику для режима words
+        // Тут можно добавить логику, если используется режим слов
       }
     };
     container.appendChild(btn);
@@ -179,15 +196,19 @@ function resetGame() {
   currentIndex = 0;
   document.body.classList.remove("typing-started");
   initText();
-  focusInputHandler();
+  focusInput();
 }
+
+document.querySelectorAll("#gameModes button").forEach(btn => {
+  btn.onclick = () => switchGameMode(btn.dataset.mode);
+});
 
 renderModeOptions();
 initText();
 
-textContainer.addEventListener("click", focusInputHandler);
-textContainer.addEventListener("touchstart", focusInputHandler);
-document.addEventListener("click", focusInputHandler);
+textContainer.addEventListener("click", focusInput);
+textContainer.addEventListener("touchstart", focusInput);
+document.addEventListener("click", focusInput);
 
 hiddenInput.addEventListener("blur", blurInput);
-focusInputHandler();
+focusInput();

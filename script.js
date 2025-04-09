@@ -12,7 +12,6 @@ let wordOptions = [10, 25, 50, 100];
 let defaultTime = 30;
 let wordCount = 25;
 
-
 const textContainer = document.getElementById("text");
 const timerDisplay = document.getElementById("timer");
 const hiddenInput = document.getElementById("hiddenInput");
@@ -38,7 +37,8 @@ function initText() {
     if (i < words.length - 1) {
       const space = document.createElement("span");
       space.classList.add("letter", "pending", "space");
-      space.textContent = "";
+      // Используем обычный пробел:
+      space.textContent = " ";
       textContainer.appendChild(space);
     }
   });
@@ -54,17 +54,18 @@ function updateCursor() {
     letters[currentIndex].classList.add("active");
   }
 }
+
 function focusInput() {
   setTimeout(() => {
-    hiddenInput.focus({ preventScroll: true }); // ⚠️ важно!
+    hiddenInput.focus({ preventScroll: true });
   }, 0);
 }
 
 function blurInput() {
   document.body.classList.remove('noscroll');
 }
+
 function startTimer() {
-  
   timerInterval = setInterval(() => {
     remainingTime--;
     timerDisplay.textContent = remainingTime;
@@ -82,9 +83,8 @@ function handleKey(char) {
   if (!timerStarted) {
     timerStarted = true;
     startTimer();
-    document.body.classList.add("typing-started"); // ✅ добавляем класс
+    document.body.classList.add("typing-started"); // добавляем класс для отключения анимации курсора
   }
-  
 
   const current = letters[currentIndex];
   if (char === current.textContent) {
@@ -99,6 +99,39 @@ function handleKey(char) {
   currentIndex++;
   updateCursor();
 }
+
+function handleBackspace() {
+  if (currentIndex === 0) return;
+  currentIndex--;
+  const letters = document.querySelectorAll(".letter");
+  letters[currentIndex].classList.remove("correct", "incorrect");
+  letters[currentIndex].classList.add("pending");
+  updateCursor();
+}
+
+// Обработчик события beforeinput
+hiddenInput.addEventListener("beforeinput", (e) => {
+  if (e.inputType === "deleteContentBackward") {
+    handleBackspace();
+  } else if (e.data) {
+    handleKey(e.data);
+  }
+  hiddenInput.innerText = ""; // очищаем поле
+});
+
+// Дополнительный обработчик keydown для iOS и других случаев
+hiddenInput.addEventListener("keydown", (e) => {
+  if (e.key === "Backspace") {
+    e.preventDefault();
+    handleBackspace();
+  } else if (e.key.length === 1) {
+    e.preventDefault();
+    handleKey(e.key);
+  }
+  hiddenInput.value = "";
+});
+
+//////////////////// Режимы и переключатели (оставим как было) ////////////////////
 function renderModeOptions() {
   const container = document.getElementById("modeOptions");
   container.innerHTML = "";
@@ -113,7 +146,7 @@ function renderModeOptions() {
   options.forEach((val, index) => {
     const btn = document.createElement("button");
     btn.textContent = val;
-    btn.classList.toggle("active", index === 1); // второй по умолчанию
+    btn.classList.toggle("active", index === 1);
     btn.onclick = () => {
       document.querySelectorAll("#modeOptions button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
@@ -124,7 +157,7 @@ function renderModeOptions() {
         timerDisplay.textContent = val;
       } else if (gameMode === "words") {
         wordCount = val;
-        loadWords();
+        // loadWords(); // функция, если используется
       }
     };
     container.appendChild(btn);
@@ -147,30 +180,6 @@ function resetGame() {
   document.body.classList.remove("typing-started");
   initText();
   focusInput();
-}
-
-
-function handleBackspace() {
-  if (currentIndex === 0) return;
-  currentIndex--;
-  const letters = document.querySelectorAll(".letter");
-  letters[currentIndex].classList.remove("correct", "incorrect");
-  letters[currentIndex].classList.add("pending");
-  updateCursor();
-}
-
-hiddenInput.addEventListener("beforeinput", (e) => {
-  if (e.inputType === "deleteContentBackward") {
-    handleBackspace();
-  } else if (e.data) {
-    handleKey(e.data);
-  }
-
-  hiddenInput.innerText = ""; // очищаем поле
-});
-
-function focusInput() {
-  hiddenInput.focus();
 }
 
 document.querySelectorAll("#gameModes button").forEach(btn => {

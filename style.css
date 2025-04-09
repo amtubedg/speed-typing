@@ -40,7 +40,7 @@ body {
     display: inline-block;
     opacity: 0.3;
     transition: all 0.2s;
-    
+    position: relative;
   }
   
   .letter.correct {
@@ -92,4 +92,32 @@ body {
     background: transparent;
     caret-color: transparent;
     white-space: nowrap;
+  }
+
+  #gameModes {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  
+  #gameModes button,
+  #modeOptions button {
+    background: #2c2c2c;
+    color: #888;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 550;  /* Добавляем — нормальный вес */
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  
+  #gameModes button.active,
+  #modeOptions button.active {
+    background: #FFD700;
+    color: #000;
   }

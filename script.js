@@ -6,6 +6,13 @@ let remainingTime = 30;
 let timerInterval = null;
 let incorrectCount = 0;
 
+let gameMode = "time";          // по умолчанию
+let timeOptions = [15, 30, 60, 120];
+let wordOptions = [10, 25, 50, 100];
+let defaultTime = 30;
+let wordCount = 25;
+
+
 const textContainer = document.getElementById("text");
 const timerDisplay = document.getElementById("timer");
 const hiddenInput = document.getElementById("hiddenInput");
@@ -92,6 +99,56 @@ function handleKey(char) {
   currentIndex++;
   updateCursor();
 }
+function renderModeOptions() {
+  const container = document.getElementById("modeOptions");
+  container.innerHTML = "";
+
+  let options = [];
+  if (gameMode === "time") {
+    options = timeOptions;
+  } else if (gameMode === "words") {
+    options = wordOptions;
+  }
+
+  options.forEach((val, index) => {
+    const btn = document.createElement("button");
+    btn.textContent = val;
+    btn.classList.toggle("active", index === 1); // второй по умолчанию
+    btn.onclick = () => {
+      document.querySelectorAll("#modeOptions button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      if (gameMode === "time") {
+        defaultTime = val;
+        remainingTime = val;
+        timerDisplay.textContent = val;
+      } else if (gameMode === "words") {
+        wordCount = val;
+        loadWords();
+      }
+    };
+    container.appendChild(btn);
+  });
+}
+
+function switchGameMode(mode) {
+  gameMode = mode;
+  document.querySelectorAll("#gameModes button").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.mode === mode);
+  });
+  renderModeOptions();
+  resetGame();
+}
+
+function resetGame() {
+  timerStarted = false;
+  clearInterval(timerInterval);
+  currentIndex = 0;
+  document.body.classList.remove("typing-started");
+  initText();
+  focusInput();
+}
+
 
 function handleBackspace() {
   if (currentIndex === 0) return;
@@ -116,6 +173,11 @@ function focusInput() {
   hiddenInput.focus();
 }
 
+document.querySelectorAll("#gameModes button").forEach(btn => {
+  btn.onclick = () => switchGameMode(btn.dataset.mode);
+});
+
+renderModeOptions();
 initText();
 
 textContainer.addEventListener("click", focusInput);

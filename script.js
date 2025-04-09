@@ -6,7 +6,7 @@ let remainingTime = 30;
 let timerInterval = null;
 let incorrectCount = 0;
 
-let gameMode = "time";          // по умолчанию
+let gameMode = "time";          // режим по умолчанию
 let timeOptions = [15, 30, 60, 120];
 let wordOptions = [10, 25, 50, 100];
 let defaultTime = 30;
@@ -37,8 +37,7 @@ function initText() {
     if (i < words.length - 1) {
       const space = document.createElement("span");
       space.classList.add("letter", "pending", "space");
-      // Используем обычный пробел:
-      space.textContent = " ";
+      space.textContent = " "; // обычный пробел
       textContainer.appendChild(space);
     }
   });
@@ -83,7 +82,7 @@ function handleKey(char) {
   if (!timerStarted) {
     timerStarted = true;
     startTimer();
-    document.body.classList.add("typing-started"); // добавляем класс для отключения анимации курсора
+    document.body.classList.add("typing-started");
   }
 
   const current = letters[currentIndex];
@@ -109,7 +108,6 @@ function handleBackspace() {
   updateCursor();
 }
 
-// Обработчик события beforeinput
 hiddenInput.addEventListener("beforeinput", (e) => {
   if (e.inputType === "deleteContentBackward") {
     handleBackspace();
@@ -119,19 +117,14 @@ hiddenInput.addEventListener("beforeinput", (e) => {
   hiddenInput.innerText = ""; // очищаем поле
 });
 
-// Дополнительный обработчик keydown для iOS и других случаев
-hiddenInput.addEventListener("keydown", (e) => {
-  if (e.key === "Backspace") {
-    e.preventDefault();
-    handleBackspace();
-  } else if (e.key.length === 1) {
-    e.preventDefault();
-    handleKey(e.key);
-  }
-  hiddenInput.value = "";
+function focusInputHandler() {
+  hiddenInput.focus();
+}
+
+document.querySelectorAll("#gameModes button").forEach(btn => {
+  btn.onclick = () => switchGameMode(btn.dataset.mode);
 });
 
-//////////////////// Режимы и переключатели (оставим как было) ////////////////////
 function renderModeOptions() {
   const container = document.getElementById("modeOptions");
   container.innerHTML = "";
@@ -141,6 +134,13 @@ function renderModeOptions() {
     options = timeOptions;
   } else if (gameMode === "words") {
     options = wordOptions;
+  } else if (gameMode === "quote") {
+    // Если есть цитаты, можно их вставить, например:
+    options = [
+      "\"To be, or not to be?\"",
+      "'Hello, world!'",
+      "What is your name?"
+    ];
   }
 
   options.forEach((val, index) => {
@@ -157,7 +157,7 @@ function renderModeOptions() {
         timerDisplay.textContent = val;
       } else if (gameMode === "words") {
         wordCount = val;
-        // loadWords(); // функция, если используется
+        // здесь можно добавить логику для режима words
       }
     };
     container.appendChild(btn);
@@ -179,19 +179,15 @@ function resetGame() {
   currentIndex = 0;
   document.body.classList.remove("typing-started");
   initText();
-  focusInput();
+  focusInputHandler();
 }
-
-document.querySelectorAll("#gameModes button").forEach(btn => {
-  btn.onclick = () => switchGameMode(btn.dataset.mode);
-});
 
 renderModeOptions();
 initText();
 
-textContainer.addEventListener("click", focusInput);
-textContainer.addEventListener("touchstart", focusInput);
-document.addEventListener("click", focusInput);
+textContainer.addEventListener("click", focusInputHandler);
+textContainer.addEventListener("touchstart", focusInputHandler);
+document.addEventListener("click", focusInputHandler);
 
 hiddenInput.addEventListener("blur", blurInput);
-focusInput();
+focusInputHandler();

@@ -22,26 +22,38 @@ body {
   }
   
   #text {
-    font-size: clamp(1.5rem, 4vw, 3rem);
-    text-align: center;
-    line-height: 1.5;
-    white-space: normal;
-    max-width: 90%;
-    user-select: none;
+    font-size: clamp(2rem, 5vw, 3rem);
+
+    /* ограничим ширину, чтобы строки не были слишком длинными */
+    max-width: 60ch;     
+    /* центрируем контейнер в горизонталь */
+    margin: 0 auto;      
+    /* выравнивание текста внутри контейнера */
+    text-align: left;  
+    /* межстрочный интервал, чтобы текст «дышал» */
+    line-height: 1.5;    
+    /* если нужно, можно добавить лёгкий интервал между буквами */
+    letter-spacing: 0.03em;
+    /* перенос слов при нехватке места */
+    white-space: normal; 
+    /* «перенос слов» – чтобы не вылезали за контейнер */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     word-break: break-word;
   }
   
   .wordContainer {
     display: inline-block;
-    margin-right: 0.3em;
   }
   
   .letter {
     display: inline-block;
     position: relative;
-    line-height: 1.2em; /* фиксированная высота строки */
-    opacity: 0.3;
+    line-height: 1.4;       /* Можно немного уменьшить */
+    letter-spacing: 0.02em; /* Лёгкое «дыхание» между буквами */
     transition: all 0.2s;
+    opacity: 0.3;
+    font-size: inherit;
   }
   
   .letter.correct {
@@ -58,8 +70,9 @@ body {
     opacity: 0.3;
   }
   .letter.space {
-    min-width: 0.5em;  /* гарантирует, что пробел займет горизонтальное пространство */
+    min-width: 0.6em;  /* гарантирует, что пробел займет горизонтальное пространство */
     min-height: 0.9em; /* задаёт минимальную высоту, соответствующую высоте строки */
+    
   }
   body.typing-started .letter.active::before {
     animation: none;

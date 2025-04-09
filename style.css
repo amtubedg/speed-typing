@@ -38,8 +38,8 @@ body {
   
   .letter {
     display: inline-block;
-    position: relative; /* Важно для ::before! */
-    line-height: 1.2;   /* Чтобы все буквы/пробелы имели одинаковую высоту строки */
+    position: relative;
+    line-height: 1.2em; /* фиксированная высота строки */
     opacity: 0.3;
     transition: all 0.2s;
   }
@@ -58,7 +58,8 @@ body {
     opacity: 0.3;
   }
   .letter.space {
-    min-width: 0.6em; /* или 0.5em, на твой вкус */
+    min-width: 0.5em;  /* гарантирует, что пробел займет горизонтальное пространство */
+    min-height: 0.9em; /* задаёт минимальную высоту, соответствующую высоте строки */
   }
   body.typing-started .letter.active::before {
     animation: none;
@@ -70,10 +71,10 @@ body {
     left: -2px;
     top: 0;
     width: 3px;
-    height: 1.2em;      /* вместо 100% или 1em */
+    height: 1.2em; /* фиксированная высота, соответствующая всей строке */
     background-color: #FFD700;
     animation: blink 1s steps(1) infinite;
-    z-index: 9999;      /* чтобы точно было поверх всего */
+    z-index: 9999;
   }
   
   @keyframes blink {

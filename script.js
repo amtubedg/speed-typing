@@ -1,5 +1,5 @@
 const sampleText = "Axpeeeres la gri tenam karum es gres. Verjum el asuma te qani sxal arir. Կարաս հայերեն էլ փորձես է, или на русском";
-const placeholder = "\u200B"; // zero-width space – гарантирует, что поле не станет полностью пустым
+const placeholder = "\u200B"; // zero-width space
 
 let currentIndex = 0;
 let timerStarted = false;
@@ -17,12 +17,22 @@ const textContainer = document.getElementById("text");
 const timerDisplay = document.getElementById("timer");
 const hiddenInput = document.getElementById("hiddenInput");
 
-// Инициализируем скрытый input с placeholder
-function initInput() {
-  hiddenInput.innerText = placeholder;
+// Функция для установки каретки в конец contenteditable элемента
+function setCaretToEnd(el) {
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  range.collapse(false);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
 }
 
-// Основная функция генерации текста
+// Инициализация скрытого input-а placeholder
+function initInput() {
+  hiddenInput.innerText = placeholder;
+  setCaretToEnd(hiddenInput);
+}
+
 function initText() {
   textContainer.innerHTML = "";
   currentIndex = 0;
@@ -44,7 +54,7 @@ function initText() {
     if (i < words.length - 1) {
       const space = document.createElement("span");
       space.classList.add("letter", "pending", "space");
-      // Используем обычный пробел — он будет отображаться благодаря min-width
+      // Используем обычный пробел
       space.textContent = " ";
       textContainer.appendChild(space);
     }
@@ -54,7 +64,6 @@ function initText() {
   initInput();
 }
 
-// Обновление курсора — активный символ получает класс active
 function updateCursor() {
   document.querySelectorAll(".letter").forEach(el => el.classList.remove("active"));
   const letters = document.querySelectorAll(".letter");
@@ -66,6 +75,7 @@ function updateCursor() {
 function focusInput() {
   setTimeout(() => {
     hiddenInput.focus({ preventScroll: true });
+    setCaretToEnd(hiddenInput);
   }, 0);
 }
 
@@ -84,7 +94,6 @@ function startTimer() {
   }, 1000);
 }
 
-// Обработка ввода одного символа
 function handleKey(char) {
   const letters = document.querySelectorAll(".letter");
   if (currentIndex >= letters.length) return;
@@ -109,7 +118,6 @@ function handleKey(char) {
   updateCursor();
 }
 
-// Обработка Backspace
 function handleBackspace() {
   if (currentIndex === 0) return;
   currentIndex--;
@@ -126,11 +134,11 @@ hiddenInput.addEventListener("beforeinput", (e) => {
   } else if (e.data) {
     handleKey(e.data);
   }
-  // Обязательно сбрасываем содержимое к placeholder
   hiddenInput.innerText = placeholder;
+  setCaretToEnd(hiddenInput);
 });
 
-// Резервный обработчик события keydown (на случай, если beforeinput не сработает)
+// Резервный обработчик keydown для случаев, когда beforeinput не срабатывает
 hiddenInput.addEventListener("keydown", (e) => {
   if (e.key === "Backspace") {
     e.preventDefault();
@@ -140,9 +148,10 @@ hiddenInput.addEventListener("keydown", (e) => {
     handleKey(e.key);
   }
   hiddenInput.innerText = placeholder;
+  setCaretToEnd(hiddenInput);
 });
 
-//////////////// Режимы переключения (оставляем как было) //////////////////
+//////////////////// Режимы переключения //////////////////////
 function renderModeOptions() {
   const container = document.getElementById("modeOptions");
   container.innerHTML = "";
@@ -163,7 +172,7 @@ function renderModeOptions() {
   options.forEach((val, index) => {
     const btn = document.createElement("button");
     btn.textContent = val;
-    btn.classList.toggle("active", index === 1);
+    btn.classList.toggle("active", index === 1); // выбираем второй по умолчанию
     btn.onclick = () => {
       document.querySelectorAll("#modeOptions button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
@@ -174,7 +183,7 @@ function renderModeOptions() {
         timerDisplay.textContent = val;
       } else if (gameMode === "words") {
         wordCount = val;
-        // Тут можно добавить логику, если используется режим слов
+        // Реализуйте логику для режима слов, если необходимо
       }
     };
     container.appendChild(btn);

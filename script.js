@@ -220,7 +220,8 @@ initText();
 
 textContainer.addEventListener("click", focusInput);
 textContainer.addEventListener("touchstart", focusInput);
-document.addEventListener("click", focusInput);
+// document.addEventListener("click", focusInput);
+
 
 hiddenInput.addEventListener("blur", blurInput);
 focusInput();

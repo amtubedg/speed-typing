@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Typing Trainer</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
+  <!-- Панель переключения режимов -->
   <div id="gameModes">
     <button data-mode="time" class="active">⏱ time</button>
     <button data-mode="words">A words</button>
@@ -18,15 +17,15 @@
   <div id="modeOptions">
     <!-- опции будут добавляться JS'ом -->
   </div>
+  
   <div id="timer">30</div>
   <div id="text"></div>
 
+  <!-- Обёртка для скрытого contenteditable -->
   <div id="inputWrapper">
     <div id="hiddenInput" contenteditable="true"></div>
   </div>
 
-
   <script src="script.js"></script>
 </body>
-
 </html>

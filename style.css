@@ -1,8 +1,9 @@
+/* Основные стили страницы */
 body {
     margin: 0;
     background: #323437;
     color: #fff;
-    font-family: "Courier New", monospace;
+    font-family: "Roboto Mono", monospace;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -10,112 +11,8 @@ body {
     height: 100vh;
     box-sizing: border-box;
   }
-  body.noscroll {
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
-  }
   
-  #timer {
-    font-size: clamp(2rem, 5vw, 4rem);
-    margin-bottom: 20px;
-  }
-  
-  #text {
-    font-size: clamp(2rem, 5vw, 3rem);
-
-    /* ограничим ширину, чтобы строки не были слишком длинными */
-    max-width: 60ch;     
-    /* центрируем контейнер в горизонталь */
-    margin: 0 auto;      
-    /* выравнивание текста внутри контейнера */
-    text-align: left;  
-    /* межстрочный интервал, чтобы текст «дышал» */
-    line-height: 1.5;    
-    /* если нужно, можно добавить лёгкий интервал между буквами */
-    letter-spacing: 0.03em;
-    /* перенос слов при нехватке места */
-    white-space: normal; 
-    /* «перенос слов» – чтобы не вылезали за контейнер */
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    word-break: break-word;
-  }
-  
-  .wordContainer {
-    display: inline-block;
-  }
-  
-  .letter {
-    display: inline-block;
-    position: relative;
-    line-height: 1.4;       /* Можно немного уменьшить */
-    letter-spacing: 0.02em; /* Лёгкое «дыхание» между буквами */
-    transition: all 0.2s;
-    opacity: 0.3;
-    font-size: inherit;
-  }
-  
-  .letter.correct {
-    opacity: 1;
-    color: white;
-  }
-  
-  .letter.incorrect {
-    opacity: 1;
-    color: red;
-  }
-  
-  .letter.pending {
-    opacity: 0.3;
-  }
-  .letter.space {
-    min-width: 0.6em;  /* гарантирует, что пробел займет горизонтальное пространство */
-    min-height: 0.9em; /* задаёт минимальную высоту, соответствующую высоте строки */
-    
-  }
-  body.typing-started .letter.active::before {
-    animation: none;
-    opacity: 1;
-  }
-  .letter.active::before {
-    content: "";
-    position: absolute;
-    left: -2px;
-    top: 0;
-    width: 3px;
-    height: 1.2em; /* фиксированная высота, соответствующая всей строке */
-    background-color: #FFD700;
-    animation: blink 1s steps(1) infinite;
-    z-index: 9999;
-  }
-  
-  @keyframes blink {
-    0% { opacity: 1; }
-    50% { opacity: 0; }
-    100% { opacity: 1; }
-  }
-  
-  #inputWrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 100;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-  }
-  
-  #hiddenInput {
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-    color: transparent;
-    background: transparent;
-    caret-color: transparent;
-    white-space: nowrap;
-  }
-
+  /* Панель режимов */
   #gameModes {
     display: flex;
     gap: 10px;
@@ -130,7 +27,7 @@ body {
     color: #888;
     font-family: inherit;
     font-size: 1rem;
-    font-weight: 550;  /* Добавляем — нормальный вес */
+    font-weight: 550;
     padding: 6px 12px;
     border: none;
     border-radius: 8px;
@@ -143,3 +40,105 @@ body {
     background: #FFD700;
     color: #000;
   }
+  
+  /* Таймер */
+  #timer {
+    font-size: clamp(2rem, 5vw, 4rem);
+    margin-bottom: 20px;
+    user-select: none;
+  }
+  
+  /* Контейнер для текста */
+  #text {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    text-align: left;               /* можно поставить center, если нужно */
+    line-height: 1.5;
+    max-width: 60ch;                /* ограничивает ширину до примерно 60 символов */
+    margin: 0 auto;
+    padding: 0 50px;
+    word-break: break-word;
+    letter-spacing: 0.03em;
+    user-select: none;
+  }
+  
+  /* Контейнер для слова */
+  .wordContainer {
+    display: inline-block;
+    /* Если необходимо, можно добавить margin-right вместо пробела */
+  }
+  
+  /* Каждая буква */
+  .letter {
+    display: inline-block;
+    position: relative;         /* важно для позиционирования курсора (::before) */
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+    transition: all 0.2s;
+    opacity: 0.1;
+    font-size: inherit;
+  }
+  
+  /* Состояния букв */
+  .letter.correct {
+    opacity: 1;
+    color: white;
+  }
+  
+  .letter.incorrect {
+    opacity: 1;
+    color: red;
+  }
+  
+  .letter.pending {
+    opacity: 0.3;
+  }
+  
+  /* Для пробела задаём минимальную ширину/высоту, чтобы элемент имел видимую область */
+  .letter.space {
+    min-width: 0.6em;
+    min-height: 1.2em;
+  }
+  
+  /* Курсор — мигающий элемент, который отображается для активной буквы */
+  .letter.active::before {
+    content: "";
+    position: absolute;
+    left: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 1.2em; /* фиксированная высота, соответствующая всей строке */
+    background-color: #FFD700;
+    border-radius: 2px;
+    z-index: 9999;
+    animation: blink 1s steps(1) infinite;
+  }
+  
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  
+  /* Стили для обёртки скрытого input-а */
+  #inputWrapper {
+    position: fixed;
+    top: -9999px; /* перемещаем элемент за пределы экрана */
+    left: -9999px;
+    z-index: -100;
+    width: 2px;   /* минимальный размер для корректного фокуса */
+    height: 2px;
+    overflow: hidden;
+  }
+  
+  /* Скрытый input - contenteditable */
+  #hiddenInput {
+    width: 2px;
+    height: 2px;
+    opacity: 0.01;  /* вместо 0, чтобы iOS позволял фокус */
+    color: transparent;
+    background: transparent;
+    caret-color: transparent;
+    white-space: nowrap;
+  }
+  

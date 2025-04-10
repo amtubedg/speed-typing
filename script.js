@@ -74,7 +74,6 @@ function updateCursor() {
   }
 }
 
-// Фокусировка input-а
 function focusInput() {
   setTimeout(() => {
     hiddenInput.focus({ preventScroll: true });
@@ -86,7 +85,6 @@ function blurInput() {
   document.body.classList.remove('noscroll');
 }
 
-// Запуск таймера
 function startTimer() {
   timerInterval = setInterval(() => {
     remainingTime--;
@@ -98,7 +96,6 @@ function startTimer() {
   }, 1000);
 }
 
-// Обработка ввода символа
 function handleKey(char) {
   const letters = document.querySelectorAll(".letter");
   if (currentIndex >= letters.length) return;
@@ -116,14 +113,13 @@ function handleKey(char) {
   } else {
     current.classList.remove("pending", "correct");
     current.classList.add("incorrect");
-    incorrectCount++;   // Увеличиваем счётчик неправильных букв
+    incorrectCount++;
   }
 
   currentIndex++;
   updateCursor();
 }
 
-// Обработка Backspace
 function handleBackspace() {
   if (currentIndex === 0) return;
   currentIndex--;
@@ -133,7 +129,7 @@ function handleBackspace() {
   updateCursor();
 }
 
-// Обработчик beforeinput для contenteditable
+// Основной обработчик перед вводом (beforeinput) для contenteditable
 hiddenInput.addEventListener("beforeinput", (e) => {
   if (e.inputType === "deleteContentBackward") {
     handleBackspace();
@@ -144,7 +140,7 @@ hiddenInput.addEventListener("beforeinput", (e) => {
   setCaretToEnd(hiddenInput);
 });
 
-// Резервный обработчик keydown
+// Резервный обработчик keydown (для iOS и ПК)
 hiddenInput.addEventListener("keydown", (e) => {
   if (e.key === "Backspace") {
     e.preventDefault();
@@ -157,18 +153,7 @@ hiddenInput.addEventListener("keydown", (e) => {
   setCaretToEnd(hiddenInput);
 });
 
-// Функция для переключения режима (перезагрузка игры и т.д.)
-function resetGame() {
-  timerStarted = false;
-  clearInterval(timerInterval);
-  currentIndex = 0;
-  incorrectCount = 0; // сброс неправильных букв
-  document.body.classList.remove("typing-started");
-  initText();
-  focusInput();
-}
-
-// Режимы переключения (оставляем как было)
+////////////////// Режимы переключения ////////////////////
 function renderModeOptions() {
   const container = document.getElementById("modeOptions");
   container.innerHTML = "";
@@ -200,7 +185,7 @@ function renderModeOptions() {
         timerDisplay.textContent = val;
       } else if (gameMode === "words") {
         wordCount = val;
-        // Можно реализовать логику режима слов
+        // Дополнительная логика для режима words, если требуется
       }
     };
     container.appendChild(btn);
@@ -214,6 +199,16 @@ function switchGameMode(mode) {
   });
   renderModeOptions();
   resetGame();
+}
+
+function resetGame() {
+  timerStarted = false;
+  clearInterval(timerInterval);
+  currentIndex = 0;
+  incorrectCount = 0;
+  document.body.classList.remove("typing-started");
+  initText();
+  focusInput();
 }
 
 document.querySelectorAll("#gameModes button").forEach(btn => {

@@ -1,4 +1,4 @@
-const sampleText = "Axpeeeres la gri tenam karum es gres. Verjum el asuma te qani sxal arir. Կարաս հայերեն էլ փորձես է, или на русском";
+const sampleText = "Axper hla gri de tenam eli";
 const placeholder = "\u200B";  // zero-width space
 
 let currentIndex = 0;
@@ -12,6 +12,9 @@ let timeOptions = [15, 30, 60, 120];
 let wordOptions = [10, 25, 50, 100];
 let defaultTime = 30;
 let wordCount = 25;
+
+let startTime = null;
+let endTime = null;
 
 const textContainer = document.getElementById("text");
 const timerDisplay = document.getElementById("timer");
@@ -102,6 +105,7 @@ function handleKey(char) {
 
   if (!timerStarted) {
     timerStarted = true;
+    startTime = Date.now();
     startTimer();
     document.body.classList.add("typing-started");
   }
@@ -117,9 +121,59 @@ function handleKey(char) {
   }
 
   currentIndex++;
+  // Проверка: если пользователь достиг конца текста — finishGame("completed")
+  if (currentIndex >= letters.length) {
+    finishGame("completed");
+  }
   updateCursor();
 }
+function finishGame(reason) {
+  endTime = Date.now();
+  clearInterval(timerInterval);
 
+  // Подсчитываем статистику
+  const totalTimeSec = (endTime - startTime) / 1000;
+  const letters = document.querySelectorAll(".letter");
+  const typedChars = currentIndex; 
+    // либо = total символов (или currentIndex, зависящий от того, как считаешь)
+  let correctChars = 0;
+  letters.forEach(letter => {
+    if (letter.classList.contains("correct")) {
+      correctChars++;
+    }
+  });
+
+  const accuracy = (correctChars / typedChars) * 100 || 0;
+  // WPM: количество символов / 5 / (totalTimeSec / 60)
+  const wpm = (typedChars / 5) / (totalTimeSec / 60) || 0;
+
+  // Выводим в панель
+  document.getElementById("wpmValue").textContent = "WPM: " + wpm.toFixed(1);
+  document.getElementById("accValue").textContent = "Accuracy: " + accuracy.toFixed(1) + "%";
+  document.getElementById("timeValue").textContent = "Time: " + totalTimeSec.toFixed(1) + "s";
+
+  // Показываем панель
+  const resultPanel = document.getElementById("resultPanel");
+  resultPanel.style.display = "flex";
+}
+
+// В таймере (startTimer) если время вышло — вызывать finishGame("timeout")
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    remainingTime--;
+    timerDisplay.textContent = remainingTime;
+    if (remainingTime <= 0) {
+      finishGame("timeout");
+    }
+  }, 1000);
+}
+
+// При нажатии на кнопку «Закрыть» / «Restart» — скрыть панель и сбросить игру
+document.getElementById("closeResultBtn").onclick = () => {
+  document.getElementById("resultPanel").style.display = "none";
+  resetGame();
+};
 function handleBackspace() {
   if (currentIndex === 0) return;
   currentIndex--;

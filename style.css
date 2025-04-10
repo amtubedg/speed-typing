@@ -141,4 +141,56 @@ body {
     caret-color: transparent;
     white-space: nowrap;
   }
+  #resultPanel {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; 
+    height: 100%;
+    background: rgba(0,0,0,0.6); /* полупрозрачный фон */
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    z-index: 99999; /* поверх всего остального */
+  }
   
+  /* Само «окно» с результатом */
+  #resultContent {
+    background: #2c2c2c;
+    color: #fff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 90%; /* чтобы на мобильных подстраивалось */
+    text-align: center;
+  }
+  
+  #resultContent h2 {
+    margin: 0 0 15px;
+  }
+  
+  #resultContent p {
+    margin: 10px 0;
+  }
+  
+  /* Кнопка «закрыть» */
+  #closeResultBtn {
+    background: #ffd700;
+    color: #000;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  /* Адаптив: на совсем узких экранах */
+  @media (max-width: 480px) {
+    #resultContent {
+      width: 90%;
+      font-size: 0.9rem;
+    }
+    #closeResultBtn {
+      width: 100%;
+    }
+  }  

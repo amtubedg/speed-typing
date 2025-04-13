@@ -87,14 +87,12 @@ body {
     display: inline-block;
     position: relative;
     font-size: inherit;
-    line-height: 1.2em;   /* фиксированная высота строки */
-    height: 1.2em;        /* фиксированная высота блока */
+    line-height: 1.2em;
+    height: 1.2em;
     letter-spacing: 0.02em;
-    transition: all 0.2s;
     opacity: 0.3;
+    vertical-align: bottom; /* добавь и сюда — равняет ВСЁ по низу */
   }
-  
-  
  
   /* Состояния букв */
   .letter.correct {
@@ -111,12 +109,15 @@ body {
     opacity: 0.3;
   }
   
-  /* Для пробелов задаем минимальную ширину и те же размеры */
-.letter.space {
+  .letter.space {
+    display: inline-block;
     min-width: 0.6em;
-    line-height: 0.5em;
     height: 1.2em;
+    line-height: 1.2em;
+    vertical-align: bottom; /* <— ключ! выравнивание по нижней линии */
+    position: relative;
   }
+  
 
   /* Анимация мигания: можно настроить по вкусу */
   @keyframes blink {
@@ -187,5 +188,18 @@ body {
     padding: 8px 16px;
     cursor: pointer;
     margin-top: 10px;
+  }
+  
+  .letter.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2px;
+    height: 1.2em;
+    background-color: #FFD700;
+    animation: blink 1s steps(1) infinite;
+    border-radius: 2px;
+    pointer-events: none;
   }
   

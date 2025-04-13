@@ -69,30 +69,8 @@ let lastValidTop = null;
 function updateCursor() {
   document.querySelectorAll(".letter").forEach(el => el.classList.remove("active"));
   const letters = document.querySelectorAll(".letter");
-  const cursor = document.getElementById("cursor");
-
   if (currentIndex < letters.length) {
-    const current = letters[currentIndex];
-    current.classList.add("active");
-
-    const rect = current.getBoundingClientRect();
-
-    // Сохраняем реальную позицию первой строки
-    if (lastValidTop === null) {
-      lastValidTop = rect.top;
-    }
-
-    // Если символ ниже предыдущего — обновляем курсор вниз
-    if (rect.top > lastValidTop) {
-      lastValidTop = rect.top;
-    }
-
-    cursor.style.left = `${rect.left}px`;
-    cursor.style.top = `${lastValidTop}px`; // остаётся на строке или переходит вниз
-    cursor.style.height = `${rect.height}px`;
-    cursor.style.display = "block";
-  } else {
-    cursor.style.display = "none";
+    letters[currentIndex].classList.add("active");
   }
 }
 
@@ -297,3 +275,16 @@ textContainer.addEventListener("touchstart", focusInput);
 
 hiddenInput.addEventListener("blur", blurInput);
 focusInput();
+
+
+window.addEventListener("resize", () => {
+  updateCursor();
+});
+
+window.addEventListener("scroll", () => {
+  updateCursor();
+});
+
+window.visualViewport?.addEventListener("resize", () => {
+  updateCursor();
+});

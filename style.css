@@ -98,11 +98,13 @@ body {
   /* Состояния букв */
   .letter.correct {
     opacity: 1;
+    transition: color 0.3s ease, opacity 0.3s ease;
     color: white;
   }
   
   .letter.incorrect {
     opacity: 1;
+    transition: color 0.3s ease, opacity 0.3s ease;
     color: red;
   }
   
@@ -129,13 +131,13 @@ body {
   }
   /* Стили для обёртки скрытого input-а */
   #inputWrapper {
-    position: fixed;
-    top: -9999px;  /* перемещаем за пределы экрана */
-    left: -9999px;
-    z-index: -100;
-    width: 2px;
-    height: 2px;
-    overflow: hidden;
+    position: absolute;
+    top: 0;          /* размещаем в начале экрана */
+    left: 0;         /* размещаем в начале экрана */
+    width: 1px;      /* минимальный размер */
+    height: 1px;     /* минимальный размер */
+    opacity: 0;      /* полностью прозрачный */
+    pointer-events: auto; /* чтобы элемент мог принимать фокус при тапе */
   }
   
   /* Скрытый input: contenteditable */

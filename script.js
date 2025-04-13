@@ -1,4 +1,4 @@
-const sampleText = "Axper hla gri de tenam eli";
+const sampleText = "Axper gri tenami de la";
 const placeholder = "\u200B";  // zero-width space
 
 let currentIndex = 0;
@@ -6,6 +6,8 @@ let timerStarted = false;
 let remainingTime = 30;
 let timerInterval = null;
 let incorrectCount = 0;
+let startTime = null;
+let endTime = null;
 
 let gameMode = "time";          // режим по умолчанию
 let timeOptions = [15, 30, 60, 120];
@@ -13,14 +15,10 @@ let wordOptions = [10, 25, 50, 100];
 let defaultTime = 30;
 let wordCount = 25;
 
-let startTime = null;
-let endTime = null;
-
 const textContainer = document.getElementById("text");
 const timerDisplay = document.getElementById("timer");
 const hiddenInput = document.getElementById("hiddenInput");
 
-// Функция для установки каретки в конец contenteditable элемента
 function setCaretToEnd(el) {
   const range = document.createRange();
   range.selectNodeContents(el);
@@ -30,13 +28,11 @@ function setCaretToEnd(el) {
   sel.addRange(range);
 }
 
-// Инициализация скрытого input-а с placeholder
 function initInput() {
   hiddenInput.innerText = placeholder;
   setCaretToEnd(hiddenInput);
 }
 
-// Генерация текста
 function initText() {
   textContainer.innerHTML = "";
   currentIndex = 0;
@@ -68,14 +64,30 @@ function initText() {
   initInput();
 }
 
-// Обновление курсора (помечает текущий активный символ)
 function updateCursor() {
   document.querySelectorAll(".letter").forEach(el => el.classList.remove("active"));
   const letters = document.querySelectorAll(".letter");
+  const cursor = document.getElementById("cursor");
+
   if (currentIndex < letters.length) {
-    letters[currentIndex].classList.add("active");
+    const current = letters[currentIndex];
+    current.classList.add("active");
+
+    const rect = current.getBoundingClientRect();
+    const parentRect = textContainer.getBoundingClientRect();
+
+    cursor.style.left = `${rect.left}px`;
+
+    // Используем высоту ближайшей строки
+    const baseLine = parentRect.top+5; // 30 — примерно высота строки, можно подогнать
+    cursor.style.top = `${baseLine}px`;
+    cursor.style.height = `${rect.height}px`;
+    cursor.style.display = "block";
+  } else {
+    cursor.style.display = "none";
   }
 }
+
 
 function focusInput() {
   setTimeout(() => {
@@ -89,12 +101,12 @@ function blurInput() {
 }
 
 function startTimer() {
+  startTime = Date.now();
   timerInterval = setInterval(() => {
     remainingTime--;
     timerDisplay.textContent = remainingTime;
     if (remainingTime <= 0) {
-      clearInterval(timerInterval);
-      alert("Incorrect letters: " + incorrectCount);
+      finishGame("timeout");
     }
   }, 1000);
 }
@@ -105,7 +117,6 @@ function handleKey(char) {
 
   if (!timerStarted) {
     timerStarted = true;
-    startTime = Date.now();
     startTimer();
     document.body.classList.add("typing-started");
   }
@@ -121,59 +132,13 @@ function handleKey(char) {
   }
 
   currentIndex++;
-  // Проверка: если пользователь достиг конца текста — finishGame("completed")
+  updateCursor();
+
   if (currentIndex >= letters.length) {
     finishGame("completed");
   }
-  updateCursor();
-}
-function finishGame(reason) {
-  endTime = Date.now();
-  clearInterval(timerInterval);
-
-  // Подсчитываем статистику
-  const totalTimeSec = (endTime - startTime) / 1000;
-  const letters = document.querySelectorAll(".letter");
-  const typedChars = currentIndex; 
-    // либо = total символов (или currentIndex, зависящий от того, как считаешь)
-  let correctChars = 0;
-  letters.forEach(letter => {
-    if (letter.classList.contains("correct")) {
-      correctChars++;
-    }
-  });
-
-  const accuracy = (correctChars / typedChars) * 100 || 0;
-  // WPM: количество символов / 5 / (totalTimeSec / 60)
-  const wpm = (typedChars / 5) / (totalTimeSec / 60) || 0;
-
-  // Выводим в панель
-  document.getElementById("wpmValue").textContent = "WPM: " + wpm.toFixed(1);
-  document.getElementById("accValue").textContent = "Accuracy: " + accuracy.toFixed(1) + "%";
-  document.getElementById("timeValue").textContent = "Time: " + totalTimeSec.toFixed(1) + "s";
-
-  // Показываем панель
-  const resultPanel = document.getElementById("resultPanel");
-  resultPanel.style.display = "flex";
 }
 
-// В таймере (startTimer) если время вышло — вызывать finishGame("timeout")
-
-function startTimer() {
-  timerInterval = setInterval(() => {
-    remainingTime--;
-    timerDisplay.textContent = remainingTime;
-    if (remainingTime <= 0) {
-      finishGame("timeout");
-    }
-  }, 1000);
-}
-
-// При нажатии на кнопку «Закрыть» / «Restart» — скрыть панель и сбросить игру
-document.getElementById("closeResultBtn").onclick = () => {
-  document.getElementById("resultPanel").style.display = "none";
-  resetGame();
-};
 function handleBackspace() {
   if (currentIndex === 0) return;
   currentIndex--;
@@ -183,7 +148,6 @@ function handleBackspace() {
   updateCursor();
 }
 
-// Основной обработчик перед вводом (beforeinput) для contenteditable
 hiddenInput.addEventListener("beforeinput", (e) => {
   if (e.inputType === "deleteContentBackward") {
     handleBackspace();
@@ -194,7 +158,6 @@ hiddenInput.addEventListener("beforeinput", (e) => {
   setCaretToEnd(hiddenInput);
 });
 
-// Резервный обработчик keydown (для iOS и ПК)
 hiddenInput.addEventListener("keydown", (e) => {
   if (e.key === "Backspace") {
     e.preventDefault();
@@ -207,7 +170,65 @@ hiddenInput.addEventListener("keydown", (e) => {
   setCaretToEnd(hiddenInput);
 });
 
-////////////////// Режимы переключения ////////////////////
+// Функция для завершения игры – вызовется при достижении конца текста или по таймеру
+function finishGame(reason) {
+  endTime = Date.now();
+  clearInterval(timerInterval);
+  const totalTimeSec = (endTime - startTime) / 1000;
+  const letters = document.querySelectorAll(".letter");
+  const typedChars = currentIndex; // сколько символов набрано
+
+  let correctChars = 0;
+  letters.forEach(letter => {
+    if (letter.classList.contains("correct")) correctChars++;
+  });
+  const accuracy = typedChars > 0 ? (correctChars / typedChars) * 100 : 0;
+  const wpm = typedChars > 0 ? (typedChars / 5) / (totalTimeSec / 60) : 0;
+
+  // Выводим результаты в панели
+  document.getElementById("wpmValue").textContent = "WPM: " + wpm.toFixed(1);
+  document.getElementById("accValue").textContent = "Accuracy: " + accuracy.toFixed(1) + "%";
+  document.getElementById("timeValue").textContent = "Time: " + totalTimeSec.toFixed(1) + "s";
+
+  // Отображаем символ: если reason === "completed" – птичка, если "timeout" – крестик
+  const symbolEl = document.getElementById("resultSymbol");
+  if (reason === "completed") {
+    // Можно использовать эмодзи птички, например:
+    symbolEl.textContent = "✅";
+  } else if (reason === "timeout") {
+    symbolEl.textContent = "❌";
+  }
+
+  document.getElementById("resultPanel").style.display = "flex";
+}
+
+// Обработчик закрытия панели результата
+document.getElementById("closeResultBtn").onclick = function() {
+  document.getElementById("resultPanel").style.display = "none";
+  resetGame();
+};
+
+function resetGame() {
+  timerStarted = false;
+  clearInterval(timerInterval);
+  currentIndex = 0;
+  incorrectCount = 0;        // сброс неправильных букв
+  remainingTime = defaultTime; // <-- восстанавливаем время до defaultTime
+  document.body.classList.remove("typing-started");
+  initText();
+  focusInput();
+}
+// Обработчик для кнопки закрытия панели результата
+document.getElementById("closeResultBtn").addEventListener("click", () => {
+  // Скрываем панель результата
+  document.getElementById("resultPanel").style.display = "none";
+  // Восстанавливаем время
+  remainingTime = defaultTime;
+  timerDisplay.textContent = defaultTime;
+  // Перезапускаем игру (это может включать resetGame)
+  resetGame();
+});
+
 function renderModeOptions() {
   const container = document.getElementById("modeOptions");
   container.innerHTML = "";
@@ -239,7 +260,7 @@ function renderModeOptions() {
         timerDisplay.textContent = val;
       } else if (gameMode === "words") {
         wordCount = val;
-        // Дополнительная логика для режима words, если требуется
+        // Дополнительная логика для режима слов, если требуется
       }
     };
     container.appendChild(btn);
@@ -255,16 +276,6 @@ function switchGameMode(mode) {
   resetGame();
 }
 
-function resetGame() {
-  timerStarted = false;
-  clearInterval(timerInterval);
-  currentIndex = 0;
-  incorrectCount = 0;
-  document.body.classList.remove("typing-started");
-  initText();
-  focusInput();
-}
-
 document.querySelectorAll("#gameModes button").forEach(btn => {
   btn.onclick = () => switchGameMode(btn.dataset.mode);
 });
@@ -274,8 +285,6 @@ initText();
 
 textContainer.addEventListener("click", focusInput);
 textContainer.addEventListener("touchstart", focusInput);
-// document.addEventListener("click", focusInput);
-
 
 hiddenInput.addEventListener("blur", blurInput);
 focusInput();

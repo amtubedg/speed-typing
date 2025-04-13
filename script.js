@@ -1,4 +1,4 @@
-const sampleText = "Axper gri tenami de la";
+const sampleText = "Axper gri tenami de la eeee ara e chgitem e, kroasannery halum en manric";
 const placeholder = "\u200B";  // zero-width space
 
 let currentIndex = 0;
@@ -64,6 +64,8 @@ function initText() {
   initInput();
 }
 
+let lastValidTop = null;
+
 function updateCursor() {
   document.querySelectorAll(".letter").forEach(el => el.classList.remove("active"));
   const letters = document.querySelectorAll(".letter");
@@ -74,13 +76,19 @@ function updateCursor() {
     current.classList.add("active");
 
     const rect = current.getBoundingClientRect();
-    const parentRect = textContainer.getBoundingClientRect();
+
+    // Сохраняем реальную позицию первой строки
+    if (lastValidTop === null) {
+      lastValidTop = rect.top;
+    }
+
+    // Если символ ниже предыдущего — обновляем курсор вниз
+    if (rect.top > lastValidTop) {
+      lastValidTop = rect.top;
+    }
 
     cursor.style.left = `${rect.left}px`;
-
-    // Используем высоту ближайшей строки
-    const baseLine = parentRect.top+5; // 30 — примерно высота строки, можно подогнать
-    cursor.style.top = `${baseLine}px`;
+    cursor.style.top = `${lastValidTop}px`; // остаётся на строке или переходит вниз
     cursor.style.height = `${rect.height}px`;
     cursor.style.display = "block";
   } else {
@@ -213,6 +221,7 @@ function resetGame() {
   clearInterval(timerInterval);
   currentIndex = 0;
   incorrectCount = 0;        // сброс неправильных букв
+  lastValidTop = null;
   remainingTime = defaultTime; // <-- восстанавливаем время до defaultTime
   document.body.classList.remove("typing-started");
   initText();

@@ -1,4 +1,4 @@
-const sampleText = "Axper gri tenami de la eeee ara e chgitem e, kroasannery halum en manric";
+const sampleText = "The quick brown fox jumps over the lazy dog. This is a typing test. Let's see how fast you can type this text without making mistakes.";
 const placeholder = "\u200B";  // zero-width space
 
 let currentIndex = 0;
@@ -38,31 +38,39 @@ function initText() {
   currentIndex = 0;
 
   const words = sampleText.split(" ");
+
   words.forEach((word, i) => {
-    const wordSpan = document.createElement("span");
-    wordSpan.classList.add("wordContainer");
+    // Создаём контейнер для "слово + пробел"
+    const groupSpan = document.createElement("span");
+    groupSpan.classList.add("wordGroup");
+    // Не даём браузеру разрывать этот блок внутри
+    groupSpan.style.whiteSpace = "nowrap";
 
+    // По буквам добавляем символы самого слова
     for (let letter of word) {
-      const span = document.createElement("span");
-      span.classList.add("letter", "pending");
-      span.textContent = letter;
-      wordSpan.appendChild(span);
+      const letterSpan = document.createElement("span");
+      letterSpan.classList.add("letter", "pending");
+      letterSpan.textContent = letter;
+      groupSpan.appendChild(letterSpan);
     }
 
-    textContainer.appendChild(wordSpan);
-
+    // Если это не последнее слово, добавляем пробел как «букву»
+    // но в тот же блок, чтобы слово и пробел были «склеены»
     if (i < words.length - 1) {
-      const space = document.createElement("span");
-      space.classList.add("letter", "pending", "space");
-      // Используем обычный пробел
-      space.textContent = " ";
-      textContainer.appendChild(space);
+      const spaceSpan = document.createElement("span");
+      spaceSpan.classList.add("letter", "pending", "space");
+      spaceSpan.textContent = " "; 
+      groupSpan.appendChild(spaceSpan);
     }
+
+    // И кладём готовый блок в textContainer
+    textContainer.appendChild(groupSpan);
   });
 
   updateCursor();
   initInput();
 }
+
 
 let lastValidTop = null;
 
@@ -174,12 +182,12 @@ function finishGame(reason) {
   // Выводим результаты в панели
   document.getElementById("wpmValue").textContent = "WPM: " + wpm.toFixed(1);
   document.getElementById("accValue").textContent = "Accuracy: " + accuracy.toFixed(1) + "%";
+  document.getElementById("errorValue").textContent = "Errors: " + incorrectCount; // вывод количества ошибок
   document.getElementById("timeValue").textContent = "Time: " + totalTimeSec.toFixed(1) + "s";
 
   // Отображаем символ: если reason === "completed" – птичка, если "timeout" – крестик
   const symbolEl = document.getElementById("resultSymbol");
   if (reason === "completed") {
-    // Можно использовать эмодзи птички, например:
     symbolEl.textContent = "✅";
   } else if (reason === "timeout") {
     symbolEl.textContent = "❌";
@@ -187,6 +195,7 @@ function finishGame(reason) {
 
   document.getElementById("resultPanel").style.display = "flex";
 }
+
 
 // Обработчик закрытия панели результата
 document.getElementById("closeResultBtn").onclick = function() {
@@ -198,9 +207,9 @@ function resetGame() {
   timerStarted = false;
   clearInterval(timerInterval);
   currentIndex = 0;
-  incorrectCount = 0;        // сброс неправильных букв
+  incorrectCount = 0;  // Сброс ошибок
   lastValidTop = null;
-  remainingTime = defaultTime; // <-- восстанавливаем время до defaultTime
+  remainingTime = defaultTime; // восстанавливаем время до defaultTime
   document.body.classList.remove("typing-started");
   initText();
   focusInput();

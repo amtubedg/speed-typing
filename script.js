@@ -20,6 +20,7 @@ const timerDisplay = document.getElementById("timer");
 const hiddenInput = document.getElementById("hiddenInput");
 
 focusInput();
+
 function setCaretToEnd(el) {
   const range = document.createRange();
   range.selectNodeContents(el);
@@ -85,11 +86,11 @@ function updateCursor() {
 
 
 function focusInput() {
-  setTimeout(() => {
-    hiddenInput.focus({ preventScroll: true });
-    setCaretToEnd(hiddenInput);
-  }, 0);
+  // УБИРАЕМ setTimeout
+  hiddenInput.focus({ preventScroll: true });
+  setCaretToEnd(hiddenInput);
 }
+
 
 function blurInput() {
   document.body.classList.remove('noscroll');

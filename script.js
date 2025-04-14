@@ -335,8 +335,10 @@ renderModeOptions();
 initText();
 
 textContainer.addEventListener("click", () => {
-  resetGame(true); // или просто resetGame()
-  focusInput();
+  if (!timerStarted) {
+    resetGame(true); // игра не начата — сброс и запуск
+  }
+  focusInput(); // всегда фокусируем
 });
 
 textContainer.addEventListener("touchstart", (e) => {

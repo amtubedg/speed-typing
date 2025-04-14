@@ -185,39 +185,47 @@ hiddenInput.addEventListener("keydown", (e) => {
   setCaretToEnd(hiddenInput);
 });
 
-// Функция для завершения игры – вызовется при достижении конца текста или по таймеру
 function finishGame(reason) {
-  gameEnded = true;
   endTime = Date.now();
   clearInterval(timerInterval);
-  closeKeyboard();
+  gameEnded = true;
+
+  // Закрываем клавиатуру жёстко перед всем
+  hiddenInput.blur();
+  window.getSelection()?.removeAllRanges();
+
   const totalTimeSec = (endTime - startTime) / 1000;
   const letters = document.querySelectorAll(".letter");
-  const typedChars = currentIndex; // сколько символов набрано
+  const typedChars = currentIndex;
 
   let correctChars = 0;
   letters.forEach(letter => {
     if (letter.classList.contains("correct")) correctChars++;
   });
+
   const accuracy = typedChars > 0 ? (correctChars / typedChars) * 100 : 0;
   const wpm = typedChars > 0 ? (typedChars / 5) / (totalTimeSec / 60) : 0;
 
-  // Выводим результаты в панели
   document.getElementById("wpmValue").textContent = "WPM: " + wpm.toFixed(1);
   document.getElementById("accValue").textContent = "Accuracy: " + accuracy.toFixed(1) + "%";
-  document.getElementById("errorValue").textContent = "Errors: " + incorrectCount; // вывод количества ошибок
+  document.getElementById("errorValue").textContent = "Errors: " + incorrectCount;
   document.getElementById("timeValue").textContent = "Time: " + totalTimeSec.toFixed(1) + "s";
 
-  // Отображаем символ: если reason === "completed" – птичка, если "timeout" – крестик
   const symbolEl = document.getElementById("resultSymbol");
-  if (reason === "completed") {
-    symbolEl.textContent = "✅";
-  } else if (reason === "timeout") {
-    symbolEl.textContent = "❌";
-  }
-  
-  document.getElementById("resultPanel").style.display = "flex";
+  symbolEl.textContent = reason === "completed" ? "✅" : "❌";
+
+  // Плавно показать с анимацией
+  const panel = document.getElementById("resultPanel");
+  const content = document.getElementById("resultContent");
+
+  panel.classList.remove("hide");
+  content.classList.remove("hide");
+
+  panel.classList.add("show");
+  content.classList.add("show");
+  panel.style.display = "flex";
 }
+
 
 
 

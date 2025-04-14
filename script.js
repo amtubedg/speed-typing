@@ -316,7 +316,8 @@ document.getElementById("closeResultBtn").addEventListener("click", () => {
 
     remainingTime = defaultTime;
     timerDisplay.textContent = formatTime(remainingTime);
-    resetGame(false); // не открывать клавиатуру после закрытия
+    resetGame(true);      // ✅ сброс и установка курсора
+    focusInput();         // ✅ открываем клавиатуру
   }, 300);
 });
 

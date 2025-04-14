@@ -73,6 +73,7 @@ body {
   
   /* Таймер */
   #timer {
+    color: #FFD700;
     font-size: clamp(2rem, 5vw, 4rem);
     margin-bottom: 20px;
     user-select: none;

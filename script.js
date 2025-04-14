@@ -198,11 +198,14 @@ function finishGame(reason) {
 }
 
 
-// Обработчик закрытия панели результата
-document.getElementById("closeResultBtn").onclick = function() {
+document.getElementById("closeResultBtn").addEventListener("click", () => {
   document.getElementById("resultPanel").style.display = "none";
-  resetGame();
-};
+  remainingTime = defaultTime;
+  timerDisplay.textContent = defaultTime;
+  resetGame(false);      // ⚠️ передаём false — НЕ ставим фокус
+  closeKeyboard();       // ✅ гарантированно закрываем клавиатуру
+});
+
 
 function resetGame(shouldSetCaret = true) {
   timerStarted = false;

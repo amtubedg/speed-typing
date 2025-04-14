@@ -19,6 +19,7 @@ const textContainer = document.getElementById("text");
 const timerDisplay = document.getElementById("timer");
 const hiddenInput = document.getElementById("hiddenInput");
 
+focusInput();
 function setCaretToEnd(el) {
   const range = document.createRange();
   range.selectNodeContents(el);
@@ -95,6 +96,7 @@ function blurInput() {
 }
 
 function startTimer() {
+  
   startTime = Date.now();
   timerInterval = setInterval(() => {
     remainingTime--;

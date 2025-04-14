@@ -274,7 +274,7 @@ function switchGameMode(mode) {
   });
   renderModeOptions();
   // hiddenInput.blur(); // убираем фокус, чтобы клавиатура закрылась
-  resetGame();       // сброс игры без вызова focusInput()
+  // resetGame();       // сброс игры без вызова focusInput()
 }
 
 

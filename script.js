@@ -204,19 +204,18 @@ document.getElementById("closeResultBtn").onclick = function() {
   resetGame();
 };
 
-function resetGame(shouldFocus = true) {
+function resetGame() {
   timerStarted = false;
   clearInterval(timerInterval);
   currentIndex = 0;
-  incorrectCount = 0;  // сброс ошибок
+  incorrectCount = 0;
   lastValidTop = null;
-  remainingTime = defaultTime; // восстанавливаем время до defaultTime
+  remainingTime = defaultTime;
   document.body.classList.remove("typing-started");
   initText();
-  if (shouldFocus) {
-    focusInput();  // Открывать клавиатуру только если нужно
-  }
+  // Никакого вызова focusInput() здесь!
 }
+
 
 
 // Обработчик для кнопки закрытия панели результата
@@ -274,9 +273,10 @@ function switchGameMode(mode) {
     btn.classList.toggle("active", btn.dataset.mode === mode);
   });
   renderModeOptions();
-  hiddenInput.blur();  // убираем фокус с input, если он был установлен
-  resetGame(false);    // вызываем сброс игры без открытия клавиатуры
+  hiddenInput.blur(); // убираем фокус, чтобы клавиатура закрылась
+  resetGame();       // сброс игры без вызова focusInput()
 }
+
 
 
 

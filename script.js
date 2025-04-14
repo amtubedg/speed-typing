@@ -1,4 +1,4 @@
-const sampleText = "Garnik jan la de gri tenam inchqan arag karas gres es yeqa texty, ete karas arag gres halal ylni qez";
+const sampleText = "The quick brown";
 const placeholder = "\u200B";  // zero-width space
 
 let gameEnded = false;

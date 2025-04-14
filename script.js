@@ -260,20 +260,18 @@ function renderModeOptions() {
     });
     
     btn.onclick = () => {
-      hiddenInput.blur(); // ⬅️ сбрасываем фокус при выборе времени или слов
-    
       document.querySelectorAll("#modeOptions button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-    
+
       if (gameMode === "time") {
         defaultTime = val;
         remainingTime = val;
         timerDisplay.textContent = val;
       } else if (gameMode === "words") {
         wordCount = val;
+        // Дополнительная логика для режима слов, если требуется
       }
     };
-    
     container.appendChild(btn);
   });
 }
@@ -284,12 +282,10 @@ function switchGameMode(mode) {
   document.querySelectorAll("#gameModes button").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.mode === mode);
   });
-
-  hiddenInput.blur(); // ⬅️ сбрасываем фокус, чтобы клавиатура закрылась
   renderModeOptions();
-  resetGame(); // не вызывает focusInput
+  // hiddenInput.blur(); // убираем фокус, чтобы клавиатура закрылась
+  resetGame();       // сброс игры без вызова focusInput()
 }
-
 
 
 

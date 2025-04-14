@@ -2,6 +2,9 @@
 <html lang="en">
 
 <head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Typing Trainer</title>
@@ -10,14 +13,16 @@
 
 <body>
   <!-- Панель переключения режимов -->
-  <div id="gameModes">
-    <button data-mode="time" class="active">⏱ time</button>
-    <button data-mode="words">A words</button>
-    <button data-mode="quote">❝ quote</button>
-  </div>
+  <div id="modePanel">
+    <div id="gameModes">
+      <button data-mode="time" class="active">⏱ time</button>
+      <button data-mode="words">A words</button>
+      <button data-mode="quote">❝ quote</button>
+    </div>
 
-  <div id="modeOptions">
-    <!-- опции будут добавляться JS'ом -->
+    <div id="modeOptions">
+      <!-- опции будут добавляться JS'ом -->
+    </div>
   </div>
 
   <div id="timer">30</div>
@@ -38,12 +43,15 @@
       <p id="accValue">Accuracy: 0%</p>
       <p id="errorValue">Errors: 0</p>  <!-- Добавили счётчик ошибок -->
       <p id="timeValue">Time: 0s</p>
-      <button id="closeResultBtn">Закрыть</button>
+      <button id="closeResultBtn">Close</button>
     </div>
     
   </div>
   
-  <!-- <div id="cursor"></div> -->
+  <div id="bottomControls">
+    <button id="homeBtn">🏠 Home</button>
+    <button id="resetBtn">🔁 Reset</button>
+  </div>
 
   <script src="script.js"></script>
 </body>

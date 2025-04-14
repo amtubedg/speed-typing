@@ -1,4 +1,4 @@
-const sampleText = "The quick brown";
+const sampleText = "future mirror escape gentle candle unlock forest lesson bridge moment music window secret orange mountain energy feather shadow rocket dragon smile thunder galaxy digital whisper sunrise journey cloud rainbow spark ocean magic puzzle horizon dream planet starlight notebook vision comet silence hope universe gravity discover mystery wonder";
 const placeholder = "\u200B";  // zero-width space
 
 let gameEnded = false;
@@ -107,7 +107,7 @@ function formatTime(seconds) {
 
 
 function startTimer() {
-  
+  document.getElementById("modePanel")?.classList.add("hidden");
   startTime = Date.now();
   timerInterval = setInterval(() => {
     remainingTime--;
@@ -187,6 +187,8 @@ hiddenInput.addEventListener("keydown", (e) => {
 
 function finishGame(reason) {
   endTime = Date.now();
+  document.getElementById("modePanel")?.classList.remove("hidden");
+
   clearInterval(timerInterval);
   gameEnded = true;
 
@@ -195,15 +197,20 @@ function finishGame(reason) {
   const typedChars = currentIndex;
 
   let correctChars = 0;
-  letters.forEach(letter => {
-    if (letter.classList.contains("correct")) correctChars++;
-  });
+let incorrectChars = 0;
+letters.forEach(letter => {
+  if (letter.classList.contains("correct")) correctChars++;
+  if (letter.classList.contains("incorrect")) incorrectChars++;
+});
 
   const accuracy = typedChars > 0 ? (correctChars / typedChars) * 100 : 0;
   const wpm = typedChars > 0 ? (typedChars / 5) / (totalTimeSec / 60) : 0;
 
   document.getElementById("wpmValue").textContent = "WPM: " + wpm.toFixed(1);
   document.getElementById("accValue").textContent = "Accuracy: " + accuracy.toFixed(1) + "%";
+  document.getElementById("accValue").title =
+  `${accuracy.toFixed(2)}%\n${correctChars} correct\n${incorrectChars} incorrect`;
+
   document.getElementById("errorValue").textContent = "Errors: " + incorrectCount;
   document.getElementById("timeValue").textContent = "Time: " + totalTimeSec.toFixed(1) + "s";
 
@@ -235,6 +242,8 @@ function finishGame(reason) {
 
 
 function resetGame(shouldSetCaret = true) {
+  document.getElementById("modePanel")?.classList.remove("hidden");
+
   gameEnded = false;
   timerStarted = false;
   clearInterval(timerInterval);
@@ -375,6 +384,31 @@ function closeKeyboard() {
   console.log("Keyboard closed");
 }
 
+// HOME — просто возвращаем на главный экран
+document.getElementById("homeBtn").addEventListener("click", () => {
+  document.getElementById("modePanel").classList.remove("hidden");
+  document.getElementById("resultPanel").style.display = "none";
+
+  // ⬇️ Сброс таймера и режима
+  // defaultTime = defaultTime; // или 30, или что угодно по умолчанию
+  remainingTime = defaultTime;
+  timerDisplay.textContent = formatTime(defaultTime);
+
+  resetGame(false); // без автофокуса
+  closeKeyboard();
+});
+
+
+// RESET — сбрасываем с новым текстом
+document.getElementById("resetBtn").addEventListener("click", () => {
+  // можно обновить sampleText здесь, если у тебя массив
+  // sampleText = getRandomText();
+
+  remainingTime = defaultTime;
+  timerDisplay.textContent = formatTime(defaultTime);
+  resetGame(true);
+  focusInput(); // откроем клавиатуру для новой игры
+});
 
 
 document.querySelectorAll("#gameModes button").forEach(btn => {

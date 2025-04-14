@@ -2,12 +2,13 @@ body {
     margin: 0;
     background: #323437;
     color: #fff;
-    font-family: "Roboto Mono", monospace;
+    font-family: "Roboto Mono", "Roboto Mono", "Vazirmatn", monospace;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
     height: 100vh;
+    margin-bottom: 20px;
     box-sizing: border-box;
   }
   
@@ -30,7 +31,7 @@ body {
   #modeOptions button {
     background: #2c2c2c;
     color: #888;
-    font-family: inherit;
+    font-family: "Roboto Mono", "Roboto Mono", "Vazirmatn", monospace;
     font-size: 1rem;
     font-weight: 550;
     padding: 6px 12px;
@@ -39,6 +40,18 @@ body {
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
   }
+  
+  #modePanel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5x; /* расстояние между блоками */
+    margin-top: 30px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
 
   #cursor {
     position: fixed;
@@ -67,12 +80,17 @@ body {
   
   /* Контейнер для текста */
   #text {
-    font-size: 24px;
+    font-family: "Roboto Mono", monospace;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 35px;
     line-height: 1.2;
-    max-width: 100%;
+    max-width: 80%;
     margin: 0 auto;
     padding: 0 50px;
     text-align: left;
+    margin-bottom: 30px;
     letter-spacing: 0.03em;
     white-space: pre-wrap; /* Сохраняет пробелы и переносы строк */
     overflow-wrap: break-word; /* Переносит длинные слова */
@@ -114,7 +132,7 @@ body {
   
   .letter.space {
     display: inline-block; /* чтобы элемент занимал собственное пространство */
-    min-width: 0.5em;      /* задаёт минимальную ширину для пробела */
+    min-width: 0.7em;      /* задаёт минимальную ширину для пробела */
     height: 1.2em;         /* та же высота, что и у букв */
     line-height: 1.2em;     /* чтобы текст внутри (если отображается символ) был выровнен */
     vertical-align: bottom; 
@@ -251,3 +269,30 @@ body {
   from { opacity: 1; transform: translateY(0) scale(1); }
   to   { opacity: 0; transform: translateY(40px) scale(0.95); }
 }
+
+#modePanel.hidden {
+  display: none;
+}
+
+#bottomControls {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+#bottomControls button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #444;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#bottomControls button:hover {
+  background-color: #666;
+}
+

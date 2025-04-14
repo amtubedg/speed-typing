@@ -220,13 +220,6 @@ function finishGame(reason) {
 }
 
 
-document.getElementById("closeResultBtn").addEventListener("click", () => {
-  document.getElementById("resultPanel").style.display = "none";
-  remainingTime = defaultTime;
-  timerDisplay.textContent = formatTime(remainingTime);;
-  resetGame(false);      // ⚠️ передаём false — НЕ ставим фокус
-  closeKeyboard();       // ✅ гарантированно закрываем клавиатуру
-});
 
 
 function resetGame(shouldSetCaret = true) {
@@ -280,14 +273,34 @@ function resetGame(shouldSetCaret = true) {
 
 // Обработчик для кнопки закрытия панели результата
 document.getElementById("closeResultBtn").addEventListener("click", () => {
-  // Скрываем панель результата
-  document.getElementById("resultPanel").style.display = "none";
-  // Восстанавливаем время
-  remainingTime = defaultTime;
-  timerDisplay.textContent = formatTime(remainingTime);
-  // Перезапускаем игру (это может включать resetGame)
-  resetGame();
+  const panel = document.getElementById("resultPanel");
+  const content = document.getElementById("resultContent");
+
+  // Убираем классы показа
+  panel.classList.remove("show");
+  content.classList.remove("show");
+
+  // Добавляем анимации скрытия
+  panel.classList.add("hide");
+  content.classList.add("hide");
+
+  // Гарантированно закрываем клавиатуру
+  closeKeyboard();
+
+  // Через 300 мс (после анимации) — скрываем полностью и сбрасываем
+  setTimeout(() => {
+    panel.style.display = "none";
+    panel.classList.remove("hide");
+    content.classList.remove("hide");
+
+    remainingTime = defaultTime;
+    timerDisplay.textContent = formatTime(remainingTime);
+    resetGame(false); // не открывать клавиатуру после закрытия
+  }, 300);
 });
+
+
+
 
 function renderModeOptions() {
   const container = document.getElementById("modeOptions");

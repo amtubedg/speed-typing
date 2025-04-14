@@ -151,6 +151,7 @@ body {
   
   /* Стили для панели результата */
   #resultPanel {
+    animation: fadeIn 0.3s ease forwards;
     position: fixed;
     top: 0;
     left: 0;
@@ -171,6 +172,7 @@ body {
     max-width: 400px;
     width: 90%;
     text-align: center;
+    animation: slideUp 0.3s ease forwards;
   }
   
   #resultContent h2 {
@@ -209,3 +211,43 @@ body {
     display: inline-block;
     /* white-space: nowrap; <-- уже в JS, на всякий случай можно продублировать */
   }
+
+  /* Начальное состояние (когда видимо) */
+#resultPanel.show {
+  display: flex;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+#resultContent.show {
+  animation: slideUp 0.3s ease forwards;
+}
+
+/* При закрытии */
+#resultPanel.hide {
+  animation: fadeOut 0.3s ease forwards;
+}
+
+#resultContent.hide {
+  animation: slideDown 0.3s ease forwards;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes slideDown {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(40px) scale(0.95); }
+}

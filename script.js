@@ -273,7 +273,7 @@ function switchGameMode(mode) {
     btn.classList.toggle("active", btn.dataset.mode === mode);
   });
   renderModeOptions();
-  hiddenInput.blur(); // убираем фокус, чтобы клавиатура закрылась
+  // hiddenInput.blur(); // убираем фокус, чтобы клавиатура закрылась
   resetGame();       // сброс игры без вызова focusInput()
 }
 

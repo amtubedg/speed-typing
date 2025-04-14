@@ -132,24 +132,22 @@ body {
   /* Стили для обёртки скрытого input-а */
   #inputWrapper {
     position: absolute;
-    top: 0;         /* размещаем вверху экрана */
-    left: 0;        /* размещаем слева */
-    width: 50px;    /* достаточно, чтобы элемент был "ощутимым" для iOS */
-    height: 50px;
-    opacity: 0;     /* полностью прозрачный */
-    pointer-events: auto; /* чтобы элемент получал события */
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    opacity: 0;             /* полностью прозрачный */
+    pointer-events: auto;   /* важно, чтобы мог получить фокус */
   }
   
   /* Скрытый input: contenteditable */
   #hiddenInput {
     width: 100%;
-  height: 100%;
-    opacity: 0.01; /* немного видно, чтобы iOS позволял фокус */
-    color: transparent;
+    height: 100%;
     background: transparent;
-    caret-color: transparent;
-    white-space: nowrap;
+    caret-color: transparent; /* если не хотите видеть курсор */
   }
+  
   
   /* Стили для панели результата */
   #resultPanel {

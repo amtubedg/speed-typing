@@ -282,7 +282,11 @@ document.querySelectorAll("#gameModes button").forEach(btn => {
 renderModeOptions();
 initText();
 
-textContainer.addEventListener("click", focusInput);
+textContainer.addEventListener('click', (e) => {
+  e.preventDefault(); // иногда помогает на iOS
+  focusInput();       // прямой вызов, без setTimeout
+});
+
 textContainer.addEventListener("touchstart", focusInput);
 
 hiddenInput.addEventListener("blur", blurInput);

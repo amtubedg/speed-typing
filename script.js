@@ -1,4 +1,4 @@
-const sampleText = "The quick brown fox jumps over the lazy dog. This is a typing test. Let's see how fast you can type this text without making mistakes.";
+const sampleText = "The quick brown";
 const placeholder = "\u200B";  // zero-width space
 
 let gameEnded = false;

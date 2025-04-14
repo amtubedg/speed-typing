@@ -190,10 +190,6 @@ function finishGame(reason) {
   clearInterval(timerInterval);
   gameEnded = true;
 
-  // Закрываем клавиатуру жёстко перед всем
-  hiddenInput.blur();
-  window.getSelection()?.removeAllRanges();
-
   const totalTimeSec = (endTime - startTime) / 1000;
   const letters = document.querySelectorAll(".letter");
   const typedChars = currentIndex;
@@ -214,17 +210,25 @@ function finishGame(reason) {
   const symbolEl = document.getElementById("resultSymbol");
   symbolEl.textContent = reason === "completed" ? "✅" : "❌";
 
-  // Плавно показать с анимацией
   const panel = document.getElementById("resultPanel");
   const content = document.getElementById("resultContent");
 
+  // Показываем панель с анимацией
   panel.classList.remove("hide");
   content.classList.remove("hide");
-
   panel.classList.add("show");
   content.classList.add("show");
   panel.style.display = "flex";
+
+  // 🔐 ГАРАНТИРОВАННОЕ ЗАКРЫТИЕ КЛАВИАТУРЫ
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      hiddenInput.blur();
+      window.getSelection()?.removeAllRanges();
+    }, 50); // Минимальная задержка — даёт сработать panel.style.display
+  });
 }
+
 
 
 

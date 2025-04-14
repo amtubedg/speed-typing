@@ -1,6 +1,7 @@
 const sampleText = "The quick brown fox jumps over the lazy dog. This is a typing test. Let's see how fast you can type this text without making mistakes.";
 const placeholder = "\u200B";  // zero-width space
 
+let gameEnded = false;
 let currentIndex = 0;
 let timerStarted = false;
 let remainingTime = 30;
@@ -94,12 +95,23 @@ function blurInput() {
   document.body.classList.remove('noscroll');
 }
 
+function formatTime(seconds) {
+  if (seconds < 60) {
+    return seconds.toString(); // просто число, если меньше 60
+  }
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}
+
+
+
 function startTimer() {
   
   startTime = Date.now();
   timerInterval = setInterval(() => {
     remainingTime--;
-    timerDisplay.textContent = remainingTime;
+    timerDisplay.textContent = formatTime(remainingTime);
     if (remainingTime <= 0) {
       finishGame("timeout");
     }
@@ -144,6 +156,10 @@ function handleBackspace() {
 }
 
 hiddenInput.addEventListener("beforeinput", (e) => {
+  if (gameEnded) {
+    e.preventDefault();
+    return;
+  }
   if (e.inputType === "deleteContentBackward") {
     handleBackspace();
   } else if (e.data) {
@@ -154,6 +170,10 @@ hiddenInput.addEventListener("beforeinput", (e) => {
 });
 
 hiddenInput.addEventListener("keydown", (e) => {
+  if (gameEnded) {
+    e.preventDefault();
+    return;
+  }
   if (e.key === "Backspace") {
     e.preventDefault();
     handleBackspace();
@@ -167,6 +187,7 @@ hiddenInput.addEventListener("keydown", (e) => {
 
 // Функция для завершения игры – вызовется при достижении конца текста или по таймеру
 function finishGame(reason) {
+  gameEnded = true;
   endTime = Date.now();
   clearInterval(timerInterval);
   const totalTimeSec = (endTime - startTime) / 1000;
@@ -201,13 +222,14 @@ function finishGame(reason) {
 document.getElementById("closeResultBtn").addEventListener("click", () => {
   document.getElementById("resultPanel").style.display = "none";
   remainingTime = defaultTime;
-  timerDisplay.textContent = defaultTime;
+  timerDisplay.textContent = formatTime(remainingTime);;
   resetGame(false);      // ⚠️ передаём false — НЕ ставим фокус
   closeKeyboard();       // ✅ гарантированно закрываем клавиатуру
 });
 
 
 function resetGame(shouldSetCaret = true) {
+  gameEnded = false;
   timerStarted = false;
   clearInterval(timerInterval);
   currentIndex = 0;
@@ -261,7 +283,7 @@ document.getElementById("closeResultBtn").addEventListener("click", () => {
   document.getElementById("resultPanel").style.display = "none";
   // Восстанавливаем время
   remainingTime = defaultTime;
-  timerDisplay.textContent = defaultTime;
+  timerDisplay.textContent = formatTime(remainingTime);
   // Перезапускаем игру (это может включать resetGame)
   resetGame();
 });
@@ -294,7 +316,7 @@ function renderModeOptions() {
       if (gameMode === "time") {
         defaultTime = val;
         remainingTime = val;
-        timerDisplay.textContent = val;
+        timerDisplay.textContent = formatTime(val);;
       } else if (gameMode === "words") {
         wordCount = val;
       }

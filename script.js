@@ -1,4 +1,4 @@
-const sampleText = "future mirror escape gentle candle unlock forest lesson bridge moment music window secret orange mountain energy feather shadow rocket dragon smile thunder galaxy digital whisper sunrise journey cloud rainbow spark ocean magic puzzle horizon dream planet starlight notebook vision comet silence hope universe gravity discover mystery wonder";
+const sampleText = "sun apple dream book cloud run forest idea moon world smart hope dance fire chill light sound smile tiger bright magic ghost rock happy plan flash open rain king power move time box blue night quick dark slow gold cat jump heart clean green storm love trust trick sweet leaf";
 const placeholder = "\u200B";  // zero-width space
 
 let gameEnded = false;

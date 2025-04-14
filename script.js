@@ -290,16 +290,18 @@ function renderModeOptions() {
     btn.onclick = () => {
       document.querySelectorAll("#modeOptions button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-
+    
       if (gameMode === "time") {
         defaultTime = val;
         remainingTime = val;
         timerDisplay.textContent = val;
       } else if (gameMode === "words") {
         wordCount = val;
-        // Дополнительная логика для режима слов, если требуется
       }
+    
+      resetGame(true); // ⬅️ Сброс игры полностью (обновляем текст, курсор, состояние)
     };
+    
     container.appendChild(btn);
   });
 }

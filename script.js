@@ -307,7 +307,7 @@ textContainer.addEventListener("touchstart", (e) => {
 });
 
 hiddenInput.addEventListener("blur", blurInput);
-focusInput();
+
 
 
 window.addEventListener("resize", () => {

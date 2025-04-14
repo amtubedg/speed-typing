@@ -251,36 +251,31 @@ function renderModeOptions() {
     btn.textContent = val;
     btn.classList.toggle("active", index === 1);
     btn.onclick = () => {
-      hiddenInput.blur(); // ⬅️ снова сбрасываем фокус при выборе параметра
-    
       document.querySelectorAll("#modeOptions button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-    
+
       if (gameMode === "time") {
         defaultTime = val;
         remainingTime = val;
         timerDisplay.textContent = val;
       } else if (gameMode === "words") {
         wordCount = val;
+        // Дополнительная логика для режима слов, если требуется
       }
     };
-    
     container.appendChild(btn);
   });
 }
 
 function switchGameMode(mode) {
-  hiddenInput.blur(); // ⬅️ СБРОС фокуса прямо перед всем
-
   gameMode = mode;
   document.querySelectorAll("#gameModes button").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.mode === mode);
   });
-
   renderModeOptions();
-  resetGame();
+  // hiddenInput.blur(); // убираем фокус, чтобы клавиатура закрылась
+  resetGame();       // сброс игры без вызова focusInput()
 }
-
 
 
 
@@ -316,6 +311,3 @@ window.addEventListener("scroll", () => {
 window.visualViewport?.addEventListener("resize", () => {
   updateCursor();
 });
-
-hiddenInput.blur();
-window.getSelection()?.removeAllRanges();

@@ -298,7 +298,7 @@ renderModeOptions();
 initText();
 
 textContainer.addEventListener("click", (e) => {
-  e.preventDefault(); // иногда помогает на iOS
+  // e.preventDefault(); // иногда помогает на iOS
   focusInput();       // прямой вызов, без setTimeout
 });
 

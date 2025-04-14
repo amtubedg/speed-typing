@@ -193,7 +193,7 @@ function finishGame(reason) {
   } else if (reason === "timeout") {
     symbolEl.textContent = "❌";
   }
-
+  closeKeyboard();
   document.getElementById("resultPanel").style.display = "flex";
 }
 
@@ -311,6 +311,16 @@ function switchGameMode(mode) {
   resetGame(false);       // сброс игры без вызова focusInput()
 }
 
+function openKeyboard() {
+  hiddenInput.focus({ preventScroll: true });
+  setCaretToEnd(hiddenInput);
+}
+
+function closeKeyboard() {
+  hiddenInput.blur();
+  window.getSelection()?.removeAllRanges(); // гарантированно убирает курсор
+  console.log("Keyboard closed");
+}
 
 
 

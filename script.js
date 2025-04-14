@@ -204,7 +204,7 @@ document.getElementById("closeResultBtn").onclick = function() {
   resetGame();
 };
 
-function resetGame() {
+function resetGame(shouldSetCaret = true) {
   timerStarted = false;
   clearInterval(timerInterval);
   currentIndex = 0;
@@ -212,9 +212,43 @@ function resetGame() {
   lastValidTop = null;
   remainingTime = defaultTime;
   document.body.classList.remove("typing-started");
-  initText();
-  // Никакого вызова focusInput() здесь!
+
+  textContainer.innerHTML = "";
+  currentIndex = 0;
+
+  const words = sampleText.split(" ");
+  words.forEach((word, i) => {
+    const groupSpan = document.createElement("span");
+    groupSpan.classList.add("wordGroup");
+    groupSpan.style.whiteSpace = "nowrap";
+
+    for (let letter of word) {
+      const letterSpan = document.createElement("span");
+      letterSpan.classList.add("letter", "pending");
+      letterSpan.textContent = letter;
+      groupSpan.appendChild(letterSpan);
+    }
+
+    if (i < words.length - 1) {
+      const spaceSpan = document.createElement("span");
+      spaceSpan.classList.add("letter", "pending", "space");
+      spaceSpan.textContent = " ";
+      groupSpan.appendChild(spaceSpan);
+    }
+
+    textContainer.appendChild(groupSpan);
+  });
+
+  updateCursor();
+
+  if (shouldSetCaret) {
+    initInput(); // только если разрешено
+  } else {
+    hiddenInput.blur(); // сброс на всякий случай
+    window.getSelection()?.removeAllRanges();
+  }
 }
+
 
 
 
@@ -274,7 +308,7 @@ function switchGameMode(mode) {
   });
   renderModeOptions();
   // hiddenInput.blur(); // убираем фокус, чтобы клавиатура закрылась
-  // resetGame();       // сброс игры без вызова focusInput()
+  resetGame(false);       // сброс игры без вызова focusInput()
 }
 
 
@@ -287,9 +321,9 @@ document.querySelectorAll("#gameModes button").forEach(btn => {
 renderModeOptions();
 initText();
 
-textContainer.addEventListener("click", (e) => {
-  e.preventDefault(); // иногда помогает на iOS
-  focusInput();       // прямой вызов, без setTimeout
+textContainer.addEventListener("click", () => {
+  resetGame(true); // или просто resetGame()
+  focusInput();
 });
 
 textContainer.addEventListener("touchstart", (e) => {

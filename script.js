@@ -250,15 +250,6 @@ function renderModeOptions() {
     const btn = document.createElement("button");
     btn.textContent = val;
     btn.classList.toggle("active", index === 1);
-    
-    // Предотвращаем смену фокуса при нажатии
-    btn.addEventListener("mousedown", (e) => {
-      e.preventDefault();
-    });
-    btn.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-    });
-    
     btn.onclick = () => {
       document.querySelectorAll("#modeOptions button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
@@ -275,7 +266,6 @@ function renderModeOptions() {
     container.appendChild(btn);
   });
 }
-
 
 function switchGameMode(mode) {
   gameMode = mode;

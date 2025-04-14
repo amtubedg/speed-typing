@@ -275,8 +275,9 @@ function switchGameMode(mode) {
     btn.classList.toggle("active", btn.dataset.mode === mode);
   });
   renderModeOptions();
-  resetGame();
+  resetGame(false);  // Передаём false, чтобы клавиатура не открывалась
 }
+
 
 document.querySelectorAll("#gameModes button").forEach(btn => {
   btn.onclick = () => switchGameMode(btn.dataset.mode);

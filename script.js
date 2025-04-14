@@ -190,6 +190,7 @@ function finishGame(reason) {
   gameEnded = true;
   endTime = Date.now();
   clearInterval(timerInterval);
+  closeKeyboard();
   const totalTimeSec = (endTime - startTime) / 1000;
   const letters = document.querySelectorAll(".letter");
   const typedChars = currentIndex; // сколько символов набрано
@@ -214,7 +215,7 @@ function finishGame(reason) {
   } else if (reason === "timeout") {
     symbolEl.textContent = "❌";
   }
-  closeKeyboard();
+  
   document.getElementById("resultPanel").style.display = "flex";
 }
 

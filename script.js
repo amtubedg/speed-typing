@@ -207,6 +207,7 @@ document.getElementById("closeResultBtn").onclick = function() {
 };
 
 function resetGame(shouldFocus = true) {
+  console.log(shouldFocus)
   timerStarted = false;
   clearInterval(timerInterval);
   currentIndex = 0;
@@ -215,9 +216,9 @@ function resetGame(shouldFocus = true) {
   remainingTime = defaultTime; // восстанавливаем время до defaultTime
   document.body.classList.remove("typing-started");
   initText();
-  if (shouldFocus) {
-    focusInput();
-  }
+  // if (shouldFocus) {
+  //   focusInput();
+  // }
 }
 
 // Обработчик для кнопки закрытия панели результата

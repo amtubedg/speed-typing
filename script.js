@@ -289,15 +289,15 @@ initText();
 
 textContainer.addEventListener("click", (e) => {
   e.preventDefault(); // иногда помогает на iOS
-  focusInput();       // прямой вызов, без setTimeout
+  // focusInput();       // прямой вызов, без setTimeout
 });
 
 textContainer.addEventListener("touchstart", (e) => {
-  focusInput();
+  // focusInput();
 });
 
 hiddenInput.addEventListener("blur", blurInput);
-focusInput();
+// focusInput();
 
 
 window.addEventListener("resize", () => {

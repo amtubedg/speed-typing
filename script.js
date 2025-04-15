@@ -258,8 +258,8 @@ letters.forEach(letter => {
   document.getElementById("errorValue").textContent = "Errors: " + incorrectCount;
   document.getElementById("timeValue").textContent = "Time: " + totalTimeSec.toFixed(1) + "s";
 
-  const symbolEl = document.getElementById("resultSymbol");
-  symbolEl.textContent = reason === "completed" ? "✅" : "❌";
+  // const symbolEl = document.getElementById("resultSymbol");
+  // symbolEl.textContent = reason === "completed" ? "✅" : "❌";
 
   const panel = document.getElementById("resultPanel");
   const content = document.getElementById("resultContent");
@@ -340,7 +340,7 @@ if (gameMode === "words" && wordCounterEl) {
     remainingTime = defaultTime;
     timerDisplay.textContent = formatTime(remainingTime);
     resetGame(true);      // ✅ сброс и установка курсора
-    focusInput();         // ✅ открываем клавиатуру
+    // focusInput();         // ✅ открываем клавиатуру
   }, 300);
 });
 
@@ -467,7 +467,7 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   remainingTime = defaultTime;
   timerDisplay.textContent = formatTime(defaultTime);
   resetGame(true);
-  focusInput(); // откроем клавиатуру для новой игры
+  // focusInput(); // откроем клавиатуру для новой игры
 });
 
 

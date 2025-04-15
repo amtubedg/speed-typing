@@ -41,6 +41,11 @@ body {
     transition: background 0.2s, color 0.2s;
   }
   
+  #gameModes button.active,
+  #modeOptions button.active {
+    background: #FFD700;
+    color: #000;
+  }
   #modePanel {
     display: flex;
     flex-direction: column;
@@ -53,6 +58,14 @@ body {
   }
   
 
+  #modeOptions
+  {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
   #cursor {
     position: fixed;
     width: 2px;
@@ -65,11 +78,6 @@ body {
     display: none;
   }
   
-  #gameModes button.active,
-  #modeOptions button.active {
-    background: #FFD700;
-    color: #000;
-  }
   
   /* Таймер */
   #timer {

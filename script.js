@@ -1,4 +1,5 @@
-const sampleText = "sun apple dream book cloud run forest idea moon world smart hope dance fire chill light sound smile tiger bright magic ghost rock happy plan flash open rain king power move time box blue night quick dark slow gold cat jump heart clean green storm love trust trick sweet leaf";
+let sampleText = "sun apple dream book cloud run forest idea moon world smart hope dance fire chill light sound smile tiger bright magic ghost rock happy plan flash open rain king power move time box blue night quick dark slow gold cat jump heart clean green storm love trust trick sweet leaf";
+let sampleWords = []; // массив слов
 const placeholder = "\u200B";  // zero-width space
 
 let gameEnded = false;
@@ -34,20 +35,38 @@ function initInput() {
   setCaretToEnd(hiddenInput);
 }
 
-function initText() {
+async function loadWords() {
+  const res = await fetch("words_en.txt");
+  const text = await res.text();
+  sampleWords = text.trim().split(/\s+/);
+}
+
+async function loadWordsIfNeeded() {
+  if (sampleWords.length > 0) return;
+  const res = await fetch("words_en.txt");
+  const text = await res.text();
+  sampleWords = text.trim().split(/\s+/);
+}
+
+
+async function initText() {
   textContainer.innerHTML = "";
   currentIndex = 0;
+
+  if (gameMode === "words") {
+    await loadWordsIfNeeded();
+    const shuffled = sampleWords.slice().sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, wordCount);
+    sampleText = selected.join(" ");
+  }
 
   const words = sampleText.split(" ");
 
   words.forEach((word, i) => {
-    // Создаём контейнер для "слово + пробел"
     const groupSpan = document.createElement("span");
     groupSpan.classList.add("wordGroup");
-    // Не даём браузеру разрывать этот блок внутри
     groupSpan.style.whiteSpace = "nowrap";
 
-    // По буквам добавляем символы самого слова
     for (let letter of word) {
       const letterSpan = document.createElement("span");
       letterSpan.classList.add("letter", "pending");
@@ -55,22 +74,20 @@ function initText() {
       groupSpan.appendChild(letterSpan);
     }
 
-    // Если это не последнее слово, добавляем пробел как «букву»
-    // но в тот же блок, чтобы слово и пробел были «склеены»
     if (i < words.length - 1) {
       const spaceSpan = document.createElement("span");
       spaceSpan.classList.add("letter", "pending", "space");
-      spaceSpan.textContent = " "; 
+      spaceSpan.textContent = " ";
       groupSpan.appendChild(spaceSpan);
     }
 
-    // И кладём готовый блок в textContainer
     textContainer.appendChild(groupSpan);
   });
 
   updateCursor();
   initInput();
 }
+
 
 
 let lastValidTop = null;
@@ -144,6 +161,35 @@ function handleKey(char) {
   if (currentIndex >= letters.length) {
     finishGame("completed");
   }
+
+  if (gameMode === "words") {
+    const letters = document.querySelectorAll(".letter");
+  
+    let currentWordIndex = 0;
+  
+    // Если мы достигли конца текста — значит завершили последнее слово
+    if (currentIndex >= letters.length) {
+      currentWordIndex = wordCount;
+    } else {
+      // Подсчитываем количество пробелов до текущего индекса
+      for (let i = 0; i < currentIndex; i++) {
+        if (letters[i].textContent === " ") currentWordIndex++;
+      }
+      currentWordIndex++; // добавляем +1 к счётчику для текущего слова
+    }
+  
+    const wordCounterEl = document.getElementById("wordCounter");
+    if (wordCounterEl) {
+      wordCounterEl.textContent = `${Math.min(currentWordIndex, wordCount)} / ${wordCount}`;
+    }
+  
+    if (currentWordIndex >= wordCount) {
+      finishGame("completed");
+    }
+  }
+  
+  
+  
 }
 
 function handleBackspace() {
@@ -241,7 +287,7 @@ letters.forEach(letter => {
 
 
 
-function resetGame(shouldSetCaret = true) {
+async function resetGame(shouldSetCaret = true) {
   document.getElementById("modePanel")?.classList.remove("hidden");
 
   gameEnded = false;
@@ -253,38 +299,12 @@ function resetGame(shouldSetCaret = true) {
   remainingTime = defaultTime;
   document.body.classList.remove("typing-started");
 
-  textContainer.innerHTML = "";
-  currentIndex = 0;
-
-  const words = sampleText.split(" ");
-  words.forEach((word, i) => {
-    const groupSpan = document.createElement("span");
-    groupSpan.classList.add("wordGroup");
-    groupSpan.style.whiteSpace = "nowrap";
-
-    for (let letter of word) {
-      const letterSpan = document.createElement("span");
-      letterSpan.classList.add("letter", "pending");
-      letterSpan.textContent = letter;
-      groupSpan.appendChild(letterSpan);
-    }
-
-    if (i < words.length - 1) {
-      const spaceSpan = document.createElement("span");
-      spaceSpan.classList.add("letter", "pending", "space");
-      spaceSpan.textContent = " ";
-      groupSpan.appendChild(spaceSpan);
-    }
-
-    textContainer.appendChild(groupSpan);
-  });
-
-  updateCursor();
+  await initText(); // 💡 всё создаётся в одном месте
 
   if (shouldSetCaret) {
-    initInput(); // только если разрешено
+    initInput();
   } else {
-    hiddenInput.blur(); // сброс на всякий случай
+    hiddenInput.blur();
     window.getSelection()?.removeAllRanges();
   }
 }
@@ -301,6 +321,11 @@ document.getElementById("closeResultBtn").addEventListener("click", () => {
   panel.classList.remove("show");
   content.classList.remove("show");
 
+  // Скрываем счётчик слов, если режим "words"
+  const wordCounterEl = document.getElementById("wordCounter");
+if (gameMode === "words" && wordCounterEl) {
+  wordCounterEl.textContent = `0 / ${wordCount}`;
+}
   // Добавляем анимации скрытия
   panel.classList.add("hide");
   content.classList.add("hide");
@@ -344,11 +369,22 @@ function renderModeOptions() {
   options.forEach((val, index) => {
     const btn = document.createElement("button");
     btn.textContent = val;
-    btn.classList.toggle("active", index === 1);
+    btn.classList.toggle("active", val === defaultTime || val === wordCount);
+
     btn.onclick = () => {
       document.querySelectorAll("#modeOptions button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
     
+      if (gameMode === "words") {
+        wordCount = val;
+      
+        const wordCounterEl = document.getElementById("wordCounter");
+        if (wordCounterEl) {
+          wordCounterEl.textContent = `0 / ${val}`;
+          wordCounterEl.style.display = "block";
+        }
+      }
+
       if (gameMode === "time") {
         defaultTime = val;
         remainingTime = val;
@@ -369,10 +405,35 @@ function switchGameMode(mode) {
   document.querySelectorAll("#gameModes button").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.mode === mode);
   });
+
+  // Показываем или прячем таймер
+  timerDisplay.style.display = (mode === "time") ? "block" : "none";
+
+  // Обновляем опции
   renderModeOptions();
-  // hiddenInput.blur(); // убираем фокус, чтобы клавиатура закрылась
-  resetGame(false);       // сброс игры без вызова focusInput()
+
+  // ✅ Сразу показываем счётчик для words
+  let wordCounterEl = document.getElementById("wordCounter");
+  if (!wordCounterEl) {
+    wordCounterEl = document.createElement("div");
+    wordCounterEl.id = "wordCounter";
+    wordCounterEl.style.marginBottom = "10px";
+    wordCounterEl.style.color = "#FFD700";
+    wordCounterEl.style.fontSize = "1.5rem";
+    timerDisplay.insertAdjacentElement("afterend", wordCounterEl);
+  }
+
+  if (mode === "words") {
+    wordCounterEl.style.display = "block";
+    wordCounterEl.textContent = `0 / ${wordCount}`;
+  } else {
+    wordCounterEl.style.display = "none";
+  }
+
+  resetGame(false); // сброс без фокуса
 }
+
+
 
 function openKeyboard() {
   hiddenInput.focus({ preventScroll: true });
@@ -420,11 +481,10 @@ renderModeOptions();
 initText();
 
 textContainer.addEventListener("click", () => {
-  if (!timerStarted) {
-    resetGame(true); // игра не начата — сброс и запуск
-  }
-  focusInput(); // всегда фокусируем
+  // Просто фокусируем, ничего не перезапускаем
+  focusInput();
 });
+
 
 textContainer.addEventListener("touchstart", (e) => {
   focusInput();
@@ -445,3 +505,5 @@ window.addEventListener("scroll", () => {
 window.visualViewport?.addEventListener("resize", () => {
   updateCursor();
 });
+
+loadWords();

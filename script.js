@@ -158,35 +158,33 @@ function handleKey(char) {
   currentIndex++;
   updateCursor();
 
-  if (currentIndex >= letters.length) {
-    finishGame("completed");
-  }
 
   if (gameMode === "words") {
     const letters = document.querySelectorAll(".letter");
   
-    let currentWordIndex = 0;
-  
-    // Если мы достигли конца текста — значит завершили последнее слово
-    if (currentIndex >= letters.length) {
-      currentWordIndex = wordCount;
-    } else {
-      // Подсчитываем количество пробелов до текущего индекса
-      for (let i = 0; i < currentIndex; i++) {
-        if (letters[i].textContent === " ") currentWordIndex++;
-      }
-      currentWordIndex++; // добавляем +1 к счётчику для текущего слова
+    // Подсчёт завершённых слов по пробелам
+    let completedWords = 0;
+    for (let i = 0; i < currentIndex; i++) {
+      if (letters[i].textContent === " ") completedWords++;
     }
   
+    // Если дошли до самого конца текста — добавляем последнее слово
+    const isAtEnd = currentIndex >= letters.length;
+    if (isAtEnd) completedWords++;
+  
+    // Обновляем отображение счётчика, если он есть
     const wordCounterEl = document.getElementById("wordCounter");
     if (wordCounterEl) {
-      wordCounterEl.textContent = `${Math.min(currentWordIndex, wordCount)} / ${wordCount}`;
+      wordCounterEl.textContent = `${Math.min(completedWords, wordCount)} / ${wordCount}`;
     }
   
-    if (currentWordIndex >= wordCount) {
+    // Завершение игры, только если реально все слова введены
+    if (completedWords >= wordCount && isAtEnd) {
       finishGame("completed");
+      return;
     }
   }
+  
   
   
   

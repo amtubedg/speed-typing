@@ -466,8 +466,8 @@ document.getElementById("resetBtn").addEventListener("click", () => {
 
   remainingTime = defaultTime;
   timerDisplay.textContent = formatTime(defaultTime);
-  resetGame(true);
-  closeKeyboard();
+  resetGame(false);
+  // closeKeyboard();
   // focusInput(); // откроем клавиатуру для новой игры
 });
 

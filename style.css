@@ -90,21 +90,28 @@ body {
   /* Контейнер для текста */
   #text {
     font-family: "Roboto Mono", monospace;
-    font-optical-sizing: auto;
-    font-weight: 300;
-    font-style: normal;
-    font-size: 35px;
-    line-height: 1.2;
-    max-width: 80%;
-    margin: 0 auto;
-    padding: 0 50px;
-    text-align: left;
-    margin-bottom: 30px;
+    font-size: 2.2rem;
+    line-height: 2.1rem;
     letter-spacing: 0.03em;
-    white-space: pre-wrap; /* Сохраняет пробелы и переносы строк */
-    overflow-wrap: break-word; /* Переносит длинные слова */
-    word-break: break-word; /* Совместимость с другими браузерами */
-}
+    font-weight: 300;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  
+    max-width: clamp(300px, 70vw, 1200px);
+         /* фиксированная ширина, как у monkeytype */
+    margin: 0 auto 30px auto; /* центрирует сам блок */
+    padding: 0 20px;          /* небольшой отступ */
+  
+    max-height: calc(2.4rem * 3);
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 12px;
+    transition: transform 0.15s ease-in-out;
+    /* transition: transform 0.2s ease; */
+  }
+  
+  
   
   /* Контейнер для слова */
   .wordContainer {
@@ -115,11 +122,12 @@ body {
     display: inline-block;
     position: relative;
     font-size: inherit;
-    line-height: 1.2em;
-    height: 1.2em;
+    font-size: 2.2rem;
+    line-height: 2.4rem;
+    height: 2.4rem;
     letter-spacing: 0.02em;
     opacity: 0.3;
-    vertical-align: bottom; /* добавь и сюда — равняет ВСЁ по низу */
+    vertical-align: middle; /* добавь и сюда — равняет ВСЁ по низу */
   }
  
   /* Состояния букв */
@@ -142,12 +150,13 @@ body {
   .letter.space {
     display: inline-block; /* чтобы элемент занимал собственное пространство */
     min-width: 0.7em;      /* задаёт минимальную ширину для пробела */
-    height: 1.2em;         /* та же высота, что и у букв */
-    line-height: 1.2em;     /* чтобы текст внутри (если отображается символ) был выровнен */
+    height: 2.4rem;         /* та же высота, что и у букв */
+    line-height: 2.4rem;     /* чтобы текст внутри (если отображается символ) был выровнен */
     vertical-align: bottom; 
     position: relative;
     white-space: nowrap;   /* запрещает перенос строки внутри элемента */
     overflow: hidden;      /* убираем артефакты */
+   
 }
 
   /* Анимация мигания: можно настроить по вкусу */
@@ -236,9 +245,8 @@ body {
   
   .wordGroup {
     display: inline-block;
-    /* white-space: nowrap; <-- уже в JS, на всякий случай можно продублировать */
+    white-space: nowrap;
   }
-
   /* Начальное состояние (когда видимо) */
 #resultPanel.show {
   display: flex;
@@ -303,5 +311,23 @@ body {
 
 #bottomControls button:hover {
   background-color: #666;
+}
+
+#lineScrollWrapper {
+  max-height: calc(2.4rem * 3); /* немного больше трёх строк */
+  overflow: hidden;
+  position: relative;
+  padding-bottom: 0.4rem; /* дополнительное пространство снизу */
+}
+
+
+
+.lineGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  height: 2.4rem;
+  line-height: 2.4rem;
+  box-sizing: border-box;
 }
 

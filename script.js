@@ -2,6 +2,8 @@ let sampleText = "sun apple dream book cloud run forest idea moon world smart ho
 let sampleWords = []; // массив слов
 const placeholder = "\u200B";  // zero-width space
 
+let currentLineIndex = 0;
+
 let gameEnded = false;
 let currentIndex = 0;
 let timerStarted = false;
@@ -53,7 +55,7 @@ async function initText() {
   textContainer.innerHTML = "";
   currentIndex = 0;
 
-  if (gameMode === "words") {
+  if (gameMode === "words" || gameMode === "time") {
     await loadWordsIfNeeded();
     const shuffled = sampleWords.slice().sort(() => Math.random() - 0.5);
     const selected = shuffled.slice(0, wordCount);
@@ -62,27 +64,32 @@ async function initText() {
 
   const words = sampleText.split(" ");
 
-  words.forEach((word, i) => {
-    const groupSpan = document.createElement("span");
-    groupSpan.classList.add("wordGroup");
-    groupSpan.style.whiteSpace = "nowrap";
+  const lineLimit = 12; // ~количество слов в строке
+let currentLine = [];
 
-    for (let letter of word) {
-      const letterSpan = document.createElement("span");
-      letterSpan.classList.add("letter", "pending");
-      letterSpan.textContent = letter;
-      groupSpan.appendChild(letterSpan);
-    }
 
-    if (i < words.length - 1) {
-      const spaceSpan = document.createElement("span");
-      spaceSpan.classList.add("letter", "pending", "space");
-      spaceSpan.textContent = " ";
-      groupSpan.appendChild(spaceSpan);
-    }
+words.forEach((word, i) => {
+  const groupSpan = document.createElement("span");
+  groupSpan.classList.add("wordGroup");
 
-    textContainer.appendChild(groupSpan);
-  });
+  for (let letter of word) {
+    const letterSpan = document.createElement("span");
+    letterSpan.classList.add("letter", "pending");
+    letterSpan.textContent = letter;
+    groupSpan.appendChild(letterSpan);
+  }
+
+  if (i < words.length - 1) {
+    const spaceSpan = document.createElement("span");
+    spaceSpan.classList.add("letter", "pending", "space");
+    spaceSpan.textContent = " ";
+    groupSpan.appendChild(spaceSpan);
+  }
+
+  textContainer.appendChild(groupSpan);
+});
+
+
 
   updateCursor();
   initInput();
@@ -102,10 +109,24 @@ function updateCursor() {
 
 
 function focusInput() {
-  // УБИРАЕМ setTimeout
-  hiddenInput.focus({ preventScroll: true });
-  setCaretToEnd(hiddenInput);
+  // Фокусируем только программно, без scroll и без клавиатуры
+  if (document.activeElement !== hiddenInput) {
+    hiddenInput.focus({ preventScroll: true });
+    setCaretToEnd(hiddenInput);
+  }
+
+  // ⛔️ Убираем клавиатуру, если это мобильное устройство
+  if (/Mobi|Android/i.test(navigator.userAgent)) {
+    // Отключаем виртуальную клавиатуру
+    hiddenInput.setAttribute("readonly", "true");
+
+    // Через тик (0 мс) снова убираем readonly — чтобы продолжал принимать события
+    setTimeout(() => {
+      hiddenInput.removeAttribute("readonly");
+    }, 0);
+  }
 }
+
 
 
 function blurInput() {
@@ -126,14 +147,18 @@ function formatTime(seconds) {
 function startTimer() {
   document.getElementById("modePanel")?.classList.add("hidden");
   startTime = Date.now();
-  timerInterval = setInterval(() => {
-    remainingTime--;
-    timerDisplay.textContent = formatTime(remainingTime);
-    if (remainingTime <= 0) {
-      finishGame("timeout");
-    }
-  }, 1000);
+
+  if (gameMode === "time") {
+    timerInterval = setInterval(() => {
+      remainingTime--;
+      timerDisplay.textContent = formatTime(remainingTime);
+      if (remainingTime <= 0) {
+        finishGame("timeout");
+      }
+    }, 1000);
+  }
 }
+
 
 function handleKey(char) {
   const letters = document.querySelectorAll(".letter");
@@ -186,8 +211,8 @@ function handleKey(char) {
   }
   
   
-  
-  
+  scrollTextUpIfNeeded();
+  checkLineAdvance();
 }
 
 function handleBackspace() {
@@ -288,6 +313,9 @@ letters.forEach(letter => {
 async function resetGame(shouldSetCaret = true) {
   document.getElementById("modePanel")?.classList.remove("hidden");
 
+  textContainer.style.transform = "translateY(0)";
+  currentLineIndex = 0;
+  
   gameEnded = false;
   timerStarted = false;
   clearInterval(timerInterval);
@@ -298,6 +326,7 @@ async function resetGame(shouldSetCaret = true) {
   document.body.classList.remove("typing-started");
 
   await initText(); // 💡 всё создаётся в одном месте
+  textContainer.scrollTop = 0; // сбрасываем прокрутку вверх
 
   if (shouldSetCaret) {
     initInput();
@@ -375,28 +404,64 @@ function renderModeOptions() {
     
       if (gameMode === "words") {
         wordCount = val;
-      
+    
         const wordCounterEl = document.getElementById("wordCounter");
         if (wordCounterEl) {
           wordCounterEl.textContent = `0 / ${val}`;
           wordCounterEl.style.display = "block";
         }
+    
+        resetGame(true); // ✅ сброс текста и состояния для words
       }
-
+    
       if (gameMode === "time") {
         defaultTime = val;
         remainingTime = val;
-        timerDisplay.textContent = formatTime(val);;
-      } else if (gameMode === "words") {
-        wordCount = val;
-      }
+        timerDisplay.textContent = formatTime(val);
     
-      resetGame(true); // ⬅️ Сброс игры полностью (обновляем текст, курсор, состояние)
+        // ❌ Не вызываем resetGame() — текст должен остаться
+      }
     };
+    
     
     container.appendChild(btn);
   });
 }
+function scrollTextUpIfNeeded() {
+  const textEl = document.getElementById("text");
+  const activeLetter = document.querySelector(".letter.active");
+
+  if (activeLetter) {
+    const textTop = textEl.getBoundingClientRect().top;
+    const activeTop = activeLetter.getBoundingClientRect().top;
+
+    const scrollOffset = activeTop - textTop;
+    const maxVisibleHeight = 1.2 * 3.2 * parseFloat(getComputedStyle(document.body).fontSize); // в px
+
+    if (scrollOffset > maxVisibleHeight - 20) {
+      textEl.scrollTop += 43; // прокручиваем вверх немного
+    }
+  }
+}
+
+function checkLineAdvance() {
+  const activeLetter = document.querySelector(".letter.active");
+  if (!activeLetter) return;
+
+  const lineGroups = Array.from(document.querySelectorAll(".lineGroup"));
+  const activeLine = activeLetter.closest(".lineGroup");
+  const lineIndex = lineGroups.indexOf(activeLine);
+
+  if (lineIndex !== -1 && lineIndex !== currentLineIndex) {
+    currentLineIndex = lineIndex;
+
+    // Чёткий сдвиг вверх по строкам
+    const lineHeight = 2.4 * parseFloat(getComputedStyle(document.documentElement).fontSize); // px
+    textContainer.style.transform = `translateY(-${lineHeight * currentLineIndex}px)`;
+  }
+}
+
+
 
 function switchGameMode(mode) {
   gameMode = mode;
@@ -461,8 +526,6 @@ document.getElementById("homeBtn").addEventListener("click", () => {
 
 // RESET — сбрасываем с новым текстом
 document.getElementById("resetBtn").addEventListener("click", () => {
-  // можно обновить sampleText здесь, если у тебя массив
-  // sampleText = getRandomText();
 
   remainingTime = defaultTime;
   timerDisplay.textContent = formatTime(defaultTime);

@@ -493,7 +493,7 @@ function switchGameMode(mode) {
     wordCounterEl.style.display = "none";
   }
 
-  resetGame(false); // сброс без фокуса
+  updateCursor(); 
 }
 
 
@@ -519,7 +519,7 @@ document.getElementById("homeBtn").addEventListener("click", () => {
   remainingTime = defaultTime;
   timerDisplay.textContent = formatTime(defaultTime);
 
-  resetGame(false); // без автофокуса
+  updateCursor(); // без автофокуса
   closeKeyboard();
 });
 
@@ -567,5 +567,15 @@ window.addEventListener("scroll", () => {
 window.visualViewport?.addEventListener("resize", () => {
   updateCursor();
 });
+
+// Убираем фокус с кнопок после клика (чтобы не открывалась клавиатура)
+document.querySelectorAll("button").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    hiddenInput.focus({ preventScroll: true });
+    focusInput(); // заново фокусируем скрытый input
+  });
+});
+
 
 loadWords();

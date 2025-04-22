@@ -423,7 +423,7 @@ function renderModeOptions() {
           wordCounterEl.style.display = "block";
         }
     
-        resetGame(true); // ✅ сброс текста и состояния для words
+        resetGame(false); // ✅ сброс текста и состояния для words
       }
     
       if (gameMode === "time") {

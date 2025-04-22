@@ -89,26 +89,18 @@ body {
   
   /* Контейнер для текста */
   #text {
-    font-family: "Roboto Mono", monospace;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    max-width: clamp(300px, 80vw, 1000px);
     font-size: 2.2rem;
-    line-height: 2.1rem;
-    letter-spacing: 0.03em;
-    font-weight: 300;
-    white-space: pre-wrap;
-    overflow-wrap: break-word;
-    word-break: break-word;
-  
-    max-width: clamp(300px, 70vw, 1200px);
-         /* фиксированная ширина, как у monkeytype */
-    margin: 0 auto 30px auto; /* центрирует сам блок */
-    padding: 0 20px;          /* небольшой отступ */
-  
-    max-height: calc(2.4rem * 3);
-    overflow: hidden;
-    position: relative;
-    padding-bottom: 12px;
-    transition: transform 0.15s ease-in-out;
-    /* transition: transform 0.2s ease; */
+    line-height: 2.8rem;
+    transform: translateY(0); /* Двигается сам текст */
+    transition: transform 0.2s ease;
+    will-change: transform;
+
+    height: calc(2.4rem * 3);
+    /* overflow: hidden; */
   }
   
   
@@ -128,6 +120,7 @@ body {
     letter-spacing: 0.02em;
     opacity: 0.3;
     vertical-align: middle; /* добавь и сюда — равняет ВСЁ по низу */
+    margin-bottom: 0 !important;
   }
  
   /* Состояния букв */
@@ -292,10 +285,14 @@ body {
 }
 
 #bottomControls {
-  margin-top: 20px;
+  position: absolute; /* 👈 фиксируем к низу */
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   gap: 10px;
   justify-content: center;
+  z-index: 10;
 }
 
 #bottomControls button {
@@ -314,22 +311,17 @@ body {
 }
 
 #lineScrollWrapper {
-  max-height: calc(2.4rem * 3); /* немного больше трёх строк */
+  height: calc(2.9rem * 3); /* именно 3 строки */
   overflow: hidden;
   position: relative;
-  padding-bottom: 0.4rem; /* дополнительное пространство снизу */
 }
-
 
 
 .lineGroup {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
   height: 2.4rem;
   line-height: 2.4rem;
-  box-sizing: border-box;
 }
+
 
 button, #modeOptions, #gameModes, #bottomControls {
   user-select: none;

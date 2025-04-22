@@ -54,46 +54,58 @@ async function loadWordsIfNeeded() {
 async function initText() {
   textContainer.innerHTML = "";
   currentIndex = 0;
-
+  
   if (gameMode === "words" || gameMode === "time") {
     await loadWordsIfNeeded();
     const shuffled = sampleWords.slice().sort(() => Math.random() - 0.5);
     const selected = shuffled.slice(0, wordCount);
     sampleText = selected.join(" ");
   }
+  
 
   const words = sampleText.split(" ");
 
-  const lineLimit = 12; // ~количество слов в строке
-let currentLine = [];
+  // Временно создаём плоский текст, чтобы измерить строки
+  const tempSpans = [];
+  for (let i = 0; i < words.length; i++) {
+    const wordGroup = document.createElement("span");
+    wordGroup.classList.add("wordGroup");
 
+    for (let char of words[i]) {
+      const span = document.createElement("span");
+      span.classList.add("letter", "pending");
+      span.textContent = char;
+      wordGroup.appendChild(span);
+    }
 
-words.forEach((word, i) => {
-  const groupSpan = document.createElement("span");
-  groupSpan.classList.add("wordGroup");
+    if (i < words.length - 1) {
+      const space = document.createElement("span");
+      space.classList.add("letter", "pending", "space");
+      space.textContent = " ";
+      wordGroup.appendChild(space);
+    }
 
-  for (let letter of word) {
-    const letterSpan = document.createElement("span");
-    letterSpan.classList.add("letter", "pending");
-    letterSpan.textContent = letter;
-    groupSpan.appendChild(letterSpan);
+    textContainer.appendChild(wordGroup);
+    tempSpans.push(wordGroup);
   }
 
-  if (i < words.length - 1) {
-    const spaceSpan = document.createElement("span");
-    spaceSpan.classList.add("letter", "pending", "space");
-    spaceSpan.textContent = " ";
-    groupSpan.appendChild(spaceSpan);
-  }
+  // Сгруппировать по offsetTop (физические строки)
+  
 
-  textContainer.appendChild(groupSpan);
-});
-
-
-
+  // Перестроить DOM по lineGroup
+    // Заменяем вручную деление на строки — просто вставляем элементы подряд
+    textContainer.innerHTML = "";
+    for (let group of tempSpans) {
+      textContainer.appendChild(group);
+    }
+  
+  currentLineIndex = 0;
+  lastValidTop = 0;
+  textContainer.style.transform = "translateY(0)";
   updateCursor();
   initInput();
 }
+
 
 
 
@@ -321,7 +333,7 @@ async function resetGame(shouldSetCaret = true) {
   clearInterval(timerInterval);
   currentIndex = 0;
   incorrectCount = 0;
-  lastValidTop = null;
+  lastValidTop = 0;
   remainingTime = defaultTime;
   document.body.classList.remove("typing-started");
 
@@ -427,22 +439,28 @@ function renderModeOptions() {
     container.appendChild(btn);
   });
 }
+
 function scrollTextUpIfNeeded() {
-  const textEl = document.getElementById("text");
   const activeLetter = document.querySelector(".letter.active");
+  if (!activeLetter) return;
 
-  if (activeLetter) {
-    const textTop = textEl.getBoundingClientRect().top;
-    const activeTop = activeLetter.getBoundingClientRect().top;
+  
+  const lineHeight = 2.9 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+  const activeTop = activeLetter.offsetTop;
 
-    const scrollOffset = activeTop - textTop;
-    const maxVisibleHeight = 1.2 * 3.2 * parseFloat(getComputedStyle(document.body).fontSize); // в px
+  // ❗ Вычисляем индекс строки точно — но не дёргаем scroll пока визуально строка не "закончена"
+  const newLineIndex = Math.floor((activeTop + 1) / lineHeight); // +1 — сглаживает дроби
 
-    if (scrollOffset > maxVisibleHeight - 20) {
-      textEl.scrollTop += 43; // прокручиваем вверх немного
-    }
+  // Двигаем только если перешли на новую строку
+  if (newLineIndex > currentLineIndex) {
+    currentLineIndex = newLineIndex;
+
+    const scrollOffset = currentLineIndex * lineHeight;
+    textContainer.style.transform = `translateY(-${scrollOffset}px)`;
   }
 }
+
+
 
 function checkLineAdvance() {
   const activeLetter = document.querySelector(".letter.active");
@@ -496,6 +514,18 @@ function switchGameMode(mode) {
   updateCursor(); 
 }
 
+function recalculateActiveLine() {
+  const activeLetter = document.querySelector(".letter.active");
+  if (!activeLetter) return;
+
+  const activeTop = activeLetter.offsetTop;
+  const lineHeight = 2.4 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+
+  const newLineIndex = Math.floor(activeTop / lineHeight);
+  currentLineIndex = newLineIndex;
+  textContainer.style.transform = `translateY(-${currentLineIndex * lineHeight}px)`;
+  lastValidTop = activeTop;
+}
 
 
 function openKeyboard() {
@@ -555,16 +585,16 @@ textContainer.addEventListener("touchstart", (e) => {
 hiddenInput.addEventListener("blur", blurInput);
 focusInput();
 
-
-window.addEventListener("resize", () => {
-  updateCursor();
-});
-
 window.addEventListener("scroll", () => {
   updateCursor();
 });
 
 window.visualViewport?.addEventListener("resize", () => {
+  updateCursor();
+});
+
+window.addEventListener("resize", () => {
+  recalculateActiveLine();  // 💡 новая функция
   updateCursor();
 });
 

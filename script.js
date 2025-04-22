@@ -602,10 +602,21 @@ window.addEventListener("resize", () => {
 document.querySelectorAll("button").forEach(btn => {
   btn.addEventListener("click", (e) => {
     e.preventDefault();
-    hiddenInput.focus({ preventScroll: true });
-    focusInput(); // заново фокусируем скрытый input
+
+    // НЕ фокусируем клавиатуру при нажатии на эти кнопки
+    const noFocusButtons = ["resetBtn", "homeBtn", "closeResultBtn"];
+    const isGameMode = btn.closest("#gameModes") !== null;
+    const isModeOption = btn.closest("#modeOptions") !== null;
+
+    if (!noFocusButtons.includes(btn.id) && !isGameMode && !isModeOption) {
+      hiddenInput.focus({ preventScroll: true });
+      focusInput();
+    } else {
+      hiddenInput.blur();
+    }
   });
 });
+
 
 
 loadWords();

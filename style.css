@@ -94,7 +94,7 @@ body {
     align-content: flex-start;
     /* max-width: clamp(300px, 80vw, 1000px); */
     max-width: clamp(280px, 90vw, 1000px);
-    font-size: clamp(1.2rem, 4.5vw, 2.2rem);
+    font-size: clamp(1.9rem, 4.5vw, 2.2rem);
     line-height: 1.3em;
     letter-spacing: 0.03em;
     transform: translateY(0); /* Двигается сам текст */

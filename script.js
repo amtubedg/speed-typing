@@ -539,19 +539,19 @@ function closeKeyboard() {
   console.log("Keyboard closed");
 }
 
-// HOME — просто возвращаем на главный экран
-document.getElementById("homeBtn").addEventListener("click", () => {
-  document.getElementById("modePanel").classList.remove("hidden");
-  document.getElementById("resultPanel").style.display = "none";
+// // HOME — просто возвращаем на главный экран
+// document.getElementById("homeBtn").addEventListener("click", () => {
+//   document.getElementById("modePanel").classList.remove("hidden");
+//   document.getElementById("resultPanel").style.display = "none";
 
-  // ⬇️ Сброс таймера и режима
-  // defaultTime = defaultTime; // или 30, или что угодно по умолчанию
-  remainingTime = defaultTime;
-  timerDisplay.textContent = formatTime(defaultTime);
+//   // ⬇️ Сброс таймера и режима
+//   // defaultTime = defaultTime; // или 30, или что угодно по умолчанию
+//   remainingTime = defaultTime;
+//   timerDisplay.textContent = formatTime(defaultTime);
 
-  updateCursor(); // без автофокуса
-  closeKeyboard();
-});
+//   updateCursor(); // без автофокуса
+//   closeKeyboard();
+// });
 
 
 // RESET — сбрасываем с новым текстом

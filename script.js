@@ -175,12 +175,20 @@ function startTimer() {
 function handleKey(char) {
   const letters = document.querySelectorAll(".letter");
   if (currentIndex >= letters.length) return;
-
+ 
   if (!timerStarted) {
     timerStarted = true;
+    
+    if (gameMode === "time") {
+      document.getElementById("timer").style.display = "block";
+    } else if (gameMode === "words") {
+      document.getElementById("wordCounter").style.display = "block";
+    }
+  
     startTimer();
     document.body.classList.add("typing-started");
   }
+  
 
   const current = letters[currentIndex];
   if (char === current.textContent) {
@@ -270,6 +278,9 @@ function finishGame(reason) {
   endTime = Date.now();
   document.getElementById("modePanel")?.classList.remove("hidden");
 
+  document.getElementById("timer").style.display = "none";
+  document.getElementById("wordCounter").style.display = "none";
+  
   clearInterval(timerInterval);
   gameEnded = true;
 
@@ -325,6 +336,9 @@ letters.forEach(letter => {
 async function resetGame(shouldSetCaret = true) {
   document.getElementById("modePanel")?.classList.remove("hidden");
 
+  document.getElementById("timer").style.display = "none";
+  document.getElementById("wordCounter").style.display = "none";
+  
   textContainer.style.transform = "translateY(0)";
   currentLineIndex = 0;
   
@@ -493,22 +507,15 @@ function switchGameMode(mode) {
   // Обновляем опции
   renderModeOptions();
 
-  // ✅ Сразу показываем счётчик для words
-  let wordCounterEl = document.getElementById("wordCounter");
-  if (!wordCounterEl) {
-    wordCounterEl = document.createElement("div");
-    wordCounterEl.id = "wordCounter";
-    wordCounterEl.style.marginBottom = "10px";
-    wordCounterEl.style.color = "#FFD700";
-    wordCounterEl.style.fontSize = "1.5rem";
-    timerDisplay.insertAdjacentElement("afterend", wordCounterEl);
-  }
-
-  if (mode === "words") {
-    wordCounterEl.style.display = "block";
-    wordCounterEl.textContent = `0 / ${wordCount}`;
+  if (mode === "time") {
+    document.getElementById("timer").style.display = "none"; // покажем только при старте ввода
+    document.getElementById("wordCounter").style.display = "none";
+  } else if (mode === "words") {
+    document.getElementById("wordCounter").style.display = "none"; // покажем только при старте ввода
+    document.getElementById("timer").style.display = "none";
   } else {
-    wordCounterEl.style.display = "none";
+    document.getElementById("timer").style.display = "none";
+    document.getElementById("wordCounter").style.display = "none";
   }
 
   updateCursor(); 

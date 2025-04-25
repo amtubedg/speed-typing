@@ -13,6 +13,14 @@ body {
     min-height: 100vh;
   }
   
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  
   body.noscroll {
     overflow: hidden;
     position: fixed;
@@ -80,13 +88,7 @@ body {
   }
   
   
-  /* Таймер */
-  #timer {
-    color: #FFD700;
-    font-size: clamp(2rem, 5vw, 4rem);
-    margin-bottom: 20px;
-    user-select: none;
-  }
+  
   
   /* Контейнер для текста */
   #text {
@@ -107,6 +109,7 @@ body {
     will-change: transform;
     
     height: calc(2.4rem * 3);
+    position: relative;
     /* overflow: hidden; */
   }
   
@@ -316,12 +319,6 @@ body {
   background-color: #666;
 }
 
-#lineScrollWrapper {
-  height: calc(2.9rem * 3); /* именно 3 строки */
-  overflow: hidden;
-  position: relative;
-}
-
 
 .lineGroup {
   height: 2.4rem;
@@ -397,9 +394,34 @@ footer {
   color: #FFD700;
 }
 
-main {
-  flex: 1;
+#lineWrapper {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  max-width: clamp(280px, 90vw, 1000px);
+  width: 100%;
+  margin: 0 auto;
 }
+
+#infoBar {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 0.5rem;
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  color: #FFD700;
+}
+
+#timer,
+#wordCounter {
+  display: none;
+  user-select: none;
+}
+
+#lineScrollWrapper {
+  height: calc(2.9rem * 3);
+  overflow: hidden;
+  position: relative;
+}
+
+
+

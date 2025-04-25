@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Security</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background: #323437;
+            color: white;
+            font-family: "Roboto Mono", monospace;
+            padding: 20px 20px;
+            margin: 0 auto;
+        }
+
+        header {
+            width: 100%;
+            display: flex;
+            gap: 20px;
+            padding: 20px 20px;
+            background: transparent;
+            justify-content: flex-start;
+            /* всё налево */
+        }
+
+
+        header .logo img {
+            padding-left: 20px;
+            width: clamp(50px, 8vw, 80px);
+
+            height: auto;
+            filter: brightness(0) invert(1);
+            /* белый цвет */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #FFD700;
+            /* при наведении */
+        }
+
+        h1,
+        h2 {
+            color: #FFD700;
+            margin-top: 30px;
+            
+        }
+
+        
+        a {
+            color: #FFD700;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        ul {
+            margin-left: 20px;
+            list-style-type: disc;
+        }
+
+        #Contact p {
+            padding-top: 30px;
+        }
+
+        main {
+            width: 100%;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 0px;
+            text-align: left;
+        }
+
+        
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <img src="typing-icon.png" alt="Logo" />
+        </div>
+        <nav class="nav-links">
+            <a href="index.html">Play</a>
+            <a href="#rules">Rules</a>
+            <a href="#settings">Settings</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Security Policy</h1>
+      
+        <h2>Data Protection</h2>
+        <p>Typing Trainer operates entirely on your device and does not transmit any data externally. This local-only processing model ensures that your data remains private and secure.</p>
+      
+        <h2>Third-Party Services</h2>
+        <p>Currently, Typing Trainer does not integrate any third-party services that could affect user security, such as analytics providers, cloud storage, or authentication systems.</p>
+      
+        <h2>Vulnerabilities</h2>
+        <p>Since Typing Trainer runs client-side only, vulnerabilities are minimal. We regularly monitor for potential threats and ensure all public assets are served over secure HTTPS connections.</p>
+      
+        <h2>Reporting Issues</h2>
+        <p>If you believe you have discovered a security vulnerability in Typing Trainer, please contact us immediately at <a href="mailto:amtubedg@gmail.com">amtubedg@gmail.com</a>. We appreciate responsible disclosure and will work to address issues as soon as possible.</p>
+      </main>
+</body>
+
+</html>

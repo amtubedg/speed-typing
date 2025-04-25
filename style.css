@@ -376,7 +376,8 @@ footer {
   justify-content: center;
   gap: 15px;
   padding: 15px 10px;
-  font-size: 0.9rem;
+  /* font-size: 0.9rem; */
+  font-size: clamp(0.6rem, 2.5vw, 0.9rem);
   background: transparent;
   color: #bbb;
   position: static;

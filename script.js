@@ -329,10 +329,6 @@ letters.forEach(letter => {
 }
 
 
-
-
-
-
 async function resetGame(shouldSetCaret = true) {
   document.getElementById("modePanel")?.classList.remove("hidden");
 
@@ -438,6 +434,7 @@ function renderModeOptions() {
         }
     
         resetGame(false); // ✅ сброс текста и состояния для words
+        
       }
     
       if (gameMode === "time") {

@@ -424,5 +424,23 @@ footer {
   position: relative;
 }
 
+@media (max-width: 600px) {
+  header {
+    padding: 10px 15px;
+    gap: 10px;
+  }
+
+  header .logo img {
+    width: 50px; /* меньше логотип */
+  }
+
+  .nav-links {
+    gap: 10px;
+  }
+
+  .nav-links a {
+    font-size: 0.9rem; /* уменьшить размер текста кнопок */
+  }
+}
 
 

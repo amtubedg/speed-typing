@@ -10,6 +10,7 @@ body {
     height: 100vh;
     margin-bottom: 20px;
     box-sizing: border-box;
+    min-height: 100vh;
   }
   
   body.noscroll {
@@ -89,6 +90,10 @@ body {
   
   /* Контейнер для текста */
   #text {
+    font-family: "Cutive Mono", monospace;
+    font-weight: 400;
+    font-style: normal;
+
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
@@ -100,7 +105,7 @@ body {
     transform: translateY(0); /* Двигается сам текст */
     transition: transform 0.2s ease;
     will-change: transform;
-
+    
     height: calc(2.4rem * 3);
     /* overflow: hidden; */
   }
@@ -144,7 +149,7 @@ body {
   .letter.space {
     display: inline-block; /* чтобы элемент занимал собственное пространство */
     min-width: 0.7em;      /* задаёт минимальную ширину для пробела */
-    height: 2.4rem;         /* та же высота, что и у букв */
+    height: 2.9rem;         /* та же высота, что и у букв */
     line-height: 2.4rem;     /* чтобы текст внутри (если отображается символ) был выровнен */
     vertical-align: bottom; 
     position: relative;
@@ -286,10 +291,10 @@ body {
 }
 
 #bottomControls {
-  position: absolute; /* 👈 фиксируем к низу */
+  /* position: fixed; 👈 фиксируем к низу */
+  padding-top: 50px; /* отступ сверху, чтобы не перекрывал текст */
   bottom: 20px;
   left: 50%;
-  transform: translateX(-50%);
   display: flex;
   gap: 10px;
   justify-content: center;
@@ -327,4 +332,74 @@ body {
 button, #modeOptions, #gameModes, #bottomControls {
   user-select: none;
   -webkit-touch-callout: none;
+}
+
+
+/* header and footer */
+
+header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 20px;
+  background: transparent;
+  justify-content: flex-start; /* всё налево */
+}
+
+
+header .logo img {
+  padding-left: 20px;
+  width: 80px; /* уменьшенный логотип */
+  height: auto;
+  filter: brightness(0) invert(1); /* белый цвет */
+}
+
+.nav-links {
+  padding-right: 20px;
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover {
+  color: #FFD700; /* при наведении */
+}
+
+footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 15px 10px;
+  font-size: 0.9rem;
+  background: transparent;
+  color: #bbb;
+  position: static;
+  bottom: 0;
+  left: 0;
+}
+
+.footer-links a {
+  color: #bbb;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover {
+  color: #FFD700;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

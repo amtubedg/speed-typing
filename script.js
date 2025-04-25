@@ -56,11 +56,11 @@ async function initText() {
   currentIndex = 0;
   
   if (gameMode === "words" || gameMode === "time") {
-    await loadWordsIfNeeded();
-    const shuffled = sampleWords.slice().sort(() => Math.random() - 0.5);
-    const selected = shuffled.slice(0, wordCount);
-    sampleText = selected.join(" ");
-  }
+  await loadWordsIfNeeded();
+  const shuffled = sampleWords.slice().sort(() => Math.random() - 0.5);
+  const selected = (gameMode === "words") ? shuffled.slice(0, wordCount) : shuffled.slice(0, 500);
+  sampleText = selected.join(" ");
+}
   
 
   const words = sampleText.split(" ");
@@ -554,16 +554,18 @@ function closeKeyboard() {
 // });
 
 
-// RESET — сбрасываем с новым текстом
 document.getElementById("resetBtn").addEventListener("click", () => {
-
   remainingTime = defaultTime;
   timerDisplay.textContent = formatTime(defaultTime);
-  resetGame(false);
-  // closeKeyboard();
-  // focusInput(); // откроем клавиатуру для новой игры
-});
 
+  // ✅ Обнуляем счётчик слов для режима "words"
+  const wordCounterEl = document.getElementById("wordCounter");
+  if (gameMode === "words" && wordCounterEl) {
+    wordCounterEl.textContent = `0 / ${wordCount}`;
+  }
+
+  resetGame(false);
+});
 
 document.querySelectorAll("#gameModes button").forEach(btn => {
   btn.onclick = () => switchGameMode(btn.dataset.mode);

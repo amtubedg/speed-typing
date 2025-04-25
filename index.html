@@ -2,16 +2,28 @@
 <html lang="en">
 
 <head>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Typing Trainer</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">
 </head>
 
 <body>
+  <header>
+    <div class="logo">
+      <img src="typing-icon.png" alt="Logo" />
+    </div>
+    <nav class="nav-links">
+      <a href="index.html">Play</a>
+      <a href="#rules">Rules</a>
+      <a href="#settings">Settings</a>
+    </nav>
+  </header>
+
+  <main>
   <!-- Панель переключения режимов -->
   <div id="modePanel">
     <div id="gameModes">
@@ -19,41 +31,46 @@
       <button data-mode="words">A words</button>
       <button data-mode="quote">❝ quote</button>
     </div>
-
-    <div id="modeOptions">
-      <!-- опции будут добавляться JS'ом -->
-    </div>
+    <div id="modeOptions"></div>
   </div>
 
   <div id="timer">30</div>
+
   <div id="lineScrollWrapper">
     <div id="text"></div>
   </div>
 
-  <!-- Обёртка для скрытого contenteditable -->
   <div id="inputWrapper">
-    <div id="hiddenInput" contenteditable="true" autocapitalize="off" autocorrect="off" spellcheck="false">
-    </div>
+    <div id="hiddenInput" contenteditable="true" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
   </div>
+
+  <div id="bottomControls" style="margin-bottom: 70px;">
+    <button id="resetBtn">🔁 Reset</button>
+  </div>
+</main>
 
   <div id="resultPanel" style="display:none;">
     <div id="resultContent">
       <h2>Result</h2>
-      <!-- Добавляем элемент для отображения результата символа (✅ или ❌) -->
-      <!-- <div id="resultSymbol"></div> -->
       <p id="wpmValue">WPM: 0</p>
       <p id="accValue">Accuracy: 0%</p>
-      <p id="errorValue">Errors: 0</p>  <!-- Добавили счётчик ошибок -->
+      <p id="errorValue">Errors: 0</p>
       <p id="timeValue">Time: 0s</p>
       <button id="closeResultBtn">Close</button>
     </div>
-    
   </div>
+
   
-  <div id="bottomControls">
-    <button id="resetBtn">🔁 Reset</button>
-  </div>
-  
+
+  <footer>
+    <div class="footer-links">
+      <a href="#contact">Contact</a>   <span class="dot">&bull;</span>
+      <a href="#support">Support</a> <span class="dot">&bull;</span>
+      <a href="#terms">Terms</a> <span class="dot">&bull;</span>
+      <a href="#security">Security</a> <span class="dot">&bull;</span>
+      <a href="#privacy">Privacy Policy</a>
+    </div>
+  </footer>
 
   <script src="script.js"></script>
 </body>

@@ -356,6 +356,7 @@ async function resetGame(shouldSetCaret = true) {
     hiddenInput.blur();
     window.getSelection()?.removeAllRanges();
   }
+  
 }
 
 
@@ -434,6 +435,7 @@ function renderModeOptions() {
         }
     
         resetGame(false); // ✅ сброс текста и состояния для words
+        
         
       }
     
@@ -609,16 +611,10 @@ document.querySelectorAll("button").forEach(btn => {
   btn.addEventListener("click", (e) => {
     e.preventDefault();
 
-    // НЕ фокусируем клавиатуру при нажатии на эти кнопки
-    const noFocusButtons = ["resetBtn", "homeBtn", "closeResultBtn"];
-    const isGameMode = btn.closest("#gameModes") !== null;
-    const isModeOption = btn.closest("#modeOptions") !== null;
-
-    if (!noFocusButtons.includes(btn.id) && !isGameMode && !isModeOption) {
-      hiddenInput.focus({ preventScroll: true });
-      focusInput();
-    } else {
-      hiddenInput.blur();
+    const input = document.getElementById("hiddenInput");
+    if (input) {
+      input.focus({ preventScroll: true });
+      setCaretToEnd(input);
     }
   });
 });

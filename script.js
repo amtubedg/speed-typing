@@ -611,13 +611,20 @@ document.querySelectorAll("button").forEach(btn => {
   btn.addEventListener("click", (e) => {
     e.preventDefault();
 
-    const input = document.getElementById("hiddenInput");
-    if (input) {
-      input.focus({ preventScroll: true });
-      setCaretToEnd(input);
+    const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+
+    if (!isMobile) {
+      const input = document.getElementById("hiddenInput");
+      if (input) {
+        input.focus({ preventScroll: true });
+        setCaretToEnd(input);
+      }
+    } else {
+      hiddenInput.blur();
     }
   });
 });
+
 
 
 

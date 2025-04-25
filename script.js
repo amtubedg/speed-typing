@@ -612,19 +612,30 @@ document.querySelectorAll("button").forEach(btn => {
     e.preventDefault();
 
     const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-
-    if (!isMobile) {
+    // НЕ фокусируем клавиатуру при нажатии на эти кнопки
+    const noFocusButtons = ["resetBtn", "homeBtn", "closeResultBtn"];
+    const isGameMode = btn.closest("#gameModes") !== null;
+    const isModeOption = btn.closest("#modeOptions") !== null;
+    if (isMobile) {
+      if (!noFocusButtons.includes(btn.id) && !isGameMode && !isModeOption) {
+        hiddenInput.focus({ preventScroll: true });
+        focusInput();
+      } else {
+        hiddenInput.blur();
+      }
+    } else {
       const input = document.getElementById("hiddenInput");
       if (input) {
         input.focus({ preventScroll: true });
         setCaretToEnd(input);
       }
-    } else {
+     else {
       hiddenInput.blur();
     }
+    }
+    
   });
 });
-
 
 
 

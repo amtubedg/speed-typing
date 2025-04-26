@@ -637,6 +637,63 @@ document.querySelectorAll("button").forEach(btn => {
   });
 });
 
+// Открыть панель настроек
+document.querySelector('a[href="#settings"]').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('settingsPanel').classList.add('active');
+});
+
+// Закрыть панель настроек
+document.getElementById('closeSettingsPanel').addEventListener('click', () => {
+  document.getElementById('settingsPanel').classList.remove('active');
+});
+
+// Theme переключение
+document.getElementById('themeToggle').addEventListener('change', (e) => {
+  const theme = e.target.value;
+  if (theme === 'light') {
+    document.body.style.background = '#ffffff';
+    document.body.style.color = '#000000';
+  } else {
+    document.body.style.background = '#323437';
+    document.body.style.color = '#ffffff';
+  }
+});
+
+// Font Size переключение
+document.getElementById('fontSizeToggle').addEventListener('change', (e) => {
+  const size = e.target.value;
+  const textArea = document.getElementById('text');
+  if (size === 'small') {
+    textArea.style.fontSize = '1rem';
+  } else if (size === 'medium') {
+    textArea.style.fontSize = '1.5rem';
+  } else {
+    textArea.style.fontSize = '2rem';
+  }
+});
+
+// Language переключение
+document.getElementById('languageToggle').addEventListener('change', (e) => {
+  const lang = e.target.value;
+  console.log("Selected language:", lang);
+});
+
+// Custom Time
+document.getElementById('customTime').addEventListener('input', (e) => {
+  const time = parseInt(e.target.value, 10);
+  console.log("Custom time set to:", time, "seconds");
+});
+
+// Show WPM / Accuracy
+document.getElementById('showStats').addEventListener('change', (e) => {
+  const show = e.target.checked;
+  const stats = document.getElementById('timer');
+  if (stats) {
+    stats.style.display = show ? 'block' : 'none';
+  }
+});
+
 
 
 loadWords();

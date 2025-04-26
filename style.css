@@ -217,6 +217,11 @@ body {
     margin: 0 0 15px;
   }
   
+  h2 {
+    padding-top: 20px;
+  }
+  
+
   #resultContent p {
     margin: 10px 0;
   }
@@ -429,6 +434,72 @@ footer {
   position: relative;
 }
 
+/* Settings Side Panel */
+.settings-panel {
+  position: fixed;
+  top: 0;
+  right: -400px; /* Скрыто за экраном */
+  width: 350px;
+  height: 100%;
+  background: #1f1f1f;
+  color: white;
+  z-index: 9999;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+  transition: right 0.4s ease;
+  font-family: "Roboto Mono", monospace;
+  padding: 20px;
+  overflow-y: auto;
+}
 
+.settings-panel.active {
+  right: 0; /* Выдвигаем панель */
+}
 
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
+.settings-header h2 {
+  color: #FFD700;
+  font-size: 1.5rem;
+}
+
+#closeSettingsPanel {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.settings-content {
+  margin-top: 30px;
+}
+
+.setting-item {
+  margin-bottom: 20px;
+}
+
+.setting-item label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.setting-item select, 
+.setting-item input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  background: #2d2d2d;
+  color: white;
+  font-size: 1rem;
+}
+
+.setting-item input[type="checkbox"] {
+  transform: scale(1.2);
+  margin-right: 10px;
+}

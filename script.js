@@ -23,6 +23,42 @@ const textContainer = document.getElementById("text");
 const timerDisplay = document.getElementById("timer");
 const hiddenInput = document.getElementById("hiddenInput");
 
+window.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme');
+  const savedFontSize = localStorage.getItem('fontSize');
+  const savedLanguage = localStorage.getItem('language');
+  const savedCustomTime = localStorage.getItem('customTime');
+  const savedShowStats = localStorage.getItem('showStats');
+
+  if (savedTheme) {
+    document.getElementById('themeToggle').value = savedTheme;
+    applyTheme(savedTheme);
+  }
+
+  if (savedFontSize) {
+    document.getElementById('fontSizeToggle').value = savedFontSize;
+    applyFontSize(savedFontSize);
+  }
+
+  if (savedLanguage) {
+    document.getElementById('languageToggle').value = savedLanguage;
+  }
+
+  if (savedCustomTime) {
+    document.getElementById('customTime').value = savedCustomTime;
+  }
+
+  if (savedShowStats !== null) {
+    const show = savedShowStats === 'true';
+    document.getElementById('showStats').checked = show;
+    const stats = document.getElementById('timer');
+    if (stats) {
+      stats.style.display = show ? 'block' : 'none';
+    }
+  }
+});
+
+
 function setCaretToEnd(el) {
   const range = document.createRange();
   range.selectNodeContents(el);
@@ -637,20 +673,21 @@ document.querySelectorAll("button").forEach(btn => {
   });
 });
 
-// Открыть панель настроек
-document.querySelector('a[href="#settings"]').addEventListener('click', (e) => {
-  e.preventDefault();
-  document.getElementById('settingsPanel').classList.add('active');
-});
+function reloadGame() {
+  resetGame(false); // сброс текста и состояния
+}
 
-// Закрыть панель настроек
-document.getElementById('closeSettingsPanel').addEventListener('click', () => {
-  document.getElementById('settingsPanel').classList.remove('active');
-});
-
-// Theme переключение
+// Theme переключение + сохранение
 document.getElementById('themeToggle').addEventListener('change', (e) => {
   const theme = e.target.value;
+  localStorage.setItem('theme', theme);
+  applyTheme(theme);
+  reloadGame();
+
+});
+
+
+function applyTheme(theme) {
   if (theme === 'light') {
     document.body.style.background = '#ffffff';
     document.body.style.color = '#000000';
@@ -658,40 +695,87 @@ document.getElementById('themeToggle').addEventListener('change', (e) => {
     document.body.style.background = '#323437';
     document.body.style.color = '#ffffff';
   }
-});
+}
 
-// Font Size переключение
+// Font Size переключение + сохранение
 document.getElementById('fontSizeToggle').addEventListener('change', (e) => {
   const size = e.target.value;
-  const textArea = document.getElementById('text');
-  if (size === 'small') {
-    textArea.style.fontSize = '1rem';
-  } else if (size === 'medium') {
-    textArea.style.fontSize = '1.5rem';
-  } else {
-    textArea.style.fontSize = '2rem';
-  }
+  localStorage.setItem('fontSize', size);
+  applyFontSize(size);
+  reloadGame();
+
 });
 
-// Language переключение
+function applyFontSize(size) {
+  const textArea = document.getElementById('text');
+  const wrapper = document.getElementById('lineScrollWrapper');
+
+  if (size === 'small') {
+    textArea.style.fontSize = 'calc(1em + 0.4rem)';
+    wrapper.style.height = 'calc(2.8rem * 3)';
+  } else if (size === 'medium') {
+    textArea.style.fontSize = '';
+    wrapper.style.height = 'calc(2.8rem * 3)';
+  } else if (size === 'large') {
+    textArea.style.fontSize = 'calc(1em + 1.8rem)';
+    wrapper.style.height = 'calc(3.4rem * 3)';
+  }
+}
+
+// Language переключение + сохранение
 document.getElementById('languageToggle').addEventListener('change', (e) => {
   const lang = e.target.value;
+  localStorage.setItem('language', lang);
   console.log("Selected language:", lang);
+  reloadGame();
+
 });
 
-// Custom Time
+// Custom Time ввод + сохранение
 document.getElementById('customTime').addEventListener('input', (e) => {
   const time = parseInt(e.target.value, 10);
+  localStorage.setItem('customTime', time);
   console.log("Custom time set to:", time, "seconds");
+  reloadGame();
+
 });
 
-// Show WPM / Accuracy
+// Show Stats переключение + сохранение
 document.getElementById('showStats').addEventListener('change', (e) => {
   const show = e.target.checked;
+  localStorage.setItem('showStats', show ? 'true' : 'false');
   const stats = document.getElementById('timer');
   if (stats) {
     stats.style.display = show ? 'block' : 'none';
   }
+  reloadGame();
+
+});
+
+// Закрывать настройки при клике вне панели
+document.addEventListener('click', function(event) {
+  const settingsPanel = document.getElementById('settingsPanel');
+  const openBtn = document.getElementById('openSettingsPanel');
+  
+  if (settingsPanel.classList.contains('active') && 
+      !settingsPanel.contains(event.target) && 
+      event.target !== openBtn) {
+    settingsPanel.classList.remove('active');
+  }
+});
+
+
+
+
+// Открытие панели настроек
+document.getElementById('openSettingsPanel').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('settingsPanel').classList.add('active');
+});
+
+// Закрытие панели настроек
+document.getElementById('closeSettingsPanel').addEventListener('click', () => {
+  document.getElementById('settingsPanel').classList.remove('active');
 });
 
 

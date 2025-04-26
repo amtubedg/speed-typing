@@ -689,13 +689,26 @@ document.getElementById('themeToggle').addEventListener('change', (e) => {
 
 function applyTheme(theme) {
   if (theme === 'light') {
-    document.body.style.background = '#ffffff';
-    document.body.style.color = '#000000';
+    document.documentElement.style.setProperty('--background-color', '#ffffff');
+    document.documentElement.style.setProperty('--text-color', '#000000');
+    document.documentElement.style.setProperty('--panel-background', '#f0f0f0');
+    document.documentElement.style.setProperty('--button-background', '#e0e0e0');
+    document.documentElement.style.setProperty('--input-background', '#e0e0e0');
+    document.documentElement.style.setProperty('--accent-color', '#FFD700');
   } else {
-    document.body.style.background = '#323437';
-    document.body.style.color = '#ffffff';
+    document.documentElement.style.setProperty('--background-color', '#3C1C41');       // Новый фон сайта
+document.documentElement.style.setProperty('--text-color', '#F0F0F0');              // Основной текст (чуть сероватый белый)
+document.documentElement.style.setProperty('--panel-background', '#512459');        // Панели и футер
+document.documentElement.style.setProperty('--button-background', '#5E2C6B');       // Фон обычных кнопок
+document.documentElement.style.setProperty('--input-background', '#5E2C6B');        // Фон инпутов
+document.documentElement.style.setProperty('--accent-color', '#BA68C8');            // Акцентный цвет (таймер, важные элементы)
+document.documentElement.style.setProperty('--mode-options', '#5E2C6B');            // Кнопки режимов (неактивные)
+document.documentElement.style.setProperty('--mode-options-hover', '#CE93D8');      // Hover на режимах (светло-фиолетовый)
+document.documentElement.style.setProperty('--mode-btn-text-color', '#F0F0F0');      // Цвет текста на кнопках режимов
+
   }
 }
+
 
 // Font Size переключение + сохранение
 document.getElementById('fontSizeToggle').addEventListener('change', (e) => {

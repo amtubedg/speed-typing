@@ -325,6 +325,11 @@ body {
   line-height: 2.4rem;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+
 
 button, #modeOptions, #gameModes, #bottomControls {
   user-select: none;

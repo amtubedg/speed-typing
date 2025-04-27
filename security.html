@@ -7,24 +7,6 @@
     <title>Security</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        body {
-            background: #323437;
-            color: white;
-            font-family: "Roboto Mono", monospace;
-            padding: 20px 20px;
-            margin: 0 auto;
-        }
-
-        header {
-            width: 100%;
-            display: flex;
-            gap: 20px;
-            padding: 20px 20px;
-            background: transparent;
-            justify-content: flex-start;
-            /* всё налево */
-        }
-
         h1,
         h2 {
             color: #FFD700;
@@ -45,96 +27,15 @@
             line-height: 1.6;
             text-align: left;
             margin: 20px;
-            padding-bottom: 40px;
+            padding-bottom: 40px;   
         }
-
-        main {
-            width: 100%;
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 0 0px;
-            text-align: left;
-        }
-
         .container {
             max-width: 1000px;
             margin: 0 auto;
             padding: 40px 20px;
             text-align: left;
             display: block;
-        }
-
-        h1,
-        h2,
-        p,
-        ul,
-        li {
-            text-align: left;
-        }
-
-        header {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            padding: 20px 20px;
-            background: transparent;
-            justify-content: flex-start;
-            /* всё налево */
-        }
-
-
-        header .logo img {
-            padding-left: 20px;
-            width: clamp(50px, 8vw, 80px);
-
-            height: auto;
-            filter: brightness(0) invert(1);
-            /* белый цвет */
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: white;
-            font-weight: 600;
-            font-size: clamp(1rem, 2vw, 1.2rem);
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: #FFD700;
-            /* при наведении */
-        }
-
-        footer {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            padding: 15px 10px;
-            /* font-size: 0.9rem; */
-            font-size: clamp(0.6rem, 2.5vw, 0.9rem);
-            background: transparent;
-            color: #bbb;
-            position: static;
-            bottom: 0;
-            left: 0;
-        }
-
-        .footer-links a {
-            color: #bbb;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: #FFD700;
-        }
+        }    
     </style>
 </head>
 
@@ -148,8 +49,6 @@
         </div>
         <nav class="nav-links">
             <a href="index.html">Play</a>
-            <a href="#rules">Rules</a>
-            <a href="#settings">Settings</a>
         </nav>
     </header>
     <main class="container">

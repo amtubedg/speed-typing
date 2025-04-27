@@ -1,3 +1,18 @@
+:root {
+  --background-color: #3C1C41;
+  --panel-background: #512459;
+  --text-color: #F0F0F0;
+  --accent-color: #BA68C8;
+  --button-active-bg: #AB47BC;
+  --button-inactive-bg: #5E2C6B;
+  --reset-button-bg: #4E3A54;
+  --error-color: #EF5350;
+  --correct-color: #66BB6A;
+  --typing-text-color: #B39DDB;
+  --button-hover-color: #CE93D8;
+}
+
+
 body {
   margin: 0;
   background: var(--background-color);

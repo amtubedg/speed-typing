@@ -30,25 +30,42 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function applyTheme(theme) {
   if (theme === 'light') {
-    document.documentElement.style.setProperty('--background-color', '#ffffff');
-    document.documentElement.style.setProperty('--text-color', '#000000');
-    document.documentElement.style.setProperty('--panel-background', '#f0f0f0');
-    document.documentElement.style.setProperty('--button-background', '#e0e0e0');
-    document.documentElement.style.setProperty('--input-background', '#e0e0e0');
-    document.documentElement.style.setProperty('--accent-color', '#FFD700');
-  } else {
-    document.documentElement.style.setProperty('--background-color', '#3C1C41');       // Новый фон сайта
-    document.documentElement.style.setProperty('--text-color', '#F0F0F0');              // Основной текст (чуть сероватый белый)
-    document.documentElement.style.setProperty('--panel-background', '#512459');        // Панели и футер
-    document.documentElement.style.setProperty('--button-background', '#5E2C6B');       // Фон обычных кнопок
-    document.documentElement.style.setProperty('--input-background', '#5E2C6B');        // Фон инпутов
-    document.documentElement.style.setProperty('--accent-color', '#BA68C8');            // Акцентный цвет (таймер, важные элементы)
-    document.documentElement.style.setProperty('--mode-options', '#5E2C6B');            // Кнопки режимов (неактивные)
-    document.documentElement.style.setProperty('--mode-options-hover', '#CE93D8');      // Hover на режимах (светло-фиолетовый)
-    document.documentElement.style.setProperty('--mode-btn-text-color', '#F0F0F0');      // Цвет текста на кнопках режимов
+    
+    document.querySelector('.logo img').style.filter = 'none';
+    document.documentElement.style.setProperty('--background-color', '#FAFAFA');       // фон чуть сероватый, НЕ белый
+    document.documentElement.style.setProperty('--text-color', '#212121');              // очень тёмный серый, идеально читаемый
+    document.documentElement.style.setProperty('--text-color-done', '#2c2c2c');
+    document.documentElement.style.setProperty('--text-color-header', '#350742');              
+    document.documentElement.style.setProperty('--panel-background', '#FFFFFF');        // панели белые
+    document.documentElement.style.setProperty('--button-background', '#E0E0E0');       // кнопки светло-серые
+    document.documentElement.style.setProperty('--input-background', '#ECECEC');        // поле ввода очень светло-серое
+    document.documentElement.style.setProperty('--accent-color', '#7B1FA2');            // фиолетовый акцент как у тебя в теме
+    document.documentElement.style.setProperty('--mode-options', '#F3E5F5');            // кнопки режимов в очень светло-фиолетовом
+    document.documentElement.style.setProperty('--mode-options-hover', '#D1C4E9');      // наведение чуть темнее
+    document.documentElement.style.setProperty('--mode-btn-text-color', '#212121');     // текст на кнопках тёмный
+    document.documentElement.style.setProperty('--reset-button-bg', '#E0E0E0'); // светлая кнопка
 
+
+  } else {
+
+    document.querySelector('.logo img').style.filter = 'brightness(0) invert(1)';
+    document.documentElement.style.setProperty('--background-color', '#3C1C41');
+    document.documentElement.style.setProperty('--text-color', '#F0F0F0');
+    document.documentElement.style.setProperty('--text-color-header', '#F0F0F0');  
+    document.documentElement.style.setProperty('--text-color-done', '#2c2c2c');
+    
+    document.documentElement.style.setProperty('--panel-background', '#512459');
+    document.documentElement.style.setProperty('--button-background', '#5E2C6B');
+    document.documentElement.style.setProperty('--input-background', '#5E2C6B');
+    document.documentElement.style.setProperty('--accent-color', '#BA68C8');
+    document.documentElement.style.setProperty('--mode-options', '#5E2C6B');
+    document.documentElement.style.setProperty('--mode-options-hover', '#CE93D8');
+    document.documentElement.style.setProperty('--mode-btn-text-color', '#F0F0F0');
+    document.documentElement.style.setProperty('--reset-button-bg', '#4A3E56'); // тёмная кнопка
+    
   }
 }
+
 
 window.addEventListener('DOMContentLoaded', () => {
   

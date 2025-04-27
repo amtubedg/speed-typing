@@ -97,7 +97,7 @@ body.noscroll {
   font-family: "Comic Relief", system-ui;
   font-weight: 400;
   font-style: normal;
-  color: white;
+  color: var(--text-color);
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
@@ -141,7 +141,7 @@ body.noscroll {
 .letter.correct {
   opacity: 1;
   transition: color 0.3s ease, opacity 0.3s ease;
-  color: white;
+  color: var(--text-color-done);
 }
 
 .letter.incorrect {
@@ -212,7 +212,6 @@ body.noscroll {
 
 /* Стили для панели результата */
 #resultPanel {
-  animation: fadeIn 0.3s ease forwards;
   position: fixed;
   top: 0;
   left: 0;
@@ -223,21 +222,25 @@ body.noscroll {
   align-items: center;
   justify-content: center;
   z-index: 99999;
+  animation: fadeIn 0.3s ease forwards;
 }
 
 #resultContent {
-  background: #2c2c2c;
-  color: #fff;
-  padding: 20px 30px;
-  border-radius: 10px;
+  background: var(--panel-background); /* фон панели под тему */
+  color: var(--text-color); /* текст под тему */
+  padding: 30px 40px;
+  border-radius: 12px;
   max-width: 400px;
   width: 90%;
   text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
   animation: slideUp 0.3s ease forwards;
 }
 
 #resultContent h2 {
   margin: 0 0 15px;
+  font-size: 2rem;
+  color: var(--accent-color); /* заголовок под акцент */
 }
 
 h2 {
@@ -247,17 +250,24 @@ h2 {
 
 #resultContent p {
   margin: 10px 0;
+  font-size: 1.2rem;
 }
 
 #closeResultBtn {
-  background: #FFD700;
-  color: #000;
-  font-size: 1rem;
+  background: var(--accent-color);
+  color: var(--text-color);
+  font-size: 1.1rem;
   border: none;
-  border-radius: 6px;
-  padding: 8px 16px;
+  border-radius: 8px;
+  padding: 10px 20px;
+  margin-top: 20px;
   cursor: pointer;
-  margin-top: 10px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+#closeResultBtn:hover {
+  background: var(--button-hover-color);
+  color: var(--text-color);
 }
 
 .letter.active::after {
@@ -424,19 +434,19 @@ header .logo img {
 .nav-links {
   display: flex;
   gap: 20px;
+  color: var(--text-color-header);
 }
 
 .nav-links a {
+  color: var(--text-color-header); /* ✅ текст под тему */
   text-decoration: none;
-  color: white;
-  font-weight: 600;
-  font-size: clamp(1rem, 2vw, 1.2rem);
-  transition: color 0.3s;
+  font-size: 1.2rem;
+  margin-left: 20px;
+  transition: color 0.3s ease;
 }
 
 .nav-links a:hover {
-  color: #FFD700;
-  /* при наведении */
+  color: var(--accent-color); /* ✅ подсветка при наведении */
 }
 
 footer {
@@ -448,14 +458,15 @@ footer {
   /* font-size: 0.9rem; */
   font-size: clamp(0.6rem, 2.5vw, 0.9rem);
   background: transparent;
-  color: #bbb;
+  color: var(--text-color);
   position: static;
   bottom: 0;
   left: 0;
 }
 
+
 .footer-links a {
-  color: #bbb;
+  color: var(--text-color);
   text-decoration: none;
   transition: color 0.3s;
 }
@@ -555,10 +566,11 @@ footer {
   padding: 8px;
   border: none;
   border-radius: 5px;
-  background: #2d2d2d;
-  color: white;
+  background: var(--input-background); /* ✅ динамически через переменную */
+  color: var(--text-color);
   font-size: 1rem;
 }
+
 
 .setting-item input[type="checkbox"] {
   transform: scale(1.2);
@@ -566,16 +578,18 @@ footer {
 }
 
 #resetBtn {
-  background: none;
-  /* Убираем фон */
+  background-color: var(--reset-button-bg);
+  color: var(--text-color);
   border: none;
-  /* Убираем рамку */
-  color: #CE93D8;
-  /* Цвет стрелки */
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 1rem;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  transition: transform 0.2s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+
+#resetBtn:hover {
+  background-color: var(--button-hover-color);
+}
+

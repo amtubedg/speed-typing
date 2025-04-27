@@ -24,6 +24,7 @@ const timerDisplay = document.getElementById("timer");
 const hiddenInput = document.getElementById("hiddenInput");
 
 window.addEventListener('DOMContentLoaded', () => {
+  applyTheme("light"); // Устанавливаем тему по умолчанию
   const savedTheme = localStorage.getItem('theme');
   const savedFontSize = localStorage.getItem('fontSize');
   const savedLanguage = localStorage.getItem('language');

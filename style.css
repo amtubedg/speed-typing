@@ -433,8 +433,9 @@ header .logo img {
 
 .nav-links {
   display: flex;
-  gap: 20px;
+  gap: 10px;
   color: var(--text-color-header);
+  
 }
 
 .nav-links a {
@@ -443,6 +444,19 @@ header .logo img {
   font-size: 1.2rem;
   margin-left: 20px;
   transition: color 0.3s ease;
+}
+@media (max-width: 768px) {
+  .nav-links a {
+    font-size: 1rem;         /* Немного уменьшить шрифт */
+    margin-left: 12px;       /* Сократить отступы */
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-links a {
+    font-size: 0.9rem;        /* Ещё чуть меньше шрифт */
+    margin-left: 8px;         /* Ещё меньше отступы */
+  }
 }
 
 .nav-links a:hover {

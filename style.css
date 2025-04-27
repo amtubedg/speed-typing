@@ -14,262 +14,274 @@
 
 
 body {
-    margin: 0;
-    background: var(--background-color);
-    color: var(--text-color);
-    font-family: "Roboto Mono", "Roboto Mono", "Vazirmatn", monospace;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    height: 100vh;
-    margin-bottom: 20px;
-    box-sizing: border-box;
-    min-height: 100vh;
-  }
-  
-  main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  
-  body.noscroll {
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
-  }
-  
-  /* Панель режимов */
-  #gameModes {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-  }
-  
-  #gameModes button,
-  #modeOptions button {
-    background: var(--mode-options);
-    color: var(--mode-btn-text-color);
-    font-family: "Roboto Mono", "Roboto Mono", "Vazirmatn", monospace;
-    font-size: 1rem;
-    font-weight: 550;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-  }
-  
-  #gameModes button.active,
-  #modeOptions button.active {
-    background: var(--mode-options-hover);
-    color: #000;
-  }
-  #modePanel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 5x; /* расстояние между блоками */
-    margin-top: 30px;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-
-  #modeOptions
-  {
-    display: flex;
-    gap: 5px;
-    justify-content: center;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-  }
-  #cursor {
-    position: fixed;
-    width: 2px;
-    height: 1.2em;
-    background-color: #FFD700;
-    animation: blink 1s steps(1) infinite;
-    z-index: 10000;
-    border-radius: 2px;
-    pointer-events: none;
-    display: none;
-  }
-  
-  
-  
-  
-  /* Контейнер для текста */
-  #text {
-    font-family: "Comic Relief", system-ui;
-    font-weight: 400;
-    font-style: normal;
-    color: white;
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    /* max-width: clamp(300px, 80vw, 1000px); */
-    max-width: clamp(280px, 90vw, 1000px);
-    font-size: clamp(1.9rem, 4.5vw, 2.2rem);
-    line-height: 1.3em;
-    letter-spacing: 0.03em;
-    transform: translateY(0); /* Двигается сам текст */
-    transition: transform 0.2s ease;
-    will-change: transform;
-    
-    height: calc(2.4rem * 3); /* высота строки * количество строк */
-    position: relative;
-    /* overflow: hidden; */
-  }
-  
-  
-  
-  /* Контейнер для слова */
-  .wordContainer {
-    display: inline-block;
-  }
-  
-  .letter {
-    display: inline-block;
-    position: relative;
-    font-size: inherit;
-    line-height: 2rem;
-    height: 2.9rem;
-    letter-spacing: 0.02em;
-    opacity: 0.3;
-    vertical-align: middle; /* добавь и сюда — равняет ВСЁ по низу */
-    margin-bottom: 0 !important;
-  }
- 
-  /* Состояния букв */
-  .letter.correct {
-    opacity: 1;
-    transition: color 0.3s ease, opacity 0.3s ease;
-    color: white;
-  }
-  
-  .letter.incorrect {
-    opacity: 1;
-    transition: color 0.3s ease, opacity 0.3s ease;
-    color: red;
-  }
-  
-  .letter.pending {
-    opacity: 0.3;
-  }
-  
-  .letter.space {
-    display: inline-block; /* чтобы элемент занимал собственное пространство */
-    min-width: 0.7em;      /* задаёт минимальную ширину для пробела */
-    height: 2.9rem;         /* та же высота, что и у букв */
-    line-height: 2.4rem;     /* чтобы текст внутри (если отображается символ) был выровнен */
-    vertical-align: bottom; 
-    position: relative;
-    white-space: nowrap;   /* запрещает перенос строки внутри элемента */
-    overflow: hidden;      /* убираем артефакты */
-   
+  margin: 0;
+  background: var(--background-color);
+  color: var(--text-color);
+  font-family: "Roboto Mono", "Roboto Mono", "Vazirmatn", monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  height: 100vh;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  min-height: 100vh;
 }
 
-  /* Анимация мигания: можно настроить по вкусу */
-  @keyframes blink {
-    0% { opacity: 1; }
-    50% { opacity: 0; }
-    100% { opacity: 1; }
-  }
-  /* Стили для обёртки скрытого input-а */
-  #inputWrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 1px;
-    height: 1px;
-    opacity: 0;             /* полностью прозрачный */
-    pointer-events: auto;   /* важно, чтобы мог получить фокус */
-  }
-  
-  /* Скрытый input: contenteditable */
-  #hiddenInput {
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    caret-color: transparent; /* если не хотите видеть курсор */
-  }
-  
-  
-  /* Стили для панели результата */
-  #resultPanel {
-    animation: fadeIn 0.3s ease forwards;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 99999;
-  }
-  
-  #resultContent {
-    background: #2c2c2c;
-    color: #fff;
-    padding: 20px 30px;
-    border-radius: 10px;
-    max-width: 400px;
-    width: 90%;
-    text-align: center;
-    animation: slideUp 0.3s ease forwards;
-  }
-  
-  #resultContent h2 {
-    margin: 0 0 15px;
-  }
-  
-  h2 {
-    padding-top: 20px;
-  }
-  
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  #resultContent p {
-    margin: 10px 0;
+
+body.noscroll {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+/* Панель режимов */
+#gameModes {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+#gameModes button,
+#modeOptions button {
+  background: var(--mode-options);
+  color: var(--mode-btn-text-color);
+  font-family: "Roboto Mono", "Roboto Mono", "Vazirmatn", monospace;
+  font-size: 1rem;
+  font-weight: 550;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+#gameModes button.active,
+#modeOptions button.active {
+  background: var(--mode-options-hover);
+  color: #000;
+}
+
+#modePanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5x;
+  /* расстояние между блоками */
+  margin-top: 30px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+
+#modeOptions {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+/* Контейнер для текста */
+#text {
+  font-family: "Comic Relief", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  color: white;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  /* max-width: clamp(300px, 80vw, 1000px); */
+  max-width: clamp(280px, 90vw, 1000px);
+  font-size: clamp(1.9rem, 4.5vw, 2.2rem);
+  line-height: 1.3em;
+  letter-spacing: 0.03em;
+  transform: translateY(0);
+  /* Двигается сам текст */
+  transition: transform 0.2s ease;
+  will-change: transform;
+
+  height: calc(2.4rem * 3);
+  /* высота строки * количество строк */
+  position: relative;
+  /* overflow: hidden; */
+}
+
+
+
+/* Контейнер для слова */
+.wordContainer {
+  display: inline-block;
+}
+
+.letter {
+  display: inline-block;
+  position: relative;
+  font-size: inherit;
+  line-height: 2rem;
+  height: 2.9rem;
+  letter-spacing: 0.02em;
+  opacity: 0.3;
+  vertical-align: middle;
+  /* добавь и сюда — равняет ВСЁ по низу */
+  margin-bottom: 0 !important;
+}
+
+/* Состояния букв */
+.letter.correct {
+  opacity: 1;
+  transition: color 0.3s ease, opacity 0.3s ease;
+  color: white;
+}
+
+.letter.incorrect {
+  opacity: 1;
+  transition: color 0.3s ease, opacity 0.3s ease;
+  color: red;
+}
+
+.letter.pending {
+  opacity: 0.3;
+}
+
+.letter.space {
+  display: inline-block;
+  /* чтобы элемент занимал собственное пространство */
+  min-width: 0.7em;
+  /* задаёт минимальную ширину для пробела */
+  height: 2.9rem;
+  /* та же высота, что и у букв */
+  line-height: 2.4rem;
+  /* чтобы текст внутри (если отображается символ) был выровнен */
+  vertical-align: bottom;
+  position: relative;
+  white-space: nowrap;
+  /* запрещает перенос строки внутри элемента */
+  overflow: hidden;
+  /* убираем артефакты */
+
+}
+
+/* Анимация мигания: можно настроить по вкусу */
+@keyframes blink {
+  0% {
+    opacity: 1;
   }
-  
-  #closeResultBtn {
-    background: #FFD700;
-    color: #000;
-    font-size: 1rem;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 16px;
-    cursor: pointer;
-    margin-top: 10px;
+
+  50% {
+    opacity: 0;
   }
-  
-  .letter.active::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 3px;
-    height: 1.2em;
-    background-color: #FFD700;
-    animation: blink 1s steps(1) infinite;
-    border-radius: 2px;
-    pointer-events: none;
+
+  100% {
+    opacity: 1;
   }
-  
-  .wordGroup {
-    display: inline-block;
-    white-space: nowrap;
-  }
-  /* Начальное состояние (когда видимо) */
+}
+
+/* Стили для обёртки скрытого input-а */
+#inputWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  /* полностью прозрачный */
+  pointer-events: auto;
+  /* важно, чтобы мог получить фокус */
+}
+
+/* Скрытый input: contenteditable */
+#hiddenInput {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  caret-color: transparent;
+  /* если не хотите видеть курсор */
+}
+
+
+/* Стили для панели результата */
+#resultPanel {
+  animation: fadeIn 0.3s ease forwards;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+#resultContent {
+  background: #2c2c2c;
+  color: #fff;
+  padding: 20px 30px;
+  border-radius: 10px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  animation: slideUp 0.3s ease forwards;
+}
+
+#resultContent h2 {
+  margin: 0 0 15px;
+}
+
+h2 {
+  padding-top: 20px;
+}
+
+
+#resultContent p {
+  margin: 10px 0;
+}
+
+#closeResultBtn {
+  background: #FFD700;
+  color: #000;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.letter.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 1em;
+  /* 👈 вместо 100% */
+  background-color: #FFD700;
+  animation: blink 1s steps(1) infinite;
+  border-radius: 2px;
+  pointer-events: none;
+  transition: left 0.2s ease, top 0.2s ease;
+}
+
+
+.wordGroup {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Начальное состояние (когда видимо) */
 #resultPanel.show {
   display: flex;
   animation: fadeIn 0.3s ease forwards;
@@ -290,23 +302,47 @@ body {
 
 /* Анимации */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeOut {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(40px) scale(0.95); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @keyframes slideDown {
-  from { opacity: 1; transform: translateY(0) scale(1); }
-  to   { opacity: 0; transform: translateY(40px) scale(0.95); }
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
 }
 
 #modePanel.hidden {
@@ -315,7 +351,8 @@ body {
 
 #bottomControls {
   /* position: fixed; 👈 фиксируем к низу */
-  padding-top: 50px; /* отступ сверху, чтобы не перекрывал текст */
+  padding-top: 50px;
+  /* отступ сверху, чтобы не перекрывал текст */
   bottom: 20px;
   left: 50%;
   display: flex;
@@ -352,7 +389,10 @@ html {
 
 
 
-button, #modeOptions, #gameModes, #bottomControls {
+button,
+#modeOptions,
+#gameModes,
+#bottomControls {
   user-select: none;
   -webkit-touch-callout: none;
 }
@@ -367,16 +407,18 @@ header {
   gap: 20px;
   padding: 20px 20px;
   background: transparent;
-  justify-content: flex-start; /* всё налево */
+  justify-content: flex-start;
+  /* всё налево */
 }
 
 
 header .logo img {
   padding-left: 20px;
   width: clamp(50px, 8vw, 80px);
-  
+
   height: auto;
-  filter: brightness(0) invert(1); /* белый цвет */
+  filter: brightness(0) invert(1);
+  /* белый цвет */
 }
 
 .nav-links {
@@ -393,7 +435,8 @@ header .logo img {
 }
 
 .nav-links a:hover {
-  color: #FFD700; /* при наведении */
+  color: #FFD700;
+  /* при наведении */
 }
 
 footer {
@@ -454,7 +497,8 @@ footer {
 .settings-panel {
   position: fixed;
   top: 0;
-  right: -400px; /* Скрыто за экраном */
+  right: -400px;
+  /* Скрыто за экраном */
   width: 350px;
   height: 100%;
   background: var(--panel-background);
@@ -468,7 +512,8 @@ footer {
 }
 
 .settings-panel.active {
-  right: 0; /* Выдвигаем панель */
+  right: 0;
+  /* Выдвигаем панель */
 }
 
 .settings-header {
@@ -504,7 +549,7 @@ footer {
   font-weight: 600;
 }
 
-.setting-item select, 
+.setting-item select,
 .setting-item input[type="number"] {
   width: 100%;
   padding: 8px;
@@ -518,4 +563,19 @@ footer {
 .setting-item input[type="checkbox"] {
   transform: scale(1.2);
   margin-right: 10px;
+}
+
+#resetBtn {
+  background: none;
+  /* Убираем фон */
+  border: none;
+  /* Убираем рамку */
+  color: #CE93D8;
+  /* Цвет стрелки */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  transition: transform 0.2s ease;
 }

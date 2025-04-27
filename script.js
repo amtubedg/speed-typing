@@ -731,7 +731,7 @@ function applyFontSize(size) {
     wrapper.style.height = 'calc(2.8rem * 3)';
   } else if (size === 'large') {
     textArea.style.fontSize = 'calc(1em + 1.8rem)';
-    wrapper.style.height = 'calc(3.4rem * 3)';
+    wrapper.style.height = 'calc(3.6rem * 3)';
   }
 }
 

@@ -30,54 +30,16 @@ const timerDisplay = document.getElementById("timer");
 const hiddenInput = document.getElementById("hiddenInput");
 
 window.addEventListener('DOMContentLoaded', () => {
-  const savedTheme = localStorage.getItem('theme') || 'dark'; // если нет, тогда по умолчанию "dark"
+  // Восстановить тему
+  const savedTheme = localStorage.getItem('theme') || 'dark';
   applyTheme(savedTheme);
-});
 
-function applyTheme(theme) {
-  if (theme === 'light') {
-    
-    document.querySelector('.logo img').style.filter = 'none';
-    document.documentElement.style.setProperty('--background-color', '#FAFAFA');       // фон чуть сероватый, НЕ белый
-    document.documentElement.style.setProperty('--text-color', '#212121');              // очень тёмный серый, идеально читаемый
-    document.documentElement.style.setProperty('--text-color-done', '#7B1FA2');
-    document.documentElement.style.setProperty('--text-color-header', '#350742');              
-    document.documentElement.style.setProperty('--panel-background', '#FFFFFF');        // панели белые
-    document.documentElement.style.setProperty('--button-background', '#E0E0E0');       // кнопки светло-серые
-    document.documentElement.style.setProperty('--input-background', '#ECECEC');        // поле ввода очень светло-серое
-    document.documentElement.style.setProperty('--accent-color', '#7B1FA2');            // фиолетовый акцент как у тебя в теме
-    document.documentElement.style.setProperty('--mode-options', '#F3E5F5');            // кнопки режимов в очень светло-фиолетовом
-    document.documentElement.style.setProperty('--mode-options-hover', '#D1C4E9');      // наведение чуть темнее
-    document.documentElement.style.setProperty('--mode-btn-text-color', '#212121');     // текст на кнопках тёмный
-    document.documentElement.style.setProperty('--reset-button-bg', '#E0E0E0'); // светлая кнопка
-    document.documentElement.style.setProperty('--close-settings', '#212121');
-    document.documentElement.style.setProperty('--cursor-color', 'rgba(100, 2, 131, 1)'); // цвет курсора
-
-  } else {
-
-    document.querySelector('.logo img').style.filter = 'brightness(0) invert(1)';
-    document.documentElement.style.setProperty('--background-color', '#3C1C41');
-    document.documentElement.style.setProperty('--text-color', '#F0F0F0');
-    document.documentElement.style.setProperty('--text-color-header', '#F0F0F0');  
-    document.documentElement.style.setProperty('--text-color-done', '#FAFAFA');
-    document.documentElement.style.setProperty('--close-settings', '#ffffff');
-    document.documentElement.style.setProperty('--panel-background', '#512459');
-    document.documentElement.style.setProperty('--button-background', '#5E2C6B');
-    document.documentElement.style.setProperty('--input-background', '#5E2C6B');
-    document.documentElement.style.setProperty('--accent-color', '#BA68C8');
-    document.documentElement.style.setProperty('--mode-options', '#5E2C6B');
-    document.documentElement.style.setProperty('--mode-options-hover', '#CE93D8');
-    document.documentElement.style.setProperty('--mode-btn-text-color', '#F0F0F0');
-    document.documentElement.style.setProperty('--reset-button-bg', '#4A3E56'); // тёмная кнопка
-    document.documentElement.style.setProperty('--cursor-color', 'rgba(255, 215, 0, 1)');
-    
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.value = savedTheme; // <-- Вот это ты забывал поставить!
   }
-}
-
-
-window.addEventListener('DOMContentLoaded', () => {
   
-  
+  // Восстановить настройки
   const savedUppercase = localStorage.getItem("allowUppercase");
   const savedSymbols = localStorage.getItem("allowSymbols");
   const savedGameMode = localStorage.getItem("selectedGameMode");
@@ -104,22 +66,69 @@ window.addEventListener('DOMContentLoaded', () => {
   if (savedQuoteMode) {
     quoteMode = savedQuoteMode;
   }
+
   document.getElementById("uppercaseToggle").addEventListener("change", (e) => {
     allowUppercase = e.target.checked;
     localStorage.setItem("allowUppercase", allowUppercase ? "true" : "false");
     resetGame(false);
   });
-  
+
   document.getElementById("symbolsToggle").addEventListener("change", (e) => {
     allowSymbols = e.target.checked;
     localStorage.setItem("allowSymbols", allowSymbols ? "true" : "false");
     resetGame(false);
   });
-  
 
   renderModeOptions();
   resetGame(false);
 });
+
+
+function applyTheme(theme) {
+  if (theme === 'light') {
+    
+    document.querySelector('.logo img').style.filter = 'none';
+    document.documentElement.style.setProperty('--background-color', '#FAFAFA');       // фон чуть сероватый, НЕ белый
+    document.documentElement.style.setProperty('--text-color', '#212121');              // очень тёмный серый, идеально читаемый
+    document.documentElement.style.setProperty('--text-color-done', '#7B1FA2');
+    document.documentElement.style.setProperty('--text-color-header', '#350742');              
+    document.documentElement.style.setProperty('--panel-background', '#FFFFFF');        // панели белые
+    document.documentElement.style.setProperty('--button-background', '#E0E0E0');       // кнопки светло-серые
+    document.documentElement.style.setProperty('--input-background', '#ECECEC');        // поле ввода очень светло-серое
+    document.documentElement.style.setProperty('--accent-color', '#7B1FA2');            // фиолетовый акцент как у тебя в теме
+    document.documentElement.style.setProperty('--mode-options', '#F3E5F5');            // кнопки режимов в очень светло-фиолетовом
+    document.documentElement.style.setProperty('--mode-options-hover', '#D1C4E9');      // наведение чуть темнее
+    document.documentElement.style.setProperty('--mode-btn-text-color', '#212121');     // текст на кнопках тёмный
+    document.documentElement.style.setProperty('--reset-button-bg', '#E0E0E0'); // светлая кнопка
+    document.documentElement.style.setProperty('--close-settings', '#212121');
+    document.documentElement.style.setProperty('--cursor-color', 'rgba(100, 2, 131, 1)'); // цвет курсора
+    document.documentElement.style.setProperty('--closebtn-color', 'rgb(255, 255, 255)'); // цвет курсора
+    
+
+  } else {
+
+    document.querySelector('.logo img').style.filter = 'brightness(0) invert(1)';
+    document.documentElement.style.setProperty('--background-color', '#3C1C41');
+    document.documentElement.style.setProperty('--text-color', '#F0F0F0');
+    document.documentElement.style.setProperty('--text-color-header', '#F0F0F0');  
+    document.documentElement.style.setProperty('--text-color-done', '#FAFAFA');
+    document.documentElement.style.setProperty('--close-settings', '#ffffff');
+    document.documentElement.style.setProperty('--panel-background', '#512459');
+    document.documentElement.style.setProperty('--button-background', '#5E2C6B');
+    document.documentElement.style.setProperty('--input-background', '#5E2C6B');
+    document.documentElement.style.setProperty('--accent-color', '#BA68C8');
+    document.documentElement.style.setProperty('--mode-options', '#5E2C6B');
+    document.documentElement.style.setProperty('--mode-options-hover', '#CE93D8');
+    document.documentElement.style.setProperty('--mode-btn-text-color', '#F0F0F0');
+    document.documentElement.style.setProperty('--reset-button-bg', '#4A3E56'); // тёмная кнопка
+    document.documentElement.style.setProperty('--cursor-color', 'rgba(255, 215, 0, 1)');
+    document.documentElement.style.setProperty('--closebtn-color', '#F0F0F0'); // цвет курсора
+    
+  }
+}
+
+
+
 
 
 
@@ -846,34 +855,34 @@ function applyFontSize(size) {
 }
 
 // Language переключение + сохранение
-document.getElementById('languageToggle').addEventListener('change', (e) => {
-  const lang = e.target.value;
-  localStorage.setItem('language', lang);
-  console.log("Selected language:", lang);
-  reloadGame();
+// document.getElementById('languageToggle').addEventListener('change', (e) => {
+//   const lang = e.target.value;
+//   localStorage.setItem('language', lang);
+//   console.log("Selected language:", lang);
+//   reloadGame();
 
-});
+// });
 
-// Custom Time ввод + сохранение
-document.getElementById('customTime').addEventListener('input', (e) => {
-  const time = parseInt(e.target.value, 10);
-  localStorage.setItem('customTime', time);
-  console.log("Custom time set to:", time, "seconds");
-  reloadGame();
+// // Custom Time ввод + сохранение
+// document.getElementById('customTime').addEventListener('input', (e) => {
+//   const time = parseInt(e.target.value, 10);
+//   localStorage.setItem('customTime', time);
+//   console.log("Custom time set to:", time, "seconds");
+//   reloadGame();
 
-});
+// });
 
 // Show Stats переключение + сохранение
-document.getElementById('showStats').addEventListener('change', (e) => {
-  const show = e.target.checked;
-  localStorage.setItem('showStats', show ? 'true' : 'false');
-  const stats = document.getElementById('timer');
-  if (stats) {
-    stats.style.display = show ? 'block' : 'none';
-  }
-  reloadGame();
+// document.getElementById('showStats').addEventListener('change', (e) => {
+//   const show = e.target.checked;
+//   localStorage.setItem('showStats', show ? 'true' : 'false');
+//   const stats = document.getElementById('timer');
+//   if (stats) {
+//     stats.style.display = show ? 'block' : 'none';
+//   }
+//   reloadGame();
 
-});
+// });
 
 // Закрывать настройки при клике вне панели
 document.addEventListener('click', function(event) {

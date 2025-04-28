@@ -325,22 +325,23 @@ function formatTime(seconds) {
   return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 }
 
-
-
 function startTimer() {
   document.getElementById("modePanel")?.classList.add("hidden");
   startTime = Date.now();
 
   if (gameMode === "time") {
+    timerDisplay.textContent = formatTime(remainingTime); // Сначала отобразить текущее время
+
     timerInterval = setInterval(() => {
-      remainingTime--;
-      timerDisplay.textContent = formatTime(remainingTime);
+      remainingTime--; // Потом уже каждую секунду уменьшать
       if (remainingTime <= 0) {
         finishGame("timeout");
       }
+      timerDisplay.textContent = formatTime(remainingTime);
     }, 1000);
   }
 }
+
 
 function handleKey(char) {
   const letters = document.querySelectorAll(".letter");
@@ -604,6 +605,8 @@ function renderModeOptions() {
         remainingTime = val;
         localStorage.setItem("selectedTime", defaultTime);
         timerDisplay.textContent = formatTime(val);
+      
+        resetGame(false);  // ← ДОБАВИТЬ ЭТУ СТРОКУ!
       }
 
       if (gameMode === "quote") {

@@ -44,7 +44,7 @@ function applyTheme(theme) {
     document.documentElement.style.setProperty('--mode-options-hover', '#D1C4E9');      // наведение чуть темнее
     document.documentElement.style.setProperty('--mode-btn-text-color', '#212121');     // текст на кнопках тёмный
     document.documentElement.style.setProperty('--reset-button-bg', '#E0E0E0'); // светлая кнопка
-
+    document.documentElement.style.setProperty('--close-settings', '#212121');
 
   } else {
 
@@ -52,8 +52,8 @@ function applyTheme(theme) {
     document.documentElement.style.setProperty('--background-color', '#3C1C41');
     document.documentElement.style.setProperty('--text-color', '#F0F0F0');
     document.documentElement.style.setProperty('--text-color-header', '#F0F0F0');  
-    document.documentElement.style.setProperty('--text-color-done', '#2c2c2c');
-    
+    document.documentElement.style.setProperty('--text-color-done', '#FAFAFA');
+    document.documentElement.style.setProperty('--close-settings', '#ffffff');
     document.documentElement.style.setProperty('--panel-background', '#512459');
     document.documentElement.style.setProperty('--button-background', '#5E2C6B');
     document.documentElement.style.setProperty('--input-background', '#5E2C6B');

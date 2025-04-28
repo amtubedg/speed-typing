@@ -486,7 +486,7 @@ footer {
 }
 
 .footer-links a:hover {
-  color: #FFD700;
+  color: var(--accent-color);
 }
 
 #lineWrapper {
@@ -547,15 +547,19 @@ footer {
   align-items: center;
 }
 
+h1{
+  color: var(--accent-color)
+}
+
 .settings-header h2 {
-  color: #FFD700;
+  color: var(--accent-color);
   font-size: 1.5rem;
 }
 
 #closeSettingsPanel {
   background: none;
   border: none;
-  color: white;
+  color: var(--close-settings);
   font-size: 2rem;
   cursor: pointer;
 }

@@ -159,16 +159,36 @@ async function loadWordsIfNeeded() {
 }
 
 function getFilteredWords() {
-  return sampleWords.filter(word => {
-    if (!allowUppercase && /[A-Z]/.test(word)) {
-      return false; // если большие буквы запрещены — убираем слово с заглавными
-    }
-    if (!allowSymbols && /[^a-zA-Z]/.test(word)) {
-      return false; // если символы запрещены — убираем слово с не-буквами
-    }
-    return true;
-  });
+  const cleanWords = sampleWords.filter(word => /^[a-zA-Z]+$/.test(word)); // Только буквы
+  const symbolWords = sampleWords.filter(word => /[^a-zA-Z]/.test(word));  // Есть символы
+
+  let finalWords = [];
+
+  if (allowSymbols) {
+    const symbolPercentage = 0.50; // 25% слов с символами
+    const totalNeeded = (gameMode === "words") ? wordCount : 500;
+
+    const symbolCount = Math.floor(totalNeeded * symbolPercentage);
+    const cleanCount = totalNeeded - symbolCount;
+
+    const shuffledClean = cleanWords.sort(() => Math.random() - 0.5);
+    const shuffledSymbol = symbolWords.sort(() => Math.random() - 0.5);
+
+    finalWords = shuffledClean.slice(0, cleanCount).concat(shuffledSymbol.slice(0, symbolCount));
+    finalWords = finalWords.sort(() => Math.random() - 0.5); // Перемешиваем финально
+  } else {
+    const filtered = sampleWords.filter(word => /^[a-zA-Z]+$/.test(word));
+    finalWords = filtered.sort(() => Math.random() - 0.5);
+  }
+
+  // Фильтрация на заглавные буквы
+  if (!allowUppercase) {
+    finalWords = finalWords.map(word => word.toLowerCase());
+  }
+
+  return finalWords;
 }
+
 
 
 async function initText() {
@@ -187,10 +207,11 @@ async function initText() {
   if (gameMode === "words" || gameMode === "time") {
     await loadWordsIfNeeded();
     const filteredWords = getFilteredWords();
-    const shuffled = filteredWords.slice().sort(() => Math.random() - 0.5);
+    const shuffled = filteredWords.slice(); // Уже перемешаны в функции
     const selected = (gameMode === "words") ? shuffled.slice(0, wordCount) : shuffled.slice(0, 500);
     sampleText = selected.join(" ");
   }
+  
   
 
   if (gameMode === "quote") {
@@ -340,10 +361,9 @@ function handleKey(char) {
   }
 
   currentIndex++;
-  updateCursor();
 
-  // Проверяем, достигли ли мы конца текста
-  const isAtEnd = currentIndex === letters.length;
+  
+  updateCursor();
 
   if (gameMode === "words" || gameMode === "quote") {
     let completedWords = 0;
@@ -351,21 +371,15 @@ function handleKey(char) {
       if (letters[i].textContent === " ") completedWords++;
     }
     
-    // Если достигли конца текста, добавляем последнее слово
-    if (isAtEnd) completedWords++;
+    // If at the end, add the last word
+    if (currentIndex === letters.length) completedWords++;
 
     const wordCounterEl = document.getElementById("wordCounter");
     if (wordCounterEl) {
       wordCounterEl.textContent = `${Math.min(completedWords, totalWords)} / ${totalWords}`;
     }
-
-    // Для режима quote завершаем игру, как только достигнут конец текста
-    if (gameMode === "quote" && isAtEnd) {
-      finishGame("completed");
-      return;
-    }
     
-    // Для режима words проверяем количество завершенных слов
+    // For words mode, check completed words
     if (gameMode === "words" && completedWords >= totalWords) {
       finishGame("completed");
       return;

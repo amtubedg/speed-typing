@@ -13,6 +13,12 @@ let incorrectCount = 0;
 let startTime = null;
 let endTime = null;
 
+let allowUppercase = true;   // Разрешить большие буквы (по умолчанию да)
+let allowSymbols = false;    // Разрешить символы (по умолчанию нет)
+
+
+let totalWords = 0;
+let quoteMode = "short";
 let gameMode = "time";          // режим по умолчанию
 let timeOptions = [15, 30, 60, 120];
 let wordOptions = [10, 25, 50, 100];
@@ -34,7 +40,7 @@ function applyTheme(theme) {
     document.querySelector('.logo img').style.filter = 'none';
     document.documentElement.style.setProperty('--background-color', '#FAFAFA');       // фон чуть сероватый, НЕ белый
     document.documentElement.style.setProperty('--text-color', '#212121');              // очень тёмный серый, идеально читаемый
-    document.documentElement.style.setProperty('--text-color-done', '#2c2c2c');
+    document.documentElement.style.setProperty('--text-color-done', '#7B1FA2');
     document.documentElement.style.setProperty('--text-color-header', '#350742');              
     document.documentElement.style.setProperty('--panel-background', '#FFFFFF');        // панели белые
     document.documentElement.style.setProperty('--button-background', '#E0E0E0');       // кнопки светло-серые
@@ -45,6 +51,7 @@ function applyTheme(theme) {
     document.documentElement.style.setProperty('--mode-btn-text-color', '#212121');     // текст на кнопках тёмный
     document.documentElement.style.setProperty('--reset-button-bg', '#E0E0E0'); // светлая кнопка
     document.documentElement.style.setProperty('--close-settings', '#212121');
+    document.documentElement.style.setProperty('--cursor-color', 'rgba(100, 2, 131, 1)'); // цвет курсора
 
   } else {
 
@@ -62,6 +69,7 @@ function applyTheme(theme) {
     document.documentElement.style.setProperty('--mode-options-hover', '#CE93D8');
     document.documentElement.style.setProperty('--mode-btn-text-color', '#F0F0F0');
     document.documentElement.style.setProperty('--reset-button-bg', '#4A3E56'); // тёмная кнопка
+    document.documentElement.style.setProperty('--cursor-color', 'rgba(255, 215, 0, 1)');
     
   }
 }
@@ -69,39 +77,50 @@ function applyTheme(theme) {
 
 window.addEventListener('DOMContentLoaded', () => {
   
-  const savedTheme = localStorage.getItem('theme');
-  const savedFontSize = localStorage.getItem('fontSize');
-  const savedLanguage = localStorage.getItem('language');
-  const savedCustomTime = localStorage.getItem('customTime');
-  const savedShowStats = localStorage.getItem('showStats');
+  
+  const savedUppercase = localStorage.getItem("allowUppercase");
+  const savedSymbols = localStorage.getItem("allowSymbols");
+  const savedGameMode = localStorage.getItem("selectedGameMode");
+  const savedWordCount = localStorage.getItem("selectedWordCount");
+  const savedTime = localStorage.getItem("selectedTime");
+  const savedQuoteMode = localStorage.getItem("selectedQuoteMode");
 
-  if (savedTheme) {
-    document.getElementById('themeToggle').value = savedTheme;
-    applyTheme(savedTheme);
+  if (savedUppercase !== null) {
+    allowUppercase = savedUppercase === "true";
   }
+  if (savedSymbols !== null) {
+    allowSymbols = savedSymbols === "true";
+  }
+  if (savedGameMode) {
+    gameMode = savedGameMode;
+  }
+  if (savedWordCount) {
+    wordCount = parseInt(savedWordCount, 10);
+  }
+  if (savedTime) {
+    defaultTime = parseInt(savedTime, 10);
+    remainingTime = defaultTime;
+  }
+  if (savedQuoteMode) {
+    quoteMode = savedQuoteMode;
+  }
+  document.getElementById("uppercaseToggle").addEventListener("change", (e) => {
+    allowUppercase = e.target.checked;
+    localStorage.setItem("allowUppercase", allowUppercase ? "true" : "false");
+    resetGame(false);
+  });
+  
+  document.getElementById("symbolsToggle").addEventListener("change", (e) => {
+    allowSymbols = e.target.checked;
+    localStorage.setItem("allowSymbols", allowSymbols ? "true" : "false");
+    resetGame(false);
+  });
+  
 
-  if (savedFontSize) {
-    document.getElementById('fontSizeToggle').value = savedFontSize;
-    applyFontSize(savedFontSize);
-  }
-
-  if (savedLanguage) {
-    document.getElementById('languageToggle').value = savedLanguage;
-  }
-
-  if (savedCustomTime) {
-    document.getElementById('customTime').value = savedCustomTime;
-  }
-
-  if (savedShowStats !== null) {
-    const show = savedShowStats === 'true';
-    document.getElementById('showStats').checked = show;
-    const stats = document.getElementById('timer');
-    if (stats) {
-      stats.style.display = show ? 'block' : 'none';
-    }
-  }
+  renderModeOptions();
+  resetGame(false);
 });
+
 
 
 function setCaretToEnd(el) {
@@ -118,6 +137,14 @@ function initInput() {
   setCaretToEnd(hiddenInput);
 }
 
+let sampleQuotes = []; // сюда загрузим цитаты
+
+async function loadQuotes() {
+  const res = await fetch("quotes.txt");
+  const text = await res.text();
+  sampleQuotes = text.trim().split('\n').filter(q => q.length > 0);
+}
+
 async function loadWords() {
   const res = await fetch("words_en.txt");
   const text = await res.text();
@@ -131,23 +158,60 @@ async function loadWordsIfNeeded() {
   sampleWords = text.trim().split(/\s+/);
 }
 
+function getFilteredWords() {
+  return sampleWords.filter(word => {
+    if (!allowUppercase && /[A-Z]/.test(word)) {
+      return false; // если большие буквы запрещены — убираем слово с заглавными
+    }
+    if (!allowSymbols && /[^a-zA-Z]/.test(word)) {
+      return false; // если символы запрещены — убираем слово с не-буквами
+    }
+    return true;
+  });
+}
+
 
 async function initText() {
   textContainer.innerHTML = "";
   currentIndex = 0;
+
+  if (!allowUppercase) {
+    sampleText = sampleText.toLowerCase();
+  }
+  
+  if (!allowSymbols) {
+    sampleText = sampleText.replace(/[^a-zA-Z\s]/g, "");
+  }
+
   
   if (gameMode === "words" || gameMode === "time") {
-  await loadWordsIfNeeded();
-  const shuffled = sampleWords.slice().sort(() => Math.random() - 0.5);
-  const selected = (gameMode === "words") ? shuffled.slice(0, wordCount) : shuffled.slice(0, 500);
-  sampleText = selected.join(" ");
-}
+    await loadWordsIfNeeded();
+    const filteredWords = getFilteredWords();
+    const shuffled = filteredWords.slice().sort(() => Math.random() - 0.5);
+    const selected = (gameMode === "words") ? shuffled.slice(0, wordCount) : shuffled.slice(0, 500);
+    sampleText = selected.join(" ");
+  }
   
 
-  const words = sampleText.split(" ");
+  if (gameMode === "quote") {
+    if (sampleQuotes.length === 0) {
+      await loadQuotes();
+    }
+    const shuffled = sampleQuotes.slice().sort(() => Math.random() - 0.5);
+    if (quoteMode === "short") {
+      sampleText = shuffled.slice(0, 1).join(" ");
+    } else if (quoteMode === "medium") {
+      sampleText = shuffled.slice(0, 4).join(" ");
+    } else if (quoteMode === "long") {
+      sampleText = shuffled.slice(0, 7).join(" ");
+    }
+  }
 
-  // Временно создаём плоский текст, чтобы измерить строки
+  totalWords = sampleText.trim().split(/\s+/).length; // ← считаем слова!
+
+  const words = sampleText.split(" ");
   const tempSpans = [];
+
   for (let i = 0; i < words.length; i++) {
     const wordGroup = document.createElement("span");
     wordGroup.classList.add("wordGroup");
@@ -170,22 +234,18 @@ async function initText() {
     tempSpans.push(wordGroup);
   }
 
-  // Сгруппировать по offsetTop (физические строки)
-  
+  textContainer.innerHTML = "";
+  for (let group of tempSpans) {
+    textContainer.appendChild(group);
+  }
 
-  // Перестроить DOM по lineGroup
-    // Заменяем вручную деление на строки — просто вставляем элементы подряд
-    textContainer.innerHTML = "";
-    for (let group of tempSpans) {
-      textContainer.appendChild(group);
-    }
-  
   currentLineIndex = 0;
   lastValidTop = 0;
   textContainer.style.transform = "translateY(0)";
   updateCursor();
   initInput();
 }
+
 
 
 
@@ -252,7 +312,6 @@ function startTimer() {
   }
 }
 
-
 function handleKey(char) {
   const letters = document.querySelectorAll(".letter");
   if (currentIndex >= letters.length) return;
@@ -262,7 +321,7 @@ function handleKey(char) {
     
     if (gameMode === "time") {
       document.getElementById("timer").style.display = "block";
-    } else if (gameMode === "words") {
+    } else if (gameMode === "words" || gameMode === "quote") {
       document.getElementById("wordCounter").style.display = "block";
     }
   
@@ -270,7 +329,6 @@ function handleKey(char) {
     document.body.classList.add("typing-started");
   }
   
-
   const current = letters[currentIndex];
   if (char === current.textContent) {
     current.classList.remove("pending", "incorrect");
@@ -284,37 +342,40 @@ function handleKey(char) {
   currentIndex++;
   updateCursor();
 
+  // Проверяем, достигли ли мы конца текста
+  const isAtEnd = currentIndex === letters.length;
 
-  if (gameMode === "words") {
-    const letters = document.querySelectorAll(".letter");
-  
-    // Подсчёт завершённых слов по пробелам
+  if (gameMode === "words" || gameMode === "quote") {
     let completedWords = 0;
     for (let i = 0; i < currentIndex; i++) {
       if (letters[i].textContent === " ") completedWords++;
     }
-  
-    // Если дошли до самого конца текста — добавляем последнее слово
-    const isAtEnd = currentIndex >= letters.length;
+    
+    // Если достигли конца текста, добавляем последнее слово
     if (isAtEnd) completedWords++;
-  
-    // Обновляем отображение счётчика, если он есть
+
     const wordCounterEl = document.getElementById("wordCounter");
     if (wordCounterEl) {
-      wordCounterEl.textContent = `${Math.min(completedWords, wordCount)} / ${wordCount}`;
+      wordCounterEl.textContent = `${Math.min(completedWords, totalWords)} / ${totalWords}`;
     }
-  
-    // Завершение игры, только если реально все слова введены
-    if (completedWords >= wordCount && isAtEnd) {
+
+    // Для режима quote завершаем игру, как только достигнут конец текста
+    if (gameMode === "quote" && isAtEnd) {
+      finishGame("completed");
+      return;
+    }
+    
+    // Для режима words проверяем количество завершенных слов
+    if (gameMode === "words" && completedWords >= totalWords) {
       finishGame("completed");
       return;
     }
   }
-  
-  
+
   scrollTextUpIfNeeded();
   checkLineAdvance();
 }
+
 
 function handleBackspace() {
   if (currentIndex === 0) return;
@@ -478,8 +539,6 @@ if (gameMode === "words" && wordCounterEl) {
 });
 
 
-
-
 function renderModeOptions() {
   const container = document.getElementById("modeOptions");
   container.innerHTML = "";
@@ -490,49 +549,66 @@ function renderModeOptions() {
   } else if (gameMode === "words") {
     options = wordOptions;
   } else if (gameMode === "quote") {
-    options = [
-      "\"To be, or not to be?\"",
-      "'Hello, world!'",
-      "What is your name?"
-    ];
+    options = ["Short", "Medium", "Long"];
   }
 
-  options.forEach((val, index) => {
+  options.forEach((val) => {
     const btn = document.createElement("button");
     btn.textContent = val;
-    btn.classList.toggle("active", val === defaultTime || val === wordCount);
+    btn.classList.toggle("active", 
+      (gameMode === "time" && val === defaultTime) || 
+      (gameMode === "words" && val === wordCount) ||
+      (gameMode === "quote" && val.toLowerCase() === quoteMode)
+    );
 
     btn.onclick = () => {
       document.querySelectorAll("#modeOptions button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-    
+
       if (gameMode === "words") {
-        wordCount = val;
-    
+        wordCount = parseInt(val, 10);
+        localStorage.setItem("selectedWordCount", wordCount);
         const wordCounterEl = document.getElementById("wordCounter");
         if (wordCounterEl) {
           wordCounterEl.textContent = `0 / ${val}`;
           wordCounterEl.style.display = "block";
         }
-    
-        resetGame(false); // ✅ сброс текста и состояния для words
-        
-        
+        resetGame(false);
       }
-    
+
       if (gameMode === "time") {
         defaultTime = val;
         remainingTime = val;
+        localStorage.setItem("selectedTime", defaultTime);
         timerDisplay.textContent = formatTime(val);
-    
-        // ❌ Не вызываем resetGame() — текст должен остаться
+      }
+
+      if (gameMode === "quote") {
+        quoteMode = val.toLowerCase();
+        localStorage.setItem("selectedQuoteMode", quoteMode);
+        resetGame(false);
       }
     };
-    
-    
+
     container.appendChild(btn);
   });
+
+  // 🔥 Управляем отображением готовых Toggle'ов
+  const toggleOptions = document.getElementById("toggleOptions");
+  if (gameMode === "words" || gameMode === "time") {
+    toggleOptions.style.display = "flex";
+  } else {
+    toggleOptions.style.display = "none";
+  }
+
+  // Устанавливаем правильные значения при перерендере
+  document.getElementById("uppercaseToggle").checked = allowUppercase;
+  document.getElementById("symbolsToggle").checked = allowSymbols;
 }
+
+
+
+
 
 function scrollTextUpIfNeeded() {
   const activeLetter = document.querySelector(".letter.active");
@@ -574,32 +650,27 @@ function checkLineAdvance() {
 }
 
 
-
 function switchGameMode(mode) {
-  gameMode = mode;
-  document.querySelectorAll("#gameModes button").forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.mode === mode);
-  });
+  if (gameMode !== mode) {
+    gameMode = mode;
+    document.querySelectorAll("#gameModes button").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.mode === mode);
+    });
 
-  // Показываем или прячем таймер
-  timerDisplay.style.display = (mode === "time") ? "block" : "none";
+    if (mode === "time" || mode === "words" || mode === "quote") {
+      renderModeOptions();  // ⬅️ обязательно перерендерим кнопки
+    } else {
+      document.getElementById("modeOptions").innerHTML = "";
+    }
 
-  // Обновляем опции
-  renderModeOptions();
-
-  if (mode === "time") {
-    document.getElementById("timer").style.display = "none"; // покажем только при старте ввода
-    document.getElementById("wordCounter").style.display = "none";
-  } else if (mode === "words") {
-    document.getElementById("wordCounter").style.display = "none"; // покажем только при старте ввода
-    document.getElementById("timer").style.display = "none";
-  } else {
     document.getElementById("timer").style.display = "none";
     document.getElementById("wordCounter").style.display = "none";
+
+    resetGame(false);
   }
-
-  updateCursor(); 
 }
+
+
 
 function recalculateActiveLine() {
   const activeLetter = document.querySelector(".letter.active");

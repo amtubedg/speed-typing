@@ -33,11 +33,35 @@
   <!-- Панель переключения режимов -->
   <div id="modePanel">
     <div id="gameModes">
-      <button data-mode="time" class="active">⏱ time</button>
-      <button data-mode="words">A words</button>
-      <button data-mode="quote">❝ quote</button>
+      <button data-mode="time" class="active">⏱ Time</button>
+      <button data-mode="words">A Words</button>
+      <button data-mode="quote">❝ Quote</button>
     </div>
     <div id="modeOptions"></div>
+    <div id="toggleOptions" style="display: none;">
+      <div class="toggle-wrapper">
+        <div class="toggle-container">
+          <label style="display: flex; align-items: center; gap: 8px;">
+            Aa
+            <label class="switch">
+              <input type="checkbox" id="uppercaseToggle">
+              <span class="slider"></span>
+            </label>
+          </label>
+        </div>
+    
+        <div class="toggle-container">
+          <label style="display: flex; align-items: center; gap: 8px;">
+            #
+            <label class="switch">
+              <input type="checkbox" id="symbolsToggle">
+              <span class="slider"></span>
+            </label>
+          </label>
+        </div>
+      </div>
+    </div>
+    
   </div>
 
   <!-- Settings Side Panel -->
@@ -71,7 +95,7 @@
         <option value="ru">Russian</option>
       </select>
     </div>
-
+    
     <div class="setting-item">
       <label for="customTime">Custom Time (sec):</label>
       <input type="number" id="customTime" min="10" max="300" value="60">

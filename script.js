@@ -781,6 +781,30 @@ window.addEventListener("resize", () => {
   updateCursor();
 });
 
+window.addEventListener('keydown', (e) => {
+  const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+  if (isMobile) return; // На мобильных клавиатура вызывается кликом вручную
+
+  if (document.activeElement !== hiddenInput) {
+    if (e.key.length === 1 || e.key === "Backspace") {
+      e.preventDefault();
+      hiddenInput.focus({ preventScroll: true });
+      setCaretToEnd(hiddenInput);
+
+      // ⬇️ И сразу обрабатываем первую нажатую клавишу:
+      if (e.key === "Backspace") {
+        handleBackspace();
+      } else {
+        handleKey(e.key);
+      }
+
+      hiddenInput.innerText = placeholder;
+      setCaretToEnd(hiddenInput);
+    }
+  }
+});
+
+
 // Убираем фокус с кнопок после клика (чтобы не открывалась клавиатура)
 document.querySelectorAll("button").forEach(btn => {
   btn.addEventListener("click", (e) => {

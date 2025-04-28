@@ -168,15 +168,14 @@ async function loadWordsIfNeeded() {
 }
 
 function getFilteredWords() {
-  const cleanWords = sampleWords.filter(word => /^[a-zA-Z]+$/.test(word)); // Только буквы
-  const symbolWords = sampleWords.filter(word => /[^a-zA-Z]/.test(word));  // Есть символы
+  const cleanWords = sampleWords.filter(word => /^[a-zA-Z]+$/.test(word));
+  const symbolWords = sampleWords.filter(word => /[^a-zA-Z]/.test(word));
 
   let finalWords = [];
 
   if (allowSymbols) {
-    const symbolPercentage = 0.50; // 25% слов с символами
+    const symbolPercentage = 0.5;
     const totalNeeded = (gameMode === "words") ? wordCount : 500;
-
     const symbolCount = Math.floor(totalNeeded * symbolPercentage);
     const cleanCount = totalNeeded - symbolCount;
 
@@ -184,19 +183,23 @@ function getFilteredWords() {
     const shuffledSymbol = symbolWords.sort(() => Math.random() - 0.5);
 
     finalWords = shuffledClean.slice(0, cleanCount).concat(shuffledSymbol.slice(0, symbolCount));
-    finalWords = finalWords.sort(() => Math.random() - 0.5); // Перемешиваем финально
+    finalWords = finalWords.sort(() => Math.random() - 0.5);
   } else {
-    const filtered = sampleWords.filter(word => /^[a-zA-Z]+$/.test(word));
-    finalWords = filtered.sort(() => Math.random() - 0.5);
+    finalWords = cleanWords.sort(() => Math.random() - 0.5);
   }
 
-  // Фильтрация на заглавные буквы
   if (!allowUppercase) {
     finalWords = finalWords.map(word => word.toLowerCase());
   }
 
+  // 🛠 Убираем подряд одинаковые слова
+  finalWords = finalWords.filter((word, index, arr) => {
+    return index === 0 || word !== arr[index - 1];
+  });
+
   return finalWords;
 }
+
 
 
 
